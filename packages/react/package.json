@@ -1,0 +1,30 @@
+{
+  "name": "@pastel-studio/react",
+  "version": "0.1.0",
+  "description": "Pastel Studio React components, built on @pastel-studio/tokens.",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "San Milano",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oli-the-hermit/pastel-studio-ds.git",
+    "directory": "packages/react"
+  },
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@pastel-studio/tokens": "0.1.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  }
+}

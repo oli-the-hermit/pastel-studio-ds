@@ -1,0 +1,22 @@
+/* ═══════════════════════════════════════════════════════════
+   @pastel-studio/tokens: entry
+
+   Everything Pastel Studio ships lives inside one cascade layer, "ps",
+   so an app's own styles (unlayered, or in a later layer) always win
+   without !important or specificity tricks. Declare your app layers
+   after it, e.g.  @layer ps, app;
+
+   Tiers:
+     reference.css     raw palette (tier 1); used only by themes
+     themes/*.css      semantic roles per theme (tier 2); themes override these only
+     aliases.css       roles derived from roles, re-resolved inside nested themes
+     scales.css        type, space, shape, size, motion, layers
+   Component tokens (tier 3) live with each component in @pastel-studio/react.
+ ═══════════════════════════════════════════════════════════ */
+@layer ps.tokens, ps.reset, ps.base, ps.components, ps.utilities;
+
+@import url('./reference.css') layer(ps.tokens);
+@import url('./scales.css') layer(ps.tokens);
+@import url('./themes/dark.css') layer(ps.tokens);
+@import url('./themes/light.css') layer(ps.tokens);
+@import url('./aliases.css') layer(ps.tokens);

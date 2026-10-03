@@ -1,0 +1,25 @@
+/* ═══════════════════════════════════════════════════════════
+   @pastel-studio/react: stylesheet entry
+
+   Import once, at the top of the app's own stylesheet:
+     @import '@pastel-studio/react/styles.css';
+   It brings the tokens, the foundation and every component's CSS,
+   all inside the "ps" cascade layer, so the app's own styles win.
+
+   Component stylesheets are added under "Components" as each
+   component is promoted, in the order they may override each other.
+ ═══════════════════════════════════════════════════════════ */
+@layer ps.tokens, ps.reset, ps.base, ps.components, ps.utilities;
+
+@import url('@pastel-studio/tokens/fonts.css');
+@import url('@pastel-studio/tokens/index.css');
+
+/* Foundation */
+@import url('./foundation/reset.css') layer(ps.reset);
+@import url('./foundation/base.css') layer(ps.base);
+@import url('./foundation/reduced-motion.css') layer(ps.base);
+
+/* Components */
+
+/* Utilities (last: they beat components) */
+@import url('./foundation/utilities.css') layer(ps.utilities);

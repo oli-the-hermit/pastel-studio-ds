@@ -1,0 +1,13 @@
+/* Pastel Studio: utilities (layer ps.utilities, above components) */
+
+/* Small uppercase label above a group or a value */
+.ps-overline {
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+  color: var(--ps-text-2);
+}
+
+/* Hidden, whatever the component's own display rule says */
+.ps-hidden { display: none !important; }

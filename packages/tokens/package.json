@@ -1,0 +1,33 @@
+{
+  "name": "@pastel-studio/tokens",
+  "version": "0.1.0",
+  "description": "Pastel Studio design tokens: palette, light and dark themes, and scales, as plain CSS custom properties.",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "San Milano",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oli-the-hermit/pastel-studio-ds.git",
+    "directory": "packages/tokens"
+  },
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.css",
+    "./index.css": "./src/index.css",
+    "./fonts.css": "./src/fonts.css",
+    "./reference.css": "./src/reference.css",
+    "./scales.css": "./src/scales.css",
+    "./aliases.css": "./src/aliases.css",
+    "./themes/dark.css": "./src/themes/dark.css",
+    "./themes/light.css": "./src/themes/light.css"
+  },
+  "files": [
+    "src",
+    "MIGRATING.md"
+  ],
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0"
+  }
+}

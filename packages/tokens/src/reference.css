@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════
+   Pastel Studio: reference palette (tier 1)
+
+   The raw colors. Components never use these directly: they use the
+   semantic roles in themes/*.css, which are the only consumers of
+   this file. A theme picks different reference colors for the same
+   roles; it never adds new raw values to components.
+
+   The number in each name is the color's tone: its CIELAB L*
+   lightness, 0 (black) to 100 (white), rounded. Two tokens' numbers
+   tell you roughly how far apart they are in lightness, which is what
+   contrast depends on. scripts/tokens/check.ts verifies every tone.
+ ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Graphite: cool neutrals, the dark theme's surfaces ── */
+  --ps-graphite-4:    #0E0F11;
+  --ps-graphite-8:    #16181B;
+  --ps-graphite-12:   #1E2024;
+  --ps-graphite-17:   #272A2F;
+  --ps-graphite-22:   #31343A;
+
+  /* ── Stone: warm neutrals, text in both themes and the light theme's surfaces ── */
+  --ps-stone-10:      #1A1C17;
+  --ps-stone-35:      #50544A;
+  --ps-stone-48:      #6F736B;
+  --ps-stone-58:      #8A8E83;
+  --ps-stone-70:      #A9ACA4;
+  --ps-stone-88:      #DADDD3;
+  --ps-stone-92:      #E7E9E1;
+  --ps-stone-94:      #EDEEE8;
+  --ps-stone-95:      #F1F2EC;
+  --ps-stone-96:      #F3F4EE;
+  --ps-white:         #FFFFFF;
+
+  /* ── Lime: the accent (solar lime #D1DD23 is lime-85) ── */
+  --ps-lime-10:       #1A1D00;
+  --ps-lime-25:       #3A3F0A;
+  --ps-lime-26:       #3B4100;
+  --ps-lime-33:       #4A5200;
+  --ps-lime-40:       #5B6300;
+  --ps-lime-80:       #C3CF14;
+  --ps-lime-85:       #D1DD23;
+  --ps-lime-89:       #DDE84A;
+  --ps-lime-92:       #E8F07A;
+  --ps-lime-94:       #EEF3B8;
+
+  /* ── Coral: danger and "live" ── */
+  --ps-coral-10:      #3B0A05;
+  --ps-coral-17:      #4A1A14;
+  --ps-coral-40:      #B3261E;
+  --ps-coral-49:      #D93A2B;
+  --ps-coral-64:      #FF6B5B;
+  --ps-coral-70:      #FF8A7A;
+  --ps-coral-92:      #FBE3DF;
+
+  /* ── Amber: warning ── */
+  --ps-amber-23:      #46330C;
+  --ps-amber-42:      #8A5A00;
+  --ps-amber-78:      #F2B654;
+  --ps-amber-94:      #FBEBCB;
+
+  /* ── Green: success ── */
+  --ps-green-22:      #173D1D;
+  --ps-green-46:      #2E7D32;
+  --ps-green-79:      #8BD48B;
+  --ps-green-93:      #DDF1DD;
+}

@@ -1,0 +1,41 @@
+{
+  "name": "pastel-studio-ds",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pastel Studio Design System: tokens, React components and documentation for the Pastel Studio app family.",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "San Milano",
+  "homepage": "https://github.com/oli-the-hermit/pastel-studio-ds#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oli-the-hermit/pastel-studio-ds.git"
+  },
+  "bugs": "https://github.com/oli-the-hermit/pastel-studio-ds/issues",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc -p packages/react --noEmit",
+    "lint": "eslint .",
+    "lint:css": "stylelint \"packages/**/*.css\"",
+    "check:tokens": "node scripts/tokens/check.ts",
+    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run check:tokens"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "stylelint": "^17.15.0",
+    "stylelint-declaration-strict-value": "^1.12.1",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^8.70.1"
+  }
+}

@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════════════
+   Pastel Studio: scales (type, space, shape, size, motion, layers)
+
+   Theme-independent design values. Every stylesheet takes these from
+   here; Stylelint rejects raw values elsewhere.
+ ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Type ──
+     rem is relative to --ps-font-size-root (15px), so 1rem = 15px.
+     Geist Variable is self-hosted (fonts.css), so it works offline.
+     Eight sizes. Emphasis comes from weight and color, not from a
+     size half a pixel bigger: pick the step by role, as noted. */
+  --ps-font-family:         'Geist Variable', 'Segoe UI Variable', system-ui, -apple-system, sans-serif;
+  --ps-font-size-root:      15px;
+  --ps-font-size-xs:        0.75rem;   /* 11.25px  overlines, captions, chips, tiny meta */
+  --ps-font-size-sm:        0.85rem;   /* 12.75px  secondary text, small buttons, hints */
+  --ps-font-size-md:        0.95rem;   /* 14.25px  body, labels, buttons, inputs, rows */
+  --ps-font-size-lg:        1.1rem;    /* 16.5px   item titles */
+  --ps-font-size-xl:        1.3rem;    /* 19.5px   section titles */
+  --ps-font-size-2xl:       1.5rem;    /* 22.5px   card, modal and page titles */
+  --ps-font-size-3xl:       2rem;      /* 30px     stat numbers */
+  --ps-font-size-4xl:       2.6rem;    /* 39px     display */
+
+  --ps-font-weight-regular:   400;
+  --ps-font-weight-medium:    500;
+  --ps-font-weight-semibold:  600;
+  --ps-font-weight-bold:      650;
+  --ps-font-weight-heavy:     700;
+
+  --ps-leading-none:        1;
+  --ps-leading-tight:       1.2;
+  --ps-leading-snug:        1.3;
+  --ps-leading-normal:      1.5;
+
+  --ps-tracking-tightest:   -0.045em;  /* large digits */
+  --ps-tracking-tighter:    -0.03em;
+  --ps-tracking-tight:      -0.015em;  /* headings */
+  --ps-tracking-wide:       0.08em;
+  --ps-tracking-caps:       0.12em;    /* uppercase overlines */
+  --ps-tracking-caps-wide:  0.17em;
+
+  /* ── Space: px values on a 2px grid; the name is the size ── */
+  --ps-space-1:             1px;       /* hairline gaps between grouped buttons */
+  --ps-space-2:             2px;
+  --ps-space-4:             4px;
+  --ps-space-6:             6px;
+  --ps-space-8:             8px;
+  --ps-space-10:            10px;
+  --ps-space-12:            12px;
+  --ps-space-14:            14px;
+  --ps-space-16:            16px;
+  --ps-space-18:            18px;
+  --ps-space-20:            20px;
+  --ps-space-22:            22px;
+  --ps-space-24:            24px;
+  --ps-space-28:            28px;
+  --ps-space-32:            32px;
+  --ps-space-36:            36px;
+  --ps-space-40:            40px;
+  --ps-space-48:            48px;
+
+  /* ── Radius ── */
+  --ps-radius-2xs:          4px;
+  --ps-radius-xs:           6px;
+  --ps-radius-sm:           8px;
+  --ps-radius-md:           10px;
+  --ps-radius-lg:           14px;
+  --ps-radius-xl:           16px;
+  --ps-radius-2xl:          20px;
+  --ps-radius-3xl:          28px;
+  --ps-radius-4xl:          32px;
+  --ps-radius-pill:         999px;
+  --ps-radius-round:        50%;
+
+  /* ── Lines and rings (box-shadow geometry; colors come from the theme) ── */
+  --ps-hairline:            1px;
+  --ps-ring-width:          2px;       /* focus and control outlines */
+  --ps-ring-width-lg:       3px;       /* drop indicators, avatar cutouts */
+  --ps-ring-width-xl:       4px;       /* halos around slider knobs */
+
+  /* ── Component sizes ── */
+  --ps-field-height:        44px;      /* inputs, selects, pickers, steppers */
+  --ps-button-height:       40px;
+  --ps-button-height-sm:    34px;
+  --ps-icon-button-size:    40px;
+  --ps-icon-button-size-sm: 32px;
+  --ps-icon-button-size-xs: 28px;
+  --ps-chip-height:         26px;
+  --ps-checkbox-size:       20px;
+  --ps-progress-height:     6px;
+  --ps-progress-height-lg:  8px;
+  --ps-grip-width:          8px;       /* the drag grip */
+  --ps-grip-edge:           10px;      /* card edge → grip */
+  --ps-grip-gap:            10px;      /* grip → the row's content */
+
+  /* ── Motion ──
+     Short, purposeful and interruptible. Opacity is only ever animated
+     in transit, never left translucent. The foundation's
+     reduced-motion.css turns motion off for prefers-reduced-motion.
+
+     Two curves, from Material 3:
+       standard    small, utility changes: hovers, colors, fades, icon swaps
+       emphasized  things that move or change shape: modals, pages, switches,
+                   panels opening, the spotlight. Fast start, long gentle
+                   settle. M3 defines it as a two-part path that
+                   cubic-bezier() cannot express, so it is sampled into
+                   linear() (within 1% of the path).
+     Plus emphasized's halves, for one-way trips:
+       decel  entering the screen      accel  leaving the screen */
+  --ps-dur-1:               100ms;     /* exits, small fades */
+  --ps-dur-2:               180ms;     /* hovers, icon swaps, popovers */
+  --ps-dur-3:               260ms;     /* modals, pages, color changes */
+  --ps-dur-4:               400ms;     /* spotlight moves, large layout shifts */
+  --ps-dur-progress:        500ms;     /* progress that follows a 1s tick */
+  --ps-dur-pulse:           1.6s;      /* looping status pulse */
+  --ps-ease-standard:       cubic-bezier(0.2, 0, 0, 1);
+  --ps-ease-emphasized:     linear(0, 0.003 2%, 0.013 4%, 0.03 6%, 0.056 8%, 0.093 10%, 0.146 12%, 0.222 14%, 0.305 15.5%, 0.433 17%, 0.586 19%, 0.674 21%, 0.754 24%, 0.818 28%, 0.868 33%, 0.912 40%, 0.951 50%, 0.976 62%, 0.992 76%, 1);
+  --ps-ease-decel:          cubic-bezier(0.05, 0.7, 0.1, 1);    /* emphasized, entering */
+  --ps-ease-accel:          cubic-bezier(0.3, 0, 0.8, 0.15);    /* emphasized, leaving */
+  --ps-transition:          var(--ps-dur-2) var(--ps-ease-standard);
+  --ps-transition-md:       var(--ps-dur-3) var(--ps-ease-emphasized);
+
+  /* ── Layers (z-index) ── */
+  --ps-z-sticky:            20;
+  --ps-z-modal:             500;
+  --ps-z-celebration:       800;
+  --ps-z-popover:           1000;
+  --ps-z-toast:             1100;
+  --ps-z-tour:              1200;
+}

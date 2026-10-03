@@ -1,0 +1,57 @@
+/* ═══════════════════════════════════════════════════════════
+   Pastel Studio: dark theme (tier 2, semantic roles) — the default
+
+   Applies to the document (:root) and to any subtree marked
+   data-theme="dark", so a dark region can sit inside a light page.
+   Flat Material: surfaces are separated by tonal steps
+   (bg < surface-1 < 2 < 3 < 4), never by borders, gradients,
+   transparency or decorative shadows.
+
+   A theme defines exactly the roles below, no more, no fewer
+   (scripts/tokens/check.ts compares every theme against this one).
+ ═══════════════════════════════════════════════════════════ */
+
+:root,
+[data-theme="dark"] {
+  /* ── Surfaces ── */
+  --ps-bg:                  var(--ps-graphite-4);
+  --ps-surface-1:           var(--ps-graphite-8);
+  --ps-surface-2:           var(--ps-graphite-12);
+  --ps-surface-3:           var(--ps-graphite-17);
+  --ps-surface-4:           var(--ps-graphite-22);
+
+  /* ── Text ── */
+  --ps-text-1:              var(--ps-stone-95);
+  --ps-text-2:              var(--ps-stone-70);
+  --ps-text-3:              var(--ps-stone-48);
+
+  /* ── Accent ── */
+  --ps-accent:              var(--ps-lime-85);
+  --ps-accent-hover:        var(--ps-lime-89);
+  --ps-on-accent:           var(--ps-lime-10);
+  --ps-on-accent-2:         var(--ps-lime-33);   /* secondary text on accent fills */
+  --ps-accent-container:    var(--ps-lime-25);
+  --ps-on-accent-container: var(--ps-lime-92);
+  --ps-accent-text:         var(--ps-lime-85);   /* accent used as text or icon color */
+
+  /* ── Status ── */
+  --ps-danger:              var(--ps-coral-70);
+  --ps-danger-container:    var(--ps-coral-17);
+  --ps-on-danger:           var(--ps-coral-10);
+  --ps-warning:             var(--ps-amber-78);
+  --ps-warning-container:   var(--ps-amber-23);
+  --ps-success:             var(--ps-green-79);
+  --ps-success-container:   var(--ps-green-22);
+  --ps-live:                var(--ps-coral-64);  /* "now" markers and counters */
+  --ps-on-live:             var(--ps-white);
+
+  /* ── Structure ── */
+  --ps-grid-line:           var(--ps-graphite-12);
+  --ps-focus-ring:          var(--ps-lime-85);
+  --ps-scrim:               rgb(6 7 8 / 72%);     /* the one translucent role: behind modals */
+
+  /* ── Elevation (floating layers only: menus, popovers, modals) ── */
+  --ps-elev-overlay:        0 12px 32px rgb(0 0 0 / 45%), 0 2px 8px rgb(0 0 0 / 35%);
+
+  color-scheme: dark;
+}

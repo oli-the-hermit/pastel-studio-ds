@@ -1,0 +1,29 @@
+/* Pastel Studio: document defaults, focus and scrollbars (layer ps.base) */
+
+/* ── Document ───────────────────────────────────────────── */
+html { font-size: var(--ps-font-size-root); }
+
+body {
+  font-family: var(--ps-font-family);
+  background: var(--ps-bg);
+  color: var(--ps-text-1);
+  min-height: 100vh;
+  line-height: var(--ps-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+a { color: var(--ps-accent-text); text-decoration: none; }
+h1, h2, h3, h4 { font-weight: var(--ps-font-weight-bold); letter-spacing: var(--ps-tracking-tight); }
+
+/* ── Focus ──────────────────────────────────────────────── */
+:focus { outline: none; }
+:focus-visible { outline: var(--ps-ring-width) solid var(--ps-focus-ring); outline-offset: var(--ps-ring-width); }
+
+::selection { background: var(--ps-accent); color: var(--ps-on-accent); }
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+* { scrollbar-width: thin; scrollbar-color: var(--ps-surface-4) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ps-surface-4); border-radius: var(--ps-radius-pill); border: 2px solid var(--ps-bg); }

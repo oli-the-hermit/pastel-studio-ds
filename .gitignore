@@ -1,0 +1,44 @@
+# Local planning notes (not published)
+documentation/
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# Testing
+coverage/
+test-results/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local-only overrides (per-user editor and assistant tooling)
+*.local
+.claude/
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.sw?
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp/
+*.tmp
+*.bak

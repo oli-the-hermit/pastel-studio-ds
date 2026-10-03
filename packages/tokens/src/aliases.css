@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════════════
+   Pastel Studio: aliases (roles built from other roles)
+
+   A custom property that references another one resolves where it is
+   declared, then inherits the result. Declaring these on every theme
+   scope ([data-theme]) makes them re-resolve inside a nested theme,
+   so a light card inside a dark page gets light field colors.
+
+   Containers may override them locally: fields shift one tonal step
+   inside a tonal container, e.g. --ps-field-bg: var(--ps-surface-3).
+ ═══════════════════════════════════════════════════════════ */
+
+:root,
+[data-theme] {
+  --ps-field-bg:            var(--ps-surface-2);
+  --ps-field-hover:         var(--ps-surface-3);
+  --ps-row-hover:           var(--ps-surface-2);
+}
