@@ -3,6 +3,10 @@
   "plugins": [
     "stylelint-declaration-strict-value"
   ],
+  "ignoreFiles": [
+    "**/dist/**",
+    "**/node_modules/**"
+  ],
   "rules": {
     "color-no-hex": [
       true,

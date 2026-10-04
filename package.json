@@ -20,14 +20,17 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "typecheck": "tsc -p packages/react --noEmit",
+    "docs": "npm run dev -w @pastel-studio/docs",
+    "docs:build": "npm run build -w @pastel-studio/docs",
+    "typecheck": "tsc -p packages/react --noEmit && tsc -p apps/docs --noEmit",
     "lint": "eslint .",
-    "lint:css": "stylelint \"packages/**/*.css\"",
+    "lint:css": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:tokens": "node scripts/tokens/check.ts",
-    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run check:tokens"
+    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run check:tokens && npm run docs:build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^22.10.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "eslint": "^10.11.0",

@@ -1,11 +1,14 @@
 // Checks the token tiers. Run: npm run check:tokens
-//   1. Every var(--ps-…) used in any package stylesheet is defined somewhere.
+//   1. Every var(--ps-…) used in any package or app stylesheet is defined somewhere.
 //   2. Every theme in packages/tokens/src/themes defines exactly the same roles as dark.css.
 //   3. The reference palette is used only by themes, and every reference color is used.
 //   4. Each reference color's name matches its tone (CIELAB L*, rounded): --ps-lime-85 is L* 85.
+//   5. Every pairing in contrast.json meets its WCAG minimum in every theme, or carries an
+//      exception; an exception that is no longer needed is a problem too.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { contrastRatio, resolveThemes, THEME_NAMES } from './parse.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const TOKENS = path.join(ROOT, 'packages/tokens/src');
@@ -18,7 +21,7 @@ const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 function cssFiles(dir: string): string[] {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return entry.name === 'node_modules' ? [] : cssFiles(full);
+    if (entry.isDirectory()) return entry.name === 'node_modules' || entry.name === 'dist' ? [] : cssFiles(full);
     return entry.name.endsWith('.css') ? [full] : [];
   });
 }
@@ -44,7 +47,7 @@ function tone(hex: string): number {
 }
 
 const problems: string[] = [];
-const files = cssFiles(path.join(ROOT, 'packages'));
+const files = ['packages', 'apps'].flatMap((dir) => cssFiles(path.join(ROOT, dir)));
 const sources = new Map(files.map((f) => [f, fs.readFileSync(f, 'utf8')]));
 
 // 1. Every reference resolves.
@@ -90,8 +93,34 @@ for (const [name, value] of palette) {
   if (actual !== Number(named[1])) problems.push(`reference.css: ${name} (${value}) has tone ${actual}; rename it to …-${actual}`);
 }
 
+// 5. Contrast.
+interface Pair { fg: string; on: string[] | 'surfaces'; rule: string; use: string; exception?: string }
+interface ContrastSpec { rules: Record<string, { min: number }>; surfaces: string[]; pairs: Pair[] }
+const spec = JSON.parse(fs.readFileSync(path.join(TOKENS, 'contrast.json'), 'utf8')) as ContrastSpec;
+const themes = resolveThemes(TOKENS);
+let pairChecks = 0;
+let excepted = 0;
+for (const pair of spec.pairs) {
+  const min = spec.rules[pair.rule]?.min;
+  if (!min) { problems.push(`contrast.json: "${pair.use}" has an unknown rule "${pair.rule}"`); continue; }
+  const failures: string[] = [];
+  for (const theme of THEME_NAMES) {
+    for (const bg of pair.on === 'surfaces' ? spec.surfaces : pair.on) {
+      const [a, b] = [themes[theme].get(pair.fg), themes[theme].get(bg)];
+      if (!a || !b) { problems.push(`contrast.json: ${!a ? pair.fg : bg} is not a role`); continue; }
+      pairChecks++;
+      const ratio = contrastRatio(a, b);
+      if (ratio < min) failures.push(`${pair.fg} on ${bg} (${theme}) is ${ratio.toFixed(2)}:1, needs ${min}:1`);
+    }
+  }
+  if (failures.length && !pair.exception) problems.push(...failures.map((f) => `contrast: ${f}`));
+  if (failures.length && pair.exception) excepted++;
+  if (!failures.length && pair.exception) problems.push(`contrast.json: "${pair.use}" now passes everywhere; remove its exception`);
+}
+
 if (problems.length) {
   console.error(`Tokens: ${problems.length} problem(s)\n  ${problems.join('\n  ')}`);
   process.exit(1);
 }
 console.log(`Tokens: ${palette.size} reference colors, ${baseline?.size ?? 0} roles × ${themeFiles.length} themes, ${defined.size} tokens defined, ${files.length} stylesheets checked. No problems.`);
+console.log(`Contrast: ${pairChecks} pairings checked across ${THEME_NAMES.length} themes; ${spec.pairs.length - excepted} of ${spec.pairs.length} pair groups pass, ${excepted} carry a documented exception.`);

@@ -1,19 +1,21 @@
 # Pastel Studio Design System
 
-The shared design system of the Pastel Studio app family: design tokens, React components
-and (soon) a documentation site. It started as the interface of
+The shared design system of the Pastel Studio app family: design tokens, React components,
+icons and a documentation site. It started as the interface of
 [Focus Space](https://github.com/oli-the-hermit/Focus-Space) and is the foundation every
 app in the family is built on.
 
-> **Status: 0.1, foundation only.** Tokens (light and dark) and the base styles are in place.
-> Components are promoted one by one; the documentation site comes next.
+> **Status: 0.1, foundations.** Tokens (light and dark), base styles, icons and the
+> documentation site with its Foundations pages are in place. Components are promoted next,
+> one by one.
 
 ## Packages
 
 | Package | What it holds |
 |---|---|
 | [`@pastel-studio/tokens`](packages/tokens) | Plain CSS custom properties: the reference palette, the dark and light themes, and the type, space, shape, size and motion scales. Works without React. |
-| [`@pastel-studio/react`](packages/react) | React components and the foundation styles (reset, document defaults, focus, utilities). Depends on the tokens. |
+| [`@pastel-studio/react`](packages/react) | React components, the icon set, and the foundation styles (reset, document defaults, focus, utilities). Depends on the tokens. |
+| [`apps/docs`](apps/docs) | The documentation site (not published as a package). Every token, value and contrast ratio on it is read from the token files at build time. |
 
 ## Using it in an app
 
@@ -49,9 +51,11 @@ Themes can be nested: `data-theme` on any element switches that subtree.
 ## Repository layout
 
 ```
-packages/tokens/    reference.css, scales.css, themes/{dark,light}.css, aliases.css, fonts.css
-packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/lib/, components
-scripts/tokens/     check.ts: token-tier rules (npm run check:tokens)
+packages/tokens/    reference.css, scales.css, themes/{dark,light}.css, aliases.css, fonts.css,
+                    contrast.json (intended color pairings and their WCAG minimums)
+packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/icons/, src/lib/
+apps/docs/          the documentation site (Vite + React Router); tokens-plugin.ts feeds it the tokens
+scripts/tokens/     parse.ts (reads the token files), check.ts (npm run check:tokens)
 ```
 
 ## Development
@@ -60,8 +64,11 @@ Requires Node 22.18 or later.
 
 ```bash
 npm install
-npm run check        # typecheck, ESLint, Stylelint, token checks
+npm run docs         # the documentation site on http://localhost:5310
+npm run check        # typecheck, ESLint, Stylelint, token and contrast checks, docs build
 ```
+
+The docs build for a sub-path (for example GitHub Pages) with `DOCS_BASE=/pastel-studio-ds/`.
 
 ## License
 

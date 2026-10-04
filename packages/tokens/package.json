@@ -21,7 +21,8 @@
     "./scales.css": "./src/scales.css",
     "./aliases.css": "./src/aliases.css",
     "./themes/dark.css": "./src/themes/dark.css",
-    "./themes/light.css": "./src/themes/light.css"
+    "./themes/light.css": "./src/themes/light.css",
+    "./contrast.json": "./src/contrast.json"
   },
   "files": [
     "src",

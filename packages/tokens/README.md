@@ -14,6 +14,7 @@ The Pastel Studio design tokens as plain CSS custom properties. No build step an
 | `themes/light.css` | 2, semantic | `[data-theme="light"]`. Defines exactly the same roles as dark. |
 | `aliases.css` | 2, semantic | Roles built from other roles (`--ps-field-bg`), re-resolved inside nested themes. |
 | `scales.css` | n/a | Type, space, radius, rings, component sizes, motion, z-index. |
+| `contrast.json` | n/a | Intended color pairings and their WCAG 2.2 AA minimums; checked in every theme. |
 
 ## Making a theme
 

@@ -122,10 +122,10 @@
   --ps-transition-md:       var(--ps-dur-3) var(--ps-ease-emphasized);
 
   /* ── Layers (z-index) ── */
-  --ps-z-sticky:            20;
-  --ps-z-modal:             500;
-  --ps-z-celebration:       800;
-  --ps-z-popover:           1000;
-  --ps-z-toast:             1100;
-  --ps-z-tour:              1200;
+  --ps-z-sticky:            20;        /* sticky headers and bars */
+  --ps-z-modal:             500;       /* dialogs and their scrim */
+  --ps-z-celebration:       800;       /* full-screen celebrations */
+  --ps-z-popover:           1000;      /* menus, popovers, pickers (they can open from a dialog) */
+  --ps-z-toast:             1100;      /* toasts */
+  --ps-z-tour:              1200;      /* guided tour spotlight */
 }

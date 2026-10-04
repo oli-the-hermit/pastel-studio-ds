@@ -1,0 +1,40 @@
+{
+  "$comment": "Intended color pairings and their WCAG 2.2 AA minimums. npm run check:tokens checks every pair in every theme; the docs Color page shows the same table. A pair that fails must carry an 'exception' saying why; the check fails if an exception is no longer needed.",
+  "rules": {
+    "text": { "min": 4.5, "label": "Text", "description": "Body and UI text (WCAG 1.4.3, AA)." },
+    "ui": { "min": 3, "label": "UI", "description": "Focus rings, markers and other parts you need to see (WCAG 1.4.11, AA)." }
+  },
+  "surfaces": ["--ps-bg", "--ps-surface-1", "--ps-surface-2", "--ps-surface-3"],
+  "pairs": [
+    { "fg": "--ps-text-1", "on": "surfaces", "rule": "text", "use": "Primary text" },
+    { "fg": "--ps-text-2", "on": "surfaces", "rule": "text", "use": "Secondary text" },
+    {
+      "fg": "--ps-text-3", "on": "surfaces", "rule": "text", "use": "Tertiary text: hints and meta",
+      "exception": "Inherited from Focus Space 1.2.0: below 4.5:1 in both themes. Use it only for text that repeats information shown elsewhere, or for disabled controls (exempt from WCAG 1.4.3)."
+    },
+    { "fg": "--ps-accent-text", "on": "surfaces", "rule": "text", "use": "Links, accent text and icons" },
+    { "fg": "--ps-on-accent", "on": ["--ps-accent", "--ps-accent-hover"], "rule": "text", "use": "Text on accent fills" },
+    { "fg": "--ps-on-accent-2", "on": ["--ps-accent", "--ps-accent-hover"], "rule": "text", "use": "Secondary text on accent fills" },
+    { "fg": "--ps-on-accent-container", "on": ["--ps-accent-container"], "rule": "text", "use": "Text on accent containers" },
+    { "fg": "--ps-text-1", "on": ["--ps-accent-container", "--ps-danger-container", "--ps-warning-container", "--ps-success-container"], "rule": "text", "use": "Primary text on tonal containers" },
+    { "fg": "--ps-danger", "on": "surfaces", "rule": "text", "use": "Danger text and icons" },
+    { "fg": "--ps-danger", "on": ["--ps-danger-container"], "rule": "text", "use": "Danger text in its container" },
+    { "fg": "--ps-on-danger", "on": ["--ps-danger"], "rule": "text", "use": "Text on danger fills" },
+    { "fg": "--ps-warning", "on": "surfaces", "rule": "text", "use": "Warning text and icons" },
+    { "fg": "--ps-warning", "on": ["--ps-warning-container"], "rule": "text", "use": "Warning text in its container" },
+    {
+      "fg": "--ps-success", "on": "surfaces", "rule": "text", "use": "Success text and icons",
+      "exception": "Inherited from Focus Space 1.2.0: the light theme's green reaches 4.19:1 to 4.39:1 on the background and surface-3."
+    },
+    {
+      "fg": "--ps-success", "on": ["--ps-success-container"], "rule": "text", "use": "Success text in its container",
+      "exception": "Inherited from Focus Space 1.2.0: 4.32:1 in the light theme."
+    },
+    { "fg": "--ps-live", "on": "surfaces", "rule": "ui", "use": "\"Now\" markers" },
+    {
+      "fg": "--ps-on-live", "on": ["--ps-live"], "rule": "text", "use": "Counters on live badges",
+      "exception": "Inherited from Focus Space 1.2.0: white on the dark theme's live red is 2.80:1."
+    },
+    { "fg": "--ps-focus-ring", "on": "surfaces", "rule": "ui", "use": "Focus ring" }
+  ]
+}

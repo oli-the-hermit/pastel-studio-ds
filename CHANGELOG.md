@@ -18,3 +18,12 @@ is a breaking change.
   utilities) inside the `ps` cascade layer.
 - Guardrails: Stylelint (tokens only, no reference colors outside themes) and
   `npm run check:tokens` (theme parity, palette usage, tone names).
+- Contrast rules as data (`contrast.json`): every intended color pairing with its WCAG 2.2 AA
+  minimum, checked in both themes. Four pairings inherited from Focus Space are below AA and
+  recorded as known exceptions (text-3, light success, success in its container, white on
+  dark live).
+- Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
+  the Focus Space logo.
+- Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for
+  principles, color (roles, contrast, palette), typography, spacing and sizing, shape,
+  elevation and layers, motion and iconography. Dark, light and a side-by-side compare mode.
