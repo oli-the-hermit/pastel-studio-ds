@@ -8,10 +8,7 @@
   "pairs": [
     { "fg": "--ps-text-1", "on": "surfaces", "rule": "text", "use": "Primary text" },
     { "fg": "--ps-text-2", "on": "surfaces", "rule": "text", "use": "Secondary text" },
-    {
-      "fg": "--ps-text-3", "on": "surfaces", "rule": "text", "use": "Tertiary text: hints and meta",
-      "exception": "Inherited from Focus Space 1.2.0: below 4.5:1 in both themes. Use it only for text that repeats information shown elsewhere, or for disabled controls (exempt from WCAG 1.4.3)."
-    },
+    { "fg": "--ps-text-3", "on": "surfaces", "rule": "text", "use": "Tertiary text: hints and meta" },
     { "fg": "--ps-accent-text", "on": "surfaces", "rule": "text", "use": "Links, accent text and icons" },
     { "fg": "--ps-on-accent", "on": ["--ps-accent", "--ps-accent-hover"], "rule": "text", "use": "Text on accent fills" },
     { "fg": "--ps-on-accent-2", "on": ["--ps-accent", "--ps-accent-hover"], "rule": "text", "use": "Secondary text on accent fills" },
@@ -22,19 +19,10 @@
     { "fg": "--ps-on-danger", "on": ["--ps-danger"], "rule": "text", "use": "Text on danger fills" },
     { "fg": "--ps-warning", "on": "surfaces", "rule": "text", "use": "Warning text and icons" },
     { "fg": "--ps-warning", "on": ["--ps-warning-container"], "rule": "text", "use": "Warning text in its container" },
-    {
-      "fg": "--ps-success", "on": "surfaces", "rule": "text", "use": "Success text and icons",
-      "exception": "Inherited from Focus Space 1.2.0: the light theme's green reaches 4.19:1 to 4.39:1 on the background and surface-3."
-    },
-    {
-      "fg": "--ps-success", "on": ["--ps-success-container"], "rule": "text", "use": "Success text in its container",
-      "exception": "Inherited from Focus Space 1.2.0: 4.32:1 in the light theme."
-    },
+    { "fg": "--ps-success", "on": "surfaces", "rule": "text", "use": "Success text and icons" },
+    { "fg": "--ps-success", "on": ["--ps-success-container"], "rule": "text", "use": "Success text in its container" },
     { "fg": "--ps-live", "on": "surfaces", "rule": "ui", "use": "\"Now\" markers" },
-    {
-      "fg": "--ps-on-live", "on": ["--ps-live"], "rule": "text", "use": "Counters on live badges",
-      "exception": "Inherited from Focus Space 1.2.0: white on the dark theme's live red is 2.80:1."
-    },
+    { "fg": "--ps-on-live", "on": ["--ps-live"], "rule": "text", "use": "Counters on live badges" },
     { "fg": "--ps-focus-ring", "on": "surfaces", "rule": "ui", "use": "Focus ring" }
   ]
 }

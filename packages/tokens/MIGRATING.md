@@ -1,8 +1,23 @@
 # Migrating from Focus Space tokens
 
 Pastel Studio started as the CORE section of Focus Space's `src/styles/foundation/tokens.css`.
-Colors, spacing, radius, rings, component sizes, z-index and durations kept their values;
-only their names changed. The type scale and two easing curves changed on purpose.
+Spacing, radius, rings, component sizes, z-index and durations kept their values; only their
+names changed. Four colors, the type scale and two easing curves changed on purpose.
+
+## Color changes (WCAG AA)
+
+Four Focus Space colors were below WCAG 2.2 AA. Each keeps its hue and chroma and moves only in
+lightness, until it reaches at least 4.5:1 on the background and surfaces 1 to 3.
+
+| Role | Theme | Focus Space | Pastel Studio | Lowest ratio |
+|---|---|---|---|---|
+| `--ps-text-3` | dark | `#6F736B` | `#8F938B` (`--ps-stone-60`) | 2.98 → 4.60 |
+| `--ps-text-3` | light | `#8A8E83` | `#65685E` (`--ps-stone-43`) | 2.73 → 4.64 |
+| `--ps-success` | light | `#2E7D32` | `#26762B` (`--ps-green-44`) | 4.19 → 4.62 |
+| `--ps-on-live` | dark | `#FFFFFF` | `#3B0A05` (`--ps-coral-10`, dark ink like `--ps-on-danger`) | 2.80 → 6.09 |
+
+Every other color is unchanged. Focus Space's accent presets derive from these values, so they
+are regenerated when Focus Space moves to the package.
 
 ## Names
 

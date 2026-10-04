@@ -19,9 +19,10 @@ is a breaking change.
 - Guardrails: Stylelint (tokens only, no reference colors outside themes) and
   `npm run check:tokens` (theme parity, palette usage, tone names).
 - Contrast rules as data (`contrast.json`): every intended color pairing with its WCAG 2.2 AA
-  minimum, checked in both themes. Four pairings inherited from Focus Space are below AA and
-  recorded as known exceptions (text-3, light success, success in its container, white on
-  dark live).
+  minimum, checked in both themes. All 18 pass.
+- WCAG AA fixes for four colors inherited from Focus Space, each kept on its hue and moved only
+  in lightness: `--ps-text-3` (dark `#8F938B`, light `#65685E`), light `--ps-success`
+  (`#26762B`), and dark `--ps-on-live` (now dark ink, `--ps-coral-10`). See MIGRATING.md.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

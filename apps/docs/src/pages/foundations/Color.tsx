@@ -12,7 +12,7 @@ const refName = (value: string) => value.replace(/^var\((--ps-[a-z0-9-]+)\)$/, '
 /** What each role group is for. The roles themselves (and their notes) come from themes/dark.css. */
 const GROUP_INTRO: Record<string, string> = {
   Surfaces: 'Backgrounds, from the page itself up to the most raised surface. In dark, each step is lighter than the one below. In light, cards are white on a soft background, and surfaces 2 to 4 shade down from white for fields and hovers.',
-  Text: 'Three levels of text. Most text is text-1; text-2 for supporting text; text-3 only for hints that repeat something shown elsewhere.',
+  Text: 'Three levels of text, all readable on every surface. Most text is text-1; text-2 for supporting text; text-3, the quietest, for hints and meta.',
   Accent: 'The solar lime and the colors that sit on it. "On" colors are for text and icons placed on the matching fill.',
   Status: 'Danger, warning, success and live, each with a container for calmer, tinted backgrounds.',
   Structure: 'Grid lines, the focus ring and the scrim behind dialogs.',
@@ -180,7 +180,7 @@ export function Color() {
       >
         {exceptions.length > 0 && (
           <Callout tone="warning" title={`${exceptions.length} pairings are below AA`}>
-            They come from the original Focus Space colors and are recorded as known exceptions, each with its reason. A fix changes how those colors look, so it's planned as its own change.
+            Each is recorded in <Code>contrast.json</Code> as a known exception with its reason, and is listed below.
           </Callout>
         )}
         <ContrastTable />

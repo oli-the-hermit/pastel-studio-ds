@@ -16,7 +16,7 @@
   /* ── Text ── */
   --ps-text-1:              var(--ps-stone-10);
   --ps-text-2:              var(--ps-stone-35);
-  --ps-text-3:              var(--ps-stone-58);
+  --ps-text-3:              var(--ps-stone-43);
 
   /* ── Accent ── */
   --ps-accent:              var(--ps-lime-85);
@@ -33,7 +33,7 @@
   --ps-on-danger:           var(--ps-white);
   --ps-warning:             var(--ps-amber-42);
   --ps-warning-container:   var(--ps-amber-94);
-  --ps-success:             var(--ps-green-46);
+  --ps-success:             var(--ps-green-44);
   --ps-success-container:   var(--ps-green-93);
   --ps-live:                var(--ps-coral-49);
   --ps-on-live:             var(--ps-white);

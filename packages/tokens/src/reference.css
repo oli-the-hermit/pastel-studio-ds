@@ -23,8 +23,8 @@
   /* ── Stone: warm neutrals, text in both themes and the light theme's surfaces ── */
   --ps-stone-10:      #1A1C17;
   --ps-stone-35:      #50544A;
-  --ps-stone-48:      #6F736B;
-  --ps-stone-58:      #8A8E83;
+  --ps-stone-43:      #65685E;
+  --ps-stone-60:      #8F938B;
   --ps-stone-70:      #A9ACA4;
   --ps-stone-88:      #DADDD3;
   --ps-stone-92:      #E7E9E1;
@@ -62,7 +62,7 @@
 
   /* ── Green: success ── */
   --ps-green-22:      #173D1D;
-  --ps-green-46:      #2E7D32;
+  --ps-green-44:      #26762B;
   --ps-green-79:      #8BD48B;
   --ps-green-93:      #DDF1DD;
 }
