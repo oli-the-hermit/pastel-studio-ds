@@ -23,6 +23,11 @@ is a breaking change.
 - WCAG AA fixes for four colors inherited from Focus Space, each kept on its hue and moved only
   in lightness: `--ps-text-3` (dark `#8F938B`, light `#65685E`), light `--ps-success`
   (`#26762B`), and dark `--ps-on-live` (now dark ink, `--ps-coral-10`). See MIGRATING.md.
+- The component contract: one folder per component (`Name.tsx`, `name.css`, `meta.ts`,
+  `index.ts`), a `ComponentMeta` type for the documentation, and a shared list of translatable
+  words with `LabelsProvider`, `useLabels` and a per-component `labels` prop. Checked by
+  `npm run check:components` and a Stylelint rule for class names (`ps-name`,
+  `ps-name--variant`, `is-*`).
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

@@ -114,6 +114,20 @@
   "overrides": [
     {
       "files": [
+        "packages/react/src/components/**/*.css"
+      ],
+      "rules": {
+        "selector-class-pattern": [
+          "^(ps-[a-z0-9]+(-[a-z0-9]+)*(--[a-z0-9]+(-[a-z0-9]+)*)?|is-[a-z0-9]+(-[a-z0-9]+)*)$",
+          {
+            "severity": "error",
+            "message": "Component classes are ps-name, ps-name-part or ps-name--variant; states are is-*."
+          }
+        ]
+      }
+    },
+    {
+      "files": [
         "packages/tokens/src/**/*.css"
       ],
       "rules": {

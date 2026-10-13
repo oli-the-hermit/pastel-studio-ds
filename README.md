@@ -53,9 +53,11 @@ Themes can be nested: `data-theme` on any element switches that subtree.
 ```
 packages/tokens/    reference.css, scales.css, themes/{dark,light}.css, aliases.css, fonts.css,
                     contrast.json (intended color pairings and their WCAG minimums)
-packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/icons/, src/lib/
+packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/icons/, src/lib/,
+                    src/components/<Name>/ (one folder per component), labels.tsx, meta.ts
 apps/docs/          the documentation site (Vite + React Router); tokens-plugin.ts feeds it the tokens
 scripts/tokens/     parse.ts (reads the token files), check.ts (npm run check:tokens)
+scripts/components/ check.ts (npm run check:components: each component folder follows the contract)
 ```
 
 ## Development
@@ -65,7 +67,7 @@ Requires Node 22.18 or later.
 ```bash
 npm install
 npm run docs         # the documentation site on http://localhost:5310
-npm run check        # typecheck, ESLint, Stylelint, token and contrast checks, docs build
+npm run check        # typecheck, ESLint, Stylelint, token, contrast and component checks, docs build
 ```
 
 The docs build for a sub-path (for example GitHub Pages) with `DOCS_BASE=/pastel-studio-ds/`.
