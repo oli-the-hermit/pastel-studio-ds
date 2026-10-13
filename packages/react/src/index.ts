@@ -2,5 +2,6 @@
 export { cx } from './lib/cx';
 export { defaultLabels, LabelsProvider, useLabels } from './labels';
 export type { LabelOverrides, Labels } from './labels';
+export { COMPONENT_GROUPS } from './meta';
 export type { ComponentGroup, ComponentMeta, KeyboardEntry, MetaEntry } from './meta';
 export * from './icons';

@@ -58,6 +58,20 @@ export function tokenMap(css: string): Map<string, string> {
   return new Map(parseTokenGroups(css).flatMap((g) => g.tokens.map((t) => [t.name, t.value] as const)));
 }
 
+const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+/** Custom properties declared in any stylesheet, with their values. */
+export function declarations(css: string): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const m of stripComments(css).matchAll(/(--ps-[a-z0-9-]+)\s*:\s*([^;}]+)/g)) out.set(m[1], m[2].trim());
+  return out;
+}
+
+/** Custom properties a stylesheet reads through var(), repeats included. */
+export function references(css: string): string[] {
+  return [...stripComments(css).matchAll(/var\(\s*(--ps-[a-z0-9-]+)/g)].map((m) => m[1]);
+}
+
 export const THEME_NAMES = ['dark', 'light'] as const;
 export type ThemeName = (typeof THEME_NAMES)[number];
 

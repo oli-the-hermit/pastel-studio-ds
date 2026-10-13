@@ -10,25 +10,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { componentNames, COMPONENTS_DIR, kebab, REACT_SRC } from './parse.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const SRC = path.join(ROOT, 'packages/react/src');
-const COMPONENTS = path.join(SRC, 'components');
 
 const rel = (file: string) => path.relative(ROOT, file).replaceAll('\\', '/');
-const kebab = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const problems: string[] = [];
-const names = fs.existsSync(COMPONENTS)
-  ? fs.readdirSync(COMPONENTS, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name)
-  : [];
-const index = fs.readFileSync(path.join(SRC, 'index.ts'), 'utf8');
-const styles = fs.readFileSync(path.join(SRC, 'styles.css'), 'utf8');
+const names = componentNames();
+const index = fs.readFileSync(path.join(REACT_SRC, 'index.ts'), 'utf8');
+const styles = fs.readFileSync(path.join(REACT_SRC, 'styles.css'), 'utf8');
 let stylesheets = 0;
 
 for (const name of names) {
-  const dir = path.join(COMPONENTS, name);
+  const dir = path.join(COMPONENTS_DIR, name);
   const where = rel(dir);
   if (!/^[A-Z][A-Za-z0-9]*$/.test(name)) { problems.push(`${where}: a component folder is PascalCase, like its component`); continue; }
 

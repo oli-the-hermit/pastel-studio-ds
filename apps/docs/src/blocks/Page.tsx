@@ -6,7 +6,7 @@ interface PageProps {
   title: string;
   /** One or two sentences under the title. */
   lead?: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /** A documentation page: overline, title, lead, then its sections. */

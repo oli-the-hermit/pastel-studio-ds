@@ -28,6 +28,9 @@ is a breaking change.
   words with `LabelsProvider`, `useLabels` and a per-component `labels` prop. Checked by
   `npm run check:components` and a Stylelint rule for class names (`ps-name`,
   `ps-name--variant`, `is-*`).
+- Component pages build themselves: the documentation reads each component's props from its
+  TypeScript types, the tokens it uses from its stylesheet and the rest from its `meta.ts`, and
+  lists it under Components with no page to register.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

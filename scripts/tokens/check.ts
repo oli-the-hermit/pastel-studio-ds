@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { contrastRatio, resolveThemes, THEME_NAMES } from './parse.ts';
+import { contrastRatio, declarations, references, resolveThemes, THEME_NAMES } from './parse.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const TOKENS = path.join(ROOT, 'packages/tokens/src');
@@ -16,7 +16,6 @@ const THEMES = path.join(TOKENS, 'themes');
 const REFERENCE = path.join(TOKENS, 'reference.css');
 
 const rel = (file: string) => path.relative(ROOT, file).replaceAll('\\', '/');
-const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
 function cssFiles(dir: string): string[] {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -24,18 +23,6 @@ function cssFiles(dir: string): string[] {
     if (entry.isDirectory()) return entry.name === 'node_modules' || entry.name === 'dist' ? [] : cssFiles(full);
     return entry.name.endsWith('.css') ? [full] : [];
   });
-}
-
-/** Custom properties declared in a stylesheet, with their values. */
-function declarations(css: string): Map<string, string> {
-  const out = new Map<string, string>();
-  for (const m of stripComments(css).matchAll(/(--ps-[a-z0-9-]+)\s*:\s*([^;}]+)/g)) out.set(m[1], m[2].trim());
-  return out;
-}
-
-/** Custom properties referenced through var(). */
-function references(css: string): string[] {
-  return [...stripComments(css).matchAll(/var\(\s*(--ps-[a-z0-9-]+)/g)].map((m) => m[1]);
 }
 
 /** CIELAB L* of a #RRGGBB color. */

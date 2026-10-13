@@ -1,4 +1,7 @@
+import { createElement } from 'react';
 import type React from 'react';
+import { ComponentPage } from './blocks/ComponentPage';
+import { components } from './components';
 import { Home } from './pages/Home';
 import { GettingStarted } from './pages/GettingStarted';
 import { Principles } from './pages/foundations/Principles';
@@ -11,16 +14,25 @@ import { Motion } from './pages/foundations/Motion';
 import { Iconography } from './pages/foundations/Iconography';
 
 // The one list of documentation pages: the navigation, the routes, the previous/next links
-// and the overview cards all come from here. A new page is one entry.
+// and the overview cards all come from here. A new page is one entry; a component's page
+// comes from its folder in packages/react/src/components, with no entry to write.
 
 export interface DocPage {
   path: string;
   title: string;
-  section: 'Start' | 'Foundations';
+  section: 'Start' | 'Foundations' | 'Components';
   /** One sentence, shown on overview cards. */
   summary: string;
   component: React.ComponentType;
 }
+
+const COMPONENT_PAGES = components.map((component): DocPage => ({
+  path: `/components/${component.slug}`,
+  title: component.name,
+  section: 'Components',
+  summary: component.meta.summary,
+  component: () => createElement(ComponentPage, { component }),
+}));
 
 export const PAGES: DocPage[] = [
   { path: '/', title: 'Overview', section: 'Start', component: Home,
@@ -43,6 +55,7 @@ export const PAGES: DocPage[] = [
     summary: 'Six durations and two curves: standard and emphasized.' },
   { path: '/foundations/iconography', title: 'Iconography', section: 'Foundations', component: Iconography,
     summary: 'The icon set: one grid, one stroke, drawn in the current text color.' },
+  ...COMPONENT_PAGES,
 ];
 
 export const SECTIONS = [...new Set(PAGES.map((p) => p.section))];

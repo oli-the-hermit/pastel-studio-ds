@@ -2,8 +2,10 @@
 // reads it. Props come from the component's types and "tokens used" from its stylesheet, so
 // neither is repeated here.
 
-/** The section a component is listed under in the documentation. */
-export type ComponentGroup = 'Actions' | 'Inputs' | 'Feedback' | 'Overlays' | 'Layout' | 'Media' | 'Files';
+/** The groups components are listed under in the documentation, in the order they appear. */
+export const COMPONENT_GROUPS = ['Actions', 'Inputs', 'Feedback', 'Overlays', 'Layout', 'Media', 'Files'] as const;
+
+export type ComponentGroup = (typeof COMPONENT_GROUPS)[number];
 
 /** A state or a variant: its name as the docs show it, and one sentence about it. */
 export interface MetaEntry {

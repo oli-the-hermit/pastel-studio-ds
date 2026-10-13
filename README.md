@@ -55,9 +55,11 @@ packages/tokens/    reference.css, scales.css, themes/{dark,light}.css, aliases.
                     contrast.json (intended color pairings and their WCAG minimums)
 packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/icons/, src/lib/,
                     src/components/<Name>/ (one folder per component), labels.tsx, meta.ts
-apps/docs/          the documentation site (Vite + React Router); tokens-plugin.ts feeds it the tokens
+apps/docs/          the documentation site (Vite + React Router); tokens-plugin.ts feeds it the tokens,
+                    components-plugin.ts each component's props, tokens used and metadata
 scripts/tokens/     parse.ts (reads the token files), check.ts (npm run check:tokens)
-scripts/components/ check.ts (npm run check:components: each component folder follows the contract)
+scripts/components/ parse.ts (finds the component folders), check.ts (npm run check:components:
+                    each folder follows the contract)
 ```
 
 ## Development

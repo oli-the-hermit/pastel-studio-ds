@@ -5,3 +5,8 @@
 declare module 'virtual:ps-tokens' {
   export const tokens: unknown;
 }
+
+// Built by components-plugin.ts. Typed in src/components/index.ts, for the same reason.
+declare module 'virtual:ps-components' {
+  export const components: unknown;
+}
