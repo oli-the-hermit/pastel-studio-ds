@@ -34,6 +34,10 @@ is a breaking change.
 - One page template for every component: overview, an interactive demo, every state, variants
   and sizes, props, tokens used, keyboard and accessibility, do and don't, and related
   components. Examples live in `apps/docs/src/demos`, one file per component.
+- Tests: unit tests with Vitest, Testing Library and jsdom (`npm test`, part of
+  `npm run check`), including one that fails when a component's state or variant has no
+  example in the docs. Screenshots of every docs page in both themes, compared pixel by pixel
+  with a reviewed baseline (`npm run visual:capture`, `npm run visual:diff`).
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

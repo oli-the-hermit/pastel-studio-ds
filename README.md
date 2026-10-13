@@ -61,6 +61,7 @@ apps/docs/          the documentation site (Vite + React Router); tokens-plugin.
 scripts/tokens/     parse.ts (reads the token files), check.ts (npm run check:tokens)
 scripts/components/ parse.ts (finds the component folders), check.ts (npm run check:components:
                     each folder follows the contract)
+scripts/visual/     capture.ts and diff.ts (npm run visual:capture, visual:baseline, visual:diff)
 ```
 
 ## Development
@@ -70,7 +71,10 @@ Requires Node 22.18 or later.
 ```bash
 npm install
 npm run docs         # the documentation site on http://localhost:5310
-npm run check        # typecheck, ESLint, Stylelint, token, contrast and component checks, docs build
+npm run check        # typecheck, ESLint, Stylelint, token, contrast and component checks, tests, docs build
+npm test             # unit tests (Vitest, Testing Library, jsdom)
+npm run visual:capture   # a screenshot of every docs page in both themes (needs Chrome installed)
+npm run visual:diff      # compares them with the baseline, pixel by pixel
 ```
 
 The docs build for a sub-path (for example GitHub Pages) with `DOCS_BASE=/pastel-studio-ds/`.
