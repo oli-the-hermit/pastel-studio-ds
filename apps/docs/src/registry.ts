@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import type React from 'react';
 import { ComponentPage } from './blocks/ComponentPage';
-import { components } from './components';
+import { componentPath, components } from './components';
 import { Home } from './pages/Home';
 import { GettingStarted } from './pages/GettingStarted';
 import { Principles } from './pages/foundations/Principles';
@@ -27,7 +27,7 @@ export interface DocPage {
 }
 
 const COMPONENT_PAGES = components.map((component): DocPage => ({
-  path: `/components/${component.slug}`,
+  path: componentPath(component.slug),
   title: component.name,
   section: 'Components',
   summary: component.meta.summary,

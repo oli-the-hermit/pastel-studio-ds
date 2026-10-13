@@ -6,6 +6,9 @@ import type { ComponentData, ComponentDoc } from './types';
 const metas = import.meta.glob<{ meta: ComponentMeta }>('../../../../packages/react/src/components/*/meta.ts', { eager: true });
 const metaByName = new Map(Object.values(metas).map(({ meta }) => [meta.name, meta]));
 
+/** A component's address in the docs. */
+export const componentPath = (slug: string) => `/components/${slug}`;
+
 /** Every component, read from packages/react/src/components at build time, in docs order: by group, then by name. */
 export const components: ComponentDoc[] = (data as ComponentData[])
   .map((component) => {

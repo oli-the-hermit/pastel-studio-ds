@@ -31,6 +31,9 @@ is a breaking change.
 - Component pages build themselves: the documentation reads each component's props from its
   TypeScript types, the tokens it uses from its stylesheet and the rest from its `meta.ts`, and
   lists it under Components with no page to register.
+- One page template for every component: overview, an interactive demo, every state, variants
+  and sizes, props, tokens used, keyboard and accessibility, do and don't, and related
+  components. Examples live in `apps/docs/src/demos`, one file per component.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

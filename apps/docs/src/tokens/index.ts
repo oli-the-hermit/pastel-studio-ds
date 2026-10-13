@@ -1,5 +1,5 @@
 import { tokens as data } from 'virtual:ps-tokens';
-import type { Token, TokenGroup, TokensData } from './types';
+import type { RoleToken, Token, TokenGroup, TokensData } from './types';
 
 /** Every token, group and contrast result, read from packages/tokens/src at build time. */
 export const tokens = data as TokensData;
@@ -15,6 +15,15 @@ export function scaleGroup(title: string): TokenGroup {
 export function tokensWith(group: TokenGroup, prefix: string): Token[] {
   return group.tokens.filter((t) => t.name.startsWith(prefix));
 }
+
+const roles = new Map(tokens.roles.flatMap((g) => g.tokens).map((t) => [t.name, t]));
+const others = new Map([...tokens.scales, ...tokens.aliases].flatMap((g) => g.tokens).map((t) => [t.name, t]));
+
+/** A theme role by name (a color, with its value in each theme), if the name is one. */
+export const findRole = (name: string): RoleToken | undefined => roles.get(name);
+
+/** Any token a component may use, by name: a role, a scale step or an alias. */
+export const findToken = (name: string): Token | undefined => roles.get(name) ?? others.get(name);
 
 const root = scaleGroup('Type').tokens.find((t) => t.name === '--ps-font-size-root');
 /** The root font size in px (1rem). */

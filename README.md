@@ -56,7 +56,8 @@ packages/tokens/    reference.css, scales.css, themes/{dark,light}.css, aliases.
 packages/react/     src/foundation/ (reset, base, reduced motion, utilities), src/icons/, src/lib/,
                     src/components/<Name>/ (one folder per component), labels.tsx, meta.ts
 apps/docs/          the documentation site (Vite + React Router); tokens-plugin.ts feeds it the tokens,
-                    components-plugin.ts each component's props, tokens used and metadata
+                    components-plugin.ts each component's props, tokens used and metadata;
+                    src/demos/<Name>.tsx holds a component's live examples and guidance
 scripts/tokens/     parse.ts (reads the token files), check.ts (npm run check:tokens)
 scripts/components/ parse.ts (finds the component folders), check.ts (npm run check:components:
                     each folder follows the contract)
