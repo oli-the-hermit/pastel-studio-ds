@@ -1,0 +1,19 @@
+/* ── TextButton: low-emphasis text actions ──────────────────── */
+.ps-text-button {
+  --ps-text-button-hover: var(--ps-surface-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ps-space-6);
+  padding: var(--ps-space-6) var(--ps-space-10);
+  border-radius: var(--ps-radius-md);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-semibold);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-text-button:hover { background: var(--ps-text-button-hover); color: var(--ps-text-1); }
+.ps-text-button.is-on-3 { --ps-text-button-hover: var(--ps-surface-4); }
+/* Tiny inline link inside dense grids (e.g. "+3 more" in a month cell). */
+.ps-text-button--xs { padding: var(--ps-space-1) var(--ps-space-6); border-radius: var(--ps-radius-xs); font-size: var(--ps-font-size-xs); font-weight: var(--ps-font-weight-bold); }
+.ps-text-button--accent { color: var(--ps-accent-text); }
+.ps-text-button--accent:hover { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }

@@ -29,6 +29,11 @@ describe('stylesheetTokens', () => {
     expect(stylesheetTokens(css).own).toEqual([{ name: '--ps-button-fill', value: 'var(--ps-surface-2)' }]);
   });
 
+  it("gives a token's first declaration as its default, not a later override", () => {
+    const withOverride = `${css} .ps-button.is-on-3 { --ps-button-fill: var(--ps-surface-4); }`;
+    expect(stylesheetTokens(withOverride).own).toEqual([{ name: '--ps-button-fill', value: 'var(--ps-surface-2)' }]);
+  });
+
   it('has nothing to report for a component without a stylesheet', () => {
     expect(stylesheetTokens('')).toEqual({ used: [], own: [] });
   });

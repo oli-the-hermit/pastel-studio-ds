@@ -34,7 +34,9 @@ function build(): ComponentData[] {
     shouldRemoveUndefinedFromOptional: true,
   });
   return names.map((name) => {
-    const exports = parser.parse(path.join(COMPONENTS_DIR, name, `${name}.tsx`)).map((doc): ExportDoc => {
+    // Components are PascalCase; a helper a file also exports (iconButtonClass) is not one.
+    const docs = parser.parse(path.join(COMPONENTS_DIR, name, `${name}.tsx`)).filter((doc) => /^[A-Z]/.test(doc.displayName));
+    const exports = docs.map((doc): ExportDoc => {
       const props = Object.values(doc.props);
       // The most specific DOM interface among the inherited attributes: ButtonHTMLAttributes
       // rather than the HTMLAttributes and AriaAttributes it extends.

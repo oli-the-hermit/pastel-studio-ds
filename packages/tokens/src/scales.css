@@ -81,8 +81,10 @@
 
   /* ── Component sizes ── */
   --ps-field-height:        44px;      /* inputs, selects, pickers, steppers */
+  --ps-button-height-lg:    44px;      /* the one call to action on a card */
   --ps-button-height:       40px;
   --ps-button-height-sm:    34px;
+  --ps-button-height-xs:    28px;      /* compact cards: taller than a chip */
   --ps-icon-button-size:    40px;
   --ps-icon-button-size-sm: 32px;
   --ps-icon-button-size-xs: 28px;

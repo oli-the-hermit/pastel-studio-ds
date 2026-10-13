@@ -3,9 +3,13 @@ import * as PS from '@pastel-studio/react';
 import type { IconProps } from '@pastel-studio/react';
 import { Code, Page, Section } from '../../blocks/Page';
 import { Example } from '../../blocks/Example';
+import { components } from '../../components';
+
+// Icons are the exports named Icon…, apart from components that happen to start the same way (IconButton).
+const COMPONENT_NAMES = new Set(components.flatMap((c) => c.exports.map((e) => e.name)));
 
 const ICONS = Object.entries(PS)
-  .filter(([name]) => /^Icon[A-Z]/.test(name))
+  .filter(([name]) => /^Icon[A-Z]/.test(name) && !COMPONENT_NAMES.has(name))
   .map(([name, Icon]) => ({ name, Icon: Icon as React.FC<IconProps> }))
   .sort((a, b) => a.name.localeCompare(b.name));
 

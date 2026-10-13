@@ -156,6 +156,7 @@
   .docs-anchor:hover { color: var(--ps-accent-text); }
   .docs-section-description { max-width: 72ch; margin-bottom: var(--ps-space-16); color: var(--ps-text-2); }
   .docs-page p { max-width: 72ch; }
+  .docs-section > p + p:not(.docs-note) { margin-top: var(--ps-space-12); }
   .docs-note { margin-top: var(--ps-space-8); font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
 
   .docs-code {
@@ -548,6 +549,20 @@
     font-size: var(--ps-font-size-sm);
     white-space: nowrap;
   }
+
+  /* Demos: a row or a stack of controls, and the line that says what they did. */
+  .docs-demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-8); }
+  .docs-demo-stack { display: flex; flex-direction: column; align-items: flex-start; gap: var(--ps-space-8); }
+  .docs-demo-status { margin-left: var(--ps-space-8); font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
+  .docs-demo-stack .docs-demo-status { margin-left: 0; }
+
+  /* A patch of another surface, for controls that adapt to what they sit on. */
+  .docs-surface { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-8); padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); }
+  .docs-surface.is-0 { background: var(--ps-bg); }
+  .docs-surface.is-2 { background: var(--ps-surface-2); }
+  .docs-surface.is-3 { background: var(--ps-surface-3); }
+  .docs-surface.is-accent { background: var(--ps-accent); }
+  .docs-surface.is-accent-container { background: var(--ps-accent-container); }
 
   .docs-guidance { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--ps-space-16); margin: var(--ps-space-16) 0; }
   .docs-guidance-group { padding: var(--ps-space-16) var(--ps-space-20); border-radius: var(--ps-radius-lg); background: var(--ps-surface-1); }

@@ -38,6 +38,14 @@ is a breaking change.
   `npm run check`), including one that fails when a component's state or variant has no
   example in the docs. Screenshots of every docs page in both themes, compared pixel by pixel
   with a reviewed baseline (`npm run visual:capture`, `npm run visual:diff`).
+- The first components, ported from Focus Space: `Button` (four variants, four sizes, leading
+  and trailing icons, block, collapsible on phones), `IconButton` (three sizes, a danger tone,
+  `active`, and `pressed` for toggles, which sets `aria-pressed`) and `TextButton`. All three
+  take a `surface` prop, so their fill and hover stay one step above what they sit on.
+- Two button heights Focus Space had and the tokens lacked: `--ps-button-height-lg` (44px)
+  and `--ps-button-height-xs` (28px).
+- A "Using components" guide: what every component accepts, states, surfaces, words and
+  translation, and theming through tokens. The overview lists the components.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

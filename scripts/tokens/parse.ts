@@ -60,11 +60,14 @@ export function tokenMap(css: string): Map<string, string> {
 
 const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
-/** Custom properties declared in any stylesheet, with their values. */
+/** Every custom property declaration in a stylesheet, in order: [name, value]. */
+export function declarationList(css: string): [string, string][] {
+  return [...stripComments(css).matchAll(/(--ps-[a-z0-9-]+)\s*:\s*([^;}]+)/g)].map((m) => [m[1], m[2].trim()]);
+}
+
+/** Custom properties declared in any stylesheet, with their values (the last one, if repeated). */
 export function declarations(css: string): Map<string, string> {
-  const out = new Map<string, string>();
-  for (const m of stripComments(css).matchAll(/(--ps-[a-z0-9-]+)\s*:\s*([^;}]+)/g)) out.set(m[1], m[2].trim());
-  return out;
+  return new Map(declarationList(css));
 }
 
 /** Custom properties a stylesheet reads through var(), repeats included. */

@@ -1,0 +1,25 @@
+/* ── IconButton: round, icon only ───────────────────────────
+   Its hover sits one step above the surface it's on (default surface 1, a card). */
+.ps-icon-button {
+  --ps-icon-button-hover: var(--ps-surface-2);
+  width: var(--ps-icon-button-size);
+  height: var(--ps-icon-button-size);
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-2);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-icon-button:hover:not(:disabled) { background: var(--ps-icon-button-hover); color: var(--ps-text-1); }
+.ps-icon-button--sm { width: var(--ps-icon-button-size-sm); height: var(--ps-icon-button-size-sm); }
+.ps-icon-button--xs { width: var(--ps-icon-button-size-xs); height: var(--ps-icon-button-size-xs); border-radius: var(--ps-radius-md); }
+.ps-icon-button--danger:hover:not(:disabled) { background: var(--ps-danger-container); color: var(--ps-danger); }
+.ps-icon-button.is-active { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+
+.ps-icon-button.is-on-0 { --ps-icon-button-hover: var(--ps-surface-1); }
+.ps-icon-button.is-on-2 { --ps-icon-button-hover: var(--ps-surface-3); }
+.ps-icon-button.is-on-3 { --ps-icon-button-hover: var(--ps-surface-4); }
+.ps-icon-button.is-on-accent { color: var(--ps-on-accent-2); }
+.ps-icon-button.is-on-accent:hover:not(:disabled) { background: var(--ps-on-accent); color: var(--ps-accent); }
+.ps-icon-button.is-on-accent-container { color: var(--ps-on-accent-container); }

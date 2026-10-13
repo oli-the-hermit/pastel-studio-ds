@@ -4,6 +4,7 @@ import { ComponentPage } from './blocks/ComponentPage';
 import { componentPath, components } from './components';
 import { Home } from './pages/Home';
 import { GettingStarted } from './pages/GettingStarted';
+import { UsingComponents } from './pages/UsingComponents';
 import { Principles } from './pages/foundations/Principles';
 import { Color } from './pages/foundations/Color';
 import { Typography } from './pages/foundations/Typography';
@@ -39,6 +40,8 @@ export const PAGES: DocPage[] = [
     summary: 'What Pastel Studio is, what it holds and where to start.' },
   { path: '/getting-started', title: 'Getting started', section: 'Start', component: GettingStarted,
     summary: 'Add Pastel Studio to an app, pick a theme and keep your own styles on top.' },
+  { path: '/using-components', title: 'Using components', section: 'Start', component: UsingComponents,
+    summary: 'The few rules every component follows: props, states, surfaces, words and tokens.' },
   { path: '/foundations/principles', title: 'Principles', section: 'Foundations', component: Principles,
     summary: 'The few rules every screen in the family follows.' },
   { path: '/foundations/color', title: 'Color', section: 'Foundations', component: Color,

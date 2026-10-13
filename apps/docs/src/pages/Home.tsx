@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { Callout, Code, Page, Section } from '../blocks/Page';
+import { componentPath, components } from '../components';
 import { PAGES } from '../registry';
 
 export function Home() {
@@ -48,6 +49,21 @@ export function Home() {
           ))}
         </ul>
       </Section>
+
+      {components.length > 0 && (
+        <Section title="Components" description={<>Each page has a live demo, every state, the props, the tokens it uses and when to use it. <Link to="/using-components">Using components</Link> covers what they all share.</>}>
+          <ul className="docs-cards">
+            {components.map((c) => (
+              <li key={c.name}>
+                <Link to={componentPath(c.slug)} className="docs-card">
+                  <span className="docs-card-title">{c.name}</span>
+                  <span className="docs-card-summary">{c.meta.summary}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
 
       <Section title="Reading these pages">
         <ul className="docs-list">

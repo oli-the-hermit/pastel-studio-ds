@@ -20,6 +20,9 @@
 @import url('./foundation/reduced-motion.css') layer(ps.base);
 
 /* Components */
+@import url('./components/Button/button.css') layer(ps.components);
+@import url('./components/IconButton/icon-button.css') layer(ps.components);
+@import url('./components/TextButton/text-button.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

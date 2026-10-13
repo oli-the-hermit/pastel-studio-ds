@@ -6,9 +6,14 @@ Pastel Studio React components and foundation styles, built on `@pastel-studio/t
 @import '@pastel-studio/react/styles.css';
 ```
 
-```ts
-import { cx } from '@pastel-studio/react';
+```tsx
+import { Button, IconButton, IconPlus, TextButton } from '@pastel-studio/react';
+
+<Button variant="primary" icon={<IconPlus />}>Add task</Button>
 ```
+
+Components so far: `Button`, `IconButton` and `TextButton`, ported from Focus Space. Each has
+a page in the documentation with a live demo, every state, its props and the tokens it uses.
 
 `styles.css` brings the fonts, the tokens, the foundation (reset, document defaults, focus ring,
 scrollbars, reduced motion), every component's CSS and the utilities (`ps-overline`,

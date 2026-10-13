@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { declarations, references } from '../tokens/parse.ts';
+import { declarationList, references } from '../tokens/parse.ts';
 
 export const REACT_SRC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'packages/react/src');
 export const COMPONENTS_DIR = path.join(REACT_SRC, 'components');
@@ -29,7 +29,9 @@ export interface StylesheetTokens {
 
 /** What a component's stylesheet reads from the tokens, and which tokens it adds. */
 export function stylesheetTokens(css: string): StylesheetTokens {
-  const own = declarations(css);
+  // A token's first declaration is its default; later ones (a variant, a surface) override it.
+  const own = new Map<string, string>();
+  for (const [name, value] of declarationList(css)) if (!own.has(name)) own.set(name, value);
   return {
     used: [...new Set(references(css))].filter((name) => !own.has(name)).sort(),
     own: [...own].map(([name, value]) => ({ name, value })),

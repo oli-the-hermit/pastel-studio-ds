@@ -1,0 +1,60 @@
+/* ── Button: pill-shaped actions ────────────────────────────
+   A button's fill sits one step above the surface it's on. The default assumes surface 1
+   (a card); the surface prop adds is-on-0, is-on-2, is-on-3, is-on-accent or
+   is-on-accent-container. */
+.ps-button {
+  --ps-button-fill: var(--ps-surface-2);
+  --ps-button-fill-hover: var(--ps-surface-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ps-space-8);
+  height: var(--ps-button-height);
+  padding: 0 var(--ps-space-20);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-button-fill);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-semibold);
+  white-space: nowrap;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-button:hover:not(:disabled) { background: var(--ps-button-fill-hover); }
+.ps-button:disabled { color: var(--ps-text-3); }
+.ps-button-trailing { display: inline-flex; }
+
+.ps-button--primary { background: var(--ps-accent); color: var(--ps-on-accent); }
+.ps-button--primary:hover:not(:disabled) { background: var(--ps-accent-hover); }
+.ps-button--primary:disabled { background: var(--ps-surface-2); color: var(--ps-text-3); }
+
+.ps-button--tonal { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+.ps-button--tonal:hover:not(:disabled) { background: var(--ps-accent); color: var(--ps-on-accent); }
+
+.ps-button--danger { background: var(--ps-danger-container); color: var(--ps-danger); }
+.ps-button--danger:hover:not(:disabled) { background: var(--ps-danger); color: var(--ps-on-danger); }
+
+.ps-button.is-on-0 { --ps-button-fill: var(--ps-surface-1); --ps-button-fill-hover: var(--ps-surface-2); }
+.ps-button.is-on-2 { --ps-button-fill: var(--ps-surface-3); --ps-button-fill-hover: var(--ps-surface-4); }
+/* Surface 4 is the top step, so the hover steps back down. */
+.ps-button.is-on-3 { --ps-button-fill: var(--ps-surface-4); --ps-button-fill-hover: var(--ps-surface-3); }
+/* A primary action on an accent surface inverts. */
+.ps-button--primary.is-on-accent { background: var(--ps-on-accent); color: var(--ps-accent); }
+.ps-button--primary.is-on-accent:hover:not(:disabled) { background: var(--ps-on-accent-2); }
+.ps-button--primary.is-on-accent-container,
+.ps-button--primary.is-on-accent-container:hover:not(:disabled) { background: var(--ps-on-accent-container); color: var(--ps-accent-container); }
+
+.ps-button--sm { height: var(--ps-button-height-sm); padding: 0 var(--ps-space-14); font-size: var(--ps-font-size-sm); gap: var(--ps-space-6); }
+/* The one call to action on a card. */
+.ps-button--lg { height: var(--ps-button-height-lg); padding: 0 var(--ps-space-24); font-weight: var(--ps-font-weight-bold); }
+.ps-button.is-block { width: 100%; }
+/* For compact cards: taller than a chip, smaller than a title. */
+.ps-button--xs { height: var(--ps-button-height-xs); padding: 0 var(--ps-space-12); font-size: var(--ps-font-size-sm); gap: var(--ps-space-6); }
+
+/* Collapsible buttons show only their leading icon on phones (the name and tooltip keep the full action). */
+@media (max-width: 600px) {
+  .ps-button.is-collapsible { padding: 0; min-width: var(--ps-button-height); }
+  .ps-button--sm.is-collapsible { min-width: var(--ps-button-height-sm); }
+  .ps-button--xs.is-collapsible { min-width: var(--ps-button-height-xs); }
+  .ps-button.is-collapsible .ps-button-label,
+  .ps-button.is-collapsible .ps-button-trailing { display: none; }
+}
