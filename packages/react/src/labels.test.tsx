@@ -1,51 +1,47 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { LabelsProvider, useLabels, type Labels } from './labels';
+import { defaultLabels, LabelsProvider, useLabels, type LabelOverrides, type Labels } from './labels';
 
-// The shared list is empty until the first component adds a word, so these tests bring their own.
-type Words = Record<string, string>;
-const asLabels = (words: Words) => words as Partial<Labels>;
-
-function Word({ name, labels }: { name: string; labels?: Words }) {
-  const words = useLabels(labels && asLabels(labels)) as Words;
-  return <span data-testid={name}>{words[name] ?? 'none'}</span>;
+function Word({ name, labels }: { name: keyof Labels; labels?: LabelOverrides<keyof Labels> }) {
+  return <span data-testid={name}>{useLabels(labels)[name]}</span>;
 }
 
-const shown = (name: string) => screen.getByTestId(name).textContent;
+const shown = (name: keyof Labels) => screen.getByTestId(name).textContent;
 
 describe('labels', () => {
   it('gives the defaults when nothing overrides them', () => {
     render(<Word name="close" />);
-    expect(shown('close')).toBe('none');
+    expect(shown('close')).toBe(defaultLabels.close);
   });
 
-  it('takes a word from the provider', () => {
-    render(<LabelsProvider labels={asLabels({ close: 'Cerrar' })}><Word name="close" /></LabelsProvider>);
+  it('takes a word from the provider and keeps the rest', () => {
+    render(<LabelsProvider labels={{ close: 'Cerrar' }}><Word name="close" /><Word name="copy" /></LabelsProvider>);
     expect(shown('close')).toBe('Cerrar');
+    expect(shown('copy')).toBe(defaultLabels.copy);
   });
 
   it("lets a component's own labels win over the provider, for that component only", () => {
     render(
-      <LabelsProvider labels={asLabels({ close: 'Cerrar', cancel: 'Cancelar' })}>
+      <LabelsProvider labels={{ close: 'Cerrar', copy: 'Copiar' }}>
         <Word name="close" labels={{ close: 'Tancar' }} />
-        <Word name="cancel" labels={{ close: 'Tancar' }} />
+        <Word name="copy" labels={{ close: 'Tancar' }} />
       </LabelsProvider>
     );
     expect(shown('close')).toBe('Tancar');
-    expect(shown('cancel')).toBe('Cancelar');
+    expect(shown('copy')).toBe('Copiar');
   });
 
   it('nests: an inner provider replaces some words and inherits the rest', () => {
     render(
-      <LabelsProvider labels={asLabels({ close: 'Cerrar', cancel: 'Cancelar' })}>
-        <LabelsProvider labels={asLabels({ close: 'Tancar' })}>
+      <LabelsProvider labels={{ close: 'Cerrar', copy: 'Copiar' }}>
+        <LabelsProvider labels={{ close: 'Tancar' }}>
           <Word name="close" />
-          <Word name="cancel" />
+          <Word name="copy" />
         </LabelsProvider>
       </LabelsProvider>
     );
     expect(shown('close')).toBe('Tancar');
-    expect(shown('cancel')).toBe('Cancelar');
+    expect(shown('copy')).toBe('Copiar');
   });
 });

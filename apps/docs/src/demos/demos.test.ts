@@ -12,6 +12,7 @@ const meta: ComponentMeta = {
   states: [{ name: 'Default', description: 'Ready.' }, { name: 'Disabled', description: 'Off.' }],
   variants: [{ name: 'primary', description: 'The main one.' }],
   keyboard: [],
+  labels: [],
   aria: [],
   related: [],
 };

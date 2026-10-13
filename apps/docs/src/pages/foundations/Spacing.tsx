@@ -2,11 +2,15 @@ import React from 'react';
 import { Code, Page, Section } from '../../blocks/Page';
 import { Example } from '../../blocks/Example';
 import { TokenTable } from '../../blocks/TokenTable';
-import { scaleGroup, sentence } from '../../tokens';
+import { scaleGroup, sentence, toPx } from '../../tokens';
 import type { Token } from '../../tokens/types';
+
+/** The widest shape the table draws to scale; a dialog's width would push the other columns out. */
+const WIDEST_SHAPE_PX = 240;
 
 /** How to draw a component size: a bar for heights and widths, a square for -size tokens. */
 function SizePreview({ token }: { token: Token }) {
+  if (toPx(token.value) > WIDEST_SHAPE_PX) return null;
   const v = `var(${token.name})`;
   if (token.name.endsWith('-size') || token.name.includes('-size-')) return <span className="docs-size-box" style={{ width: v, height: v }} />;
   if (token.name.includes('height')) return <span className="docs-size-box is-wide" style={{ height: v }} />;

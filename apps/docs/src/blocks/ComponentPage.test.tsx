@@ -32,6 +32,7 @@ const sample: ComponentDoc = {
     states: [{ name: 'Disabled', description: 'Set `disabled`.' }],
     variants: [],
     keyboard: [{ keys: 'Enter', action: 'Presses it.' }],
+    labels: ['close'],
     aria: ['A native `<button>`.'],
     related: [],
   },
@@ -55,7 +56,12 @@ describe('ComponentPage', () => {
 
   it('shows the sections it has data for, in the template order, and leaves out the rest', () => {
     renderPage(sample);
-    expect(sections()).toEqual(['Overview', 'States', 'Props', 'Tokens used', 'Keyboard and accessibility']);
+    expect(sections()).toEqual(['Overview', 'States', 'Props', 'Words', 'Tokens used', 'Keyboard and accessibility']);
+  });
+
+  it('lists the words the component brings, with their defaults', () => {
+    renderPage(sample);
+    expect(rowsOf('Words Sample uses')).toEqual(['closeClose']);
   });
 
   it('lists each exported component in the import line and gives each its own props', () => {

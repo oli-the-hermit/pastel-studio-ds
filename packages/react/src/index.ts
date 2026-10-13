@@ -4,6 +4,8 @@ export { defaultLabels, LabelsProvider, useLabels } from './labels';
 export type { LabelOverrides, Labels } from './labels';
 export { COMPONENT_GROUPS } from './meta';
 export type { ComponentGroup, ComponentMeta, KeyboardEntry, MetaEntry } from './meta';
+export { cssDurationMs } from './lib/css';
+export { isBlockingOverlayOpen, useBlockingOverlay } from './lib/overlays';
 export type { Surface } from './lib/surface';
 export * from './icons';
 
@@ -11,3 +13,7 @@ export * from './icons';
 export * from './components/Button';
 export * from './components/IconButton';
 export * from './components/TextButton';
+export * from './components/Popover';
+export * from './components/Menu';
+export * from './components/ContextMenu';
+export * from './components/Modal';

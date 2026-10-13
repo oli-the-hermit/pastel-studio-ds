@@ -538,6 +538,8 @@
   .docs-props td:nth-child(2) .docs-code { white-space: normal; }
   .docs-required { display: block; margin-top: var(--ps-space-2); font-size: var(--ps-font-size-xs); color: var(--ps-text-2); }
 
+  /* Long values (a shadow, an easing curve) wrap rather than push the table wide. */
+  .docs-tokens td .docs-code { white-space: normal; overflow-wrap: anywhere; }
   .docs-token-color { display: inline-flex; align-items: center; gap: var(--ps-space-8); font-family: var(--docs-mono); font-size: var(--ps-font-size-xs); }
   .docs-swatch.is-small { width: var(--ps-space-20); height: var(--ps-space-20); border-radius: var(--ps-radius-xs); }
 
@@ -563,6 +565,27 @@
   .docs-surface.is-3 { background: var(--ps-surface-3); }
   .docs-surface.is-accent { background: var(--ps-accent); }
   .docs-surface.is-accent-container { background: var(--ps-accent-container); }
+
+  /* Overlays shown standing still in a gallery (blocks/StaticOverlay.tsx). */
+  .docs-static-overlay .ps-popover { position: static; animation: none; }
+  .docs-gallery-item:has(.docs-modal-stage) { grid-column: 1 / -1; }
+  /* A transform makes the frame the containing block of the modal's fixed scrim. */
+  .docs-modal-stage { --docs-stage-height: 300px; position: relative; width: 100%; height: var(--docs-stage-height); overflow: hidden; border-radius: var(--ps-radius-lg); transform: translateZ(0); }
+  .docs-modal-stage .ps-modal-backdrop,
+  .docs-modal-stage .ps-modal { animation: none; }
+  /* The dialog measures itself against the window; here its window is the frame. */
+  .docs-modal-stage .ps-modal { max-height: calc(var(--docs-stage-height) - 2 * var(--ps-space-24)); }
+  .docs-demo-card { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-16); width: min(320px, 100%); padding: var(--ps-space-8) var(--ps-space-8) var(--ps-space-8) var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); font-weight: var(--ps-font-weight-semibold); }
+  .docs-demo-form { display: flex; flex-direction: column; gap: var(--ps-space-16); }
+  .docs-demo-form .docs-input { width: 100%; }
+  .docs-demo-actions { display: flex; justify-content: flex-end; gap: var(--ps-space-8); }
+  .docs-popover-body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--ps-space-12); padding: var(--ps-space-16); max-width: 280px; }
+  .docs-popover-scroll { padding: var(--ps-space-12) var(--ps-space-16); overflow-y: auto; }
+  .docs-popover-scroll p + p { margin-top: var(--ps-space-8); }
+  .docs-popover-rounder { --ps-popover-radius: var(--ps-radius-2xl); }
+  .docs-popover-tinted { --ps-popover-bg: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+  .docs-menu-header { padding: var(--ps-space-8) var(--ps-space-12); font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
+  .docs-context-area { padding: var(--ps-space-24); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); color: var(--ps-text-2); }
 
   .docs-guidance { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--ps-space-16); margin: var(--ps-space-16) 0; }
   .docs-guidance-group { padding: var(--ps-space-16) var(--ps-space-20); border-radius: var(--ps-radius-lg); background: var(--ps-surface-1); }

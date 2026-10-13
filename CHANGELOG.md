@@ -46,6 +46,17 @@ is a breaking change.
   and `--ps-button-height-xs` (28px).
 - A "Using components" guide: what every component accepts, states, surfaces, words and
   translation, and theming through tokens. The overview lists the components.
+- Overlays, ported from Focus Space: `Popover` (anchored to an element or a point, flips above,
+  works in another window's document), `Menu` (with `MenuList`, `tidyMenuItems` and the arrow
+  keys), `ContextMenuProvider` with `useContextMenu` and `useContextMenuState`, and `Modal`.
+  Also `useBlockingOverlay` / `isBlockingOverlayOpen`, so an app can pause its shortcuts, and
+  `cssDurationMs`.
+- New in the port: a popover takes the theme of the place it opened from; a modal keeps Tab
+  inside it, takes focus when it has no field, returns focus to what opened it, and names
+  itself with a unique id.
+- The shared words get their first entries: `close`, `copy`, `actions`, `moreActions`. Each
+  component page lists the words it uses.
+- Tokens: `--ps-modal-max-width` (520px) and `--ps-modal-max-width-wide` (620px).
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

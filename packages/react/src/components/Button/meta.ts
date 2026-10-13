@@ -29,6 +29,7 @@ export const meta: ComponentMeta = {
     { keys: 'Enter', action: 'Presses the button.' },
     { keys: 'Space', action: 'Presses the button.' },
   ],
+  labels: [],
   aria: [
     'A native `<button>`: its text is its accessible name.',
     'It is `type="button"` unless you set `type="submit"`.',

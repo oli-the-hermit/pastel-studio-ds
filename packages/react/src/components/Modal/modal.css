@@ -1,0 +1,47 @@
+/* ── Modal: a dialog over the page ──────────────────────────── */
+.ps-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ps-z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--ps-space-24);
+  background: var(--ps-scrim);
+  animation: ps-scrim-in var(--ps-dur-2) ease;
+}
+.ps-modal {
+  width: min(var(--ps-modal-max-width), 100%);
+  max-height: calc(100vh - 2 * var(--ps-space-24));
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-modal-in var(--ps-dur-3) var(--ps-ease-emphasized);
+}
+/* It takes focus when it has no field to give it to; the dialog itself needs no ring. */
+.ps-modal:focus { outline: none; }
+.ps-modal--wide { width: min(var(--ps-modal-max-width-wide), 100%); }
+.ps-modal-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ps-space-12);
+  padding: var(--ps-space-22) var(--ps-space-18) var(--ps-space-6) var(--ps-space-28);
+}
+.ps-modal-title { font-size: var(--ps-font-size-xl); font-weight: var(--ps-font-weight-bold); }
+.ps-modal-body { padding: var(--ps-space-14) var(--ps-space-28) var(--ps-space-28); overflow-y: auto; }
+.ps-modal-body > * + * { margin-top: var(--ps-space-16); }
+
+@keyframes ps-scrim-in { from { background: transparent; } }
+@keyframes ps-modal-in {
+  from { transform: translateY(var(--ps-space-12)) scale(0.98); }
+  to { transform: none; }
+}
+
+/* Exit as well as enter. */
+.ps-modal-backdrop.is-closing { animation: ps-scrim-out var(--ps-dur-2) var(--ps-ease-accel) forwards; pointer-events: none; }
+.ps-modal-backdrop.is-closing .ps-modal { animation: ps-modal-out var(--ps-dur-2) var(--ps-ease-accel) forwards; }
+@keyframes ps-scrim-out { to { background: transparent; } }
+@keyframes ps-modal-out { to { opacity: 0; transform: translateY(var(--ps-space-8)) scale(0.98); } }

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { Button, IconButton, IconPlus, IconStar, TextButton } from '@pastel-studio/react';
 import { Example } from '../blocks/Example';
 import { OnSurface } from '../blocks/OnSurface';
-import { Callout, Code, Page, Section } from '../blocks/Page';
+import { Code, Page, Section } from '../blocks/Page';
 import { componentPath } from '../components';
 
 export function UsingComponents() {
@@ -78,18 +78,18 @@ export function UsingComponents() {
             A component's own <Code>labels</Code> prop does the same for one instance.
           </li>
         </ul>
-        <Callout title="The list is empty for now">
-          The three buttons bring no words of their own. The shared list fills as components with built-in text arrive, and each
-          component's page lists the words it uses.
-        </Callout>
+        <p>
+          Each component's page lists the words it brings, under Words: a <Link to={componentPath('modal')}>Modal</Link> brings <Code>close</Code>,
+          a <Link to={componentPath('menu')}>Menu</Link> brings <Code>moreActions</Code>.
+        </p>
       </Section>
 
       <Section title="Theming through tokens">
         <ul className="docs-list">
           <li>Components are styled only with tokens. Change a role in a theme, like <Code>--ps-accent</Code>, and every component follows. See <Link to="/foundations/color">Color</Link>.</li>
           <li>
-            Some components add tokens of their own, like <Code>--ps-button-fill</Code>. Set one on the component, or on anything around it,
-            to restyle it there. Each page lists them under Tokens used.
+            Some components add tokens of their own, like <Code>--ps-button-fill</Code>. Set one on the component itself, through a class
+            of yours, to restyle it there. Each page lists them under Tokens used.
           </li>
           <li>For anything else, write your own CSS against <Code>className</Code>. Pastel Studio sits in the <Code>ps</Code> cascade layer, so your rules win without <Code>!important</Code>.</li>
         </ul>

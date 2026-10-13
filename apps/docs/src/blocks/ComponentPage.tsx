@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { IconCheck, IconClose, type MetaEntry } from '@pastel-studio/react';
+import { defaultLabels, IconCheck, IconClose, type MetaEntry } from '@pastel-studio/react';
 import { componentPath, components } from '../components';
 import type { ComponentDoc, ExportDoc } from '../components/types';
 import { demoFor } from '../demos';
@@ -19,6 +19,9 @@ function elementOf(htmlAttributes: string): string | undefined {
   const name = htmlAttributes.replace('HTMLAttributes', '').toLowerCase();
   return name ? `<${name === 'anchor' ? 'a' : name}>` : undefined;
 }
+
+/** A role whose value is a color can be shown as a swatch; a shadow cannot. */
+const isColor = (value: string) => /^(#|rgb)/.test(value);
 
 /** Live examples of a component's states or variants, each with its name and what it means. */
 function Gallery({ entries, examples }: { entries: MetaEntry[]; examples?: Record<string, React.ReactNode> }) {
@@ -81,7 +84,7 @@ function TokensUsed({ component }: { component: ComponentDoc }) {
   return (
     <>
       <div className="docs-table-wrap">
-        <table className="docs-table">
+        <table className="docs-table docs-tokens">
           <caption className="docs-visually-hidden">Tokens {component.name} uses</caption>
           <thead>
             <tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Use</th></tr>
@@ -94,12 +97,12 @@ function TokensUsed({ component }: { component: ComponentDoc }) {
                 <tr key={name}>
                   <th scope="row"><Code>{name}</Code></th>
                   <td>
-                    {role ? (
+                    {role && isColor(role[theme]) ? (
                       <span className="docs-token-color">
                         <span className="docs-swatch is-small" style={{ background: `var(${name})` }} />
                         {role[theme]}
                       </span>
-                    ) : token && <Code>{token.value}</Code>}
+                    ) : token && <Code>{role ? role[theme] : token.value}</Code>}
                   </td>
                   <td>{sentence(token?.comment)}</td>
                 </tr>
@@ -110,7 +113,7 @@ function TokensUsed({ component }: { component: ComponentDoc }) {
       </div>
       {component.ownTokens.length > 0 && (
         <>
-          <p className="docs-note">Its own tokens. Set one on the component, or on anything around it, to restyle it there.</p>
+          <p className="docs-note">Its own tokens. Set one on the component itself, through a class of yours, to restyle it there.</p>
           <div className="docs-table-wrap">
             <table className="docs-table">
               <caption className="docs-visually-hidden">Tokens {component.name} defines</caption>
@@ -205,6 +208,27 @@ export function ComponentPage({ component }: { component: ComponentDoc }) {
           </React.Fragment>
         ))}
       </Section>
+
+      {meta.labels.length > 0 && (
+        <Section title="Words" description={<>The words it shows or reads out, from the shared list. Translate or replace them with <Code>LabelsProvider</Code>, or with its <Code>labels</Code> prop for one instance.</>}>
+          <div className="docs-table-wrap">
+            <table className="docs-table">
+              <caption className="docs-visually-hidden">Words {component.name} uses</caption>
+              <thead>
+                <tr><th scope="col">Word</th><th scope="col">Default</th></tr>
+              </thead>
+              <tbody>
+                {meta.labels.map((word) => (
+                  <tr key={word}>
+                    <th scope="row"><Code>{word}</Code></th>
+                    <td>{defaultLabels[word]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+      )}
 
       {(component.tokens.length > 0 || component.ownTokens.length > 0) && (
         <Section title="Tokens used" description="Read from the component's stylesheet. Change a token in a theme and the component follows.">

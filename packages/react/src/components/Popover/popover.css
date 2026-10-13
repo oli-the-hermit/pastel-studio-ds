@@ -1,0 +1,33 @@
+/* ── Popover: a floating panel ──────────────────────────────
+   Two tokens of its own, set by the class of whatever it shows:
+     --ps-popover-radius  rounder corners for a popover with pill-shaped content
+     --ps-popover-bg      a different fill for a popover that belongs to a tinted area */
+.ps-popover {
+  --ps-popover-radius: var(--ps-radius-lg);
+  --ps-popover-bg: var(--ps-surface-3);
+  position: fixed;
+  z-index: var(--ps-z-popover);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--ps-popover-radius);
+  background: var(--ps-popover-bg);
+  color: var(--ps-text-1);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-popover-in var(--ps-dur-2) var(--ps-ease-emphasized);
+}
+.ps-popover.is-above { animation-name: ps-popover-in-above; }
+.ps-popover.is-measuring { visibility: hidden; animation: none; }
+.ps-popover.is-leaving { animation: ps-popover-out var(--ps-dur-1) var(--ps-ease-accel) forwards; }
+
+@keyframes ps-popover-in {
+  from { opacity: 0; transform: translateY(calc(-1 * var(--ps-space-4))) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ps-popover-in-above {
+  from { opacity: 0; transform: translateY(var(--ps-space-4)) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ps-popover-out {
+  to { opacity: 0; transform: scale(0.98); }
+}

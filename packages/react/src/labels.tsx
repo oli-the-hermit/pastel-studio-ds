@@ -5,7 +5,12 @@ import React, { createContext, useContext, useMemo } from 'react';
  * so each word is translated once. Components never import an app's strings.
  * A word is added here together with the first component that uses it.
  */
-export const defaultLabels = {};
+export const defaultLabels = {
+  close: 'Close',
+  copy: 'Copy',
+  actions: 'Actions',
+  moreActions: 'More actions',
+};
 
 export type Labels = typeof defaultLabels;
 

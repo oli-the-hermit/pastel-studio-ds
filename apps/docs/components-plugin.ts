@@ -14,11 +14,21 @@ const RESOLVED = `\0${ID}`;
 
 const fromDom = (prop: PropItem) => prop.parent?.fileName.includes('node_modules') ?? false;
 
+/**
+ * A labels prop is typed as a pick from the whole shared list, which docgen prints in full:
+ * Partial<Pick<{ close: string; copy: string; … }, "close" | "copy">> → { close?: string; copy?: string }.
+ */
+export function wordsType(type: string): string {
+  const picked = type.match(/^Partial<Pick<{.*}, (.+)>>$/s);
+  if (!picked) return type;
+  return `{ ${[...picked[1].matchAll(/"([^"]+)"/g)].map((m) => `${m[1]}?: string`).join('; ')} }`;
+}
+
 function propDoc(prop: PropItem): PropDoc {
   const values: { value: string }[] | undefined = prop.type.name === 'enum' ? prop.type.value : undefined;
   return {
     name: prop.name,
-    type: values ? values.map((v) => v.value).join(' | ') : prop.type.name,
+    type: values ? values.map((v) => v.value).join(' | ') : wordsType(prop.type.name),
     required: prop.required,
     defaultValue: prop.defaultValue?.value ?? undefined,
     description: prop.description,

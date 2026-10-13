@@ -23,6 +23,7 @@ export const meta: ComponentMeta = {
     { keys: 'Enter', action: 'Presses the button.' },
     { keys: 'Space', action: 'Presses the button.' },
   ],
+  labels: [],
   aria: [
     '`label` is required: it becomes the accessible name and the tooltip.',
     'With `pressed`, it sets `aria-pressed`, so a screen reader says whether the toggle is on.',

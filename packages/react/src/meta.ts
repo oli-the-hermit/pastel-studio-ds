@@ -2,6 +2,8 @@
 // reads it. Props come from the component's types and "tokens used" from its stylesheet, so
 // neither is repeated here.
 
+import type { Labels } from './labels';
+
 /** The groups components are listed under in the documentation, in the order they appear. */
 export const COMPONENT_GROUPS = ['Actions', 'Inputs', 'Feedback', 'Overlays', 'Layout', 'Media', 'Files'] as const;
 
@@ -33,6 +35,8 @@ export interface ComponentMeta {
   /** Looks and sizes chosen by a prop. */
   variants: MetaEntry[];
   keyboard: KeyboardEntry[];
+  /** The words from the shared list that the component shows or reads out. */
+  labels: (keyof Labels)[];
   /** Roles, names and attributes the component sets, and what the caller must provide. */
   aria: string[];
   /** Names of components used with it or instead of it. */

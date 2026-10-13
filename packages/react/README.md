@@ -12,7 +12,8 @@ import { Button, IconButton, IconPlus, TextButton } from '@pastel-studio/react';
 <Button variant="primary" icon={<IconPlus />}>Add task</Button>
 ```
 
-Components so far: `Button`, `IconButton` and `TextButton`, ported from Focus Space. Each has
+Components so far, ported from Focus Space: `Button`, `IconButton`, `TextButton`, `Popover`,
+`Menu`, `ContextMenuProvider` and `Modal`. Each has
 a page in the documentation with a live demo, every state, its props and the tokens it uses.
 
 `styles.css` brings the fonts, the tokens, the foundation (reset, document defaults, focus ring,
