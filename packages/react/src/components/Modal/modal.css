@@ -31,7 +31,14 @@
   padding: var(--ps-space-22) var(--ps-space-18) var(--ps-space-6) var(--ps-space-28);
 }
 .ps-modal-title { font-size: var(--ps-font-size-xl); font-weight: var(--ps-font-weight-bold); }
-.ps-modal-body { padding: var(--ps-space-14) var(--ps-space-28) var(--ps-space-28); overflow-y: auto; }
+/* The content scrolls inside the dialog's padding, so it's cut before the edge, not at it. The
+   scrollbar sits half a padding from the content and half a padding from the edge. A ring's
+   width of padding is kept inside, so a focused field's ring is never cut off. */
+.ps-modal-body {
+  margin: calc(var(--ps-space-14) - 2 * var(--ps-ring-width)) var(--ps-space-14) calc(var(--ps-space-28) - 2 * var(--ps-ring-width)) calc(var(--ps-space-28) - 2 * var(--ps-ring-width));
+  padding: calc(2 * var(--ps-ring-width)) var(--ps-space-14) calc(2 * var(--ps-ring-width)) calc(2 * var(--ps-ring-width));
+  overflow-y: auto;
+}
 .ps-modal-body > * + * { margin-top: var(--ps-space-16); }
 
 @keyframes ps-scrim-in { from { background: transparent; } }

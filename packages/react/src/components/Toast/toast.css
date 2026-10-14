@@ -1,0 +1,49 @@
+/* ── Toast: top right, sliding in ───────────────────────────────
+   Set --ps-toast-region-top on the region's class to clear an app bar. The region spans the
+   window (it lets clicks through), so a toast never runs off a narrow screen. */
+.ps-toast-region {
+  --ps-toast-region-top: var(--ps-space-24);
+  position: fixed;
+  top: var(--ps-toast-region-top);
+  right: var(--ps-space-24);
+  left: var(--ps-space-24);
+  z-index: var(--ps-z-toast);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ps-space-8);
+  pointer-events: none;
+}
+.ps-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-10);
+  max-width: 380px;
+  padding: var(--ps-space-12) var(--ps-space-18) var(--ps-space-12) var(--ps-space-14);
+  border-radius: var(--ps-radius-lg);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-medium);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-toast-in var(--ps-dur-3) var(--ps-ease-emphasized);
+  transition: opacity var(--ps-dur-2) var(--ps-ease-accel), transform var(--ps-dur-2) var(--ps-ease-accel);
+}
+.ps-toast-icon { display: grid; flex: none; place-items: center; }
+
+/* Each tone: its container color and an icon in its own color (the icon differs too). */
+.ps-toast.is-success { background: var(--ps-success-container); }
+.ps-toast.is-success .ps-toast-icon { color: var(--ps-success); }
+.ps-toast.is-info { background: var(--ps-accent-container); }
+.ps-toast.is-info .ps-toast-icon { color: var(--ps-on-accent-container); }
+.ps-toast.is-warning { background: var(--ps-warning-container); }
+.ps-toast.is-warning .ps-toast-icon { color: var(--ps-warning); }
+.ps-toast.is-error { background: var(--ps-danger-container); }
+.ps-toast.is-error .ps-toast-icon { color: var(--ps-danger); }
+
+/* Slides out to the right. */
+.ps-toast.is-leaving { opacity: 0; transform: translateX(var(--ps-space-24)); }
+
+@keyframes ps-toast-in {
+  from { transform: translateY(calc(-1 * var(--ps-space-12))); }
+  to { transform: none; }
+}

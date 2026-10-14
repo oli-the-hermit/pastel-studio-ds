@@ -7,5 +7,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+  /* A calm loop that is the only sign that work is going on (a progress bar that has started
+     but has no amount yet) keeps running, at the pulse rate: mark it data-ps-keep-motion. */
+  [data-ps-keep-motion] {
+    animation-duration: var(--ps-dur-pulse) !important;
+    animation-iteration-count: infinite !important;
+  }
   /* stylelint-enable declaration-property-value-disallowed-list */
 }

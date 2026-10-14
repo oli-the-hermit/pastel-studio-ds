@@ -1,0 +1,57 @@
+/* ── ProgressBar: a horizontal track ────────────────────────────
+   The track sits one tonal step above its container; set --ps-progress-bar-track to change it. */
+.ps-progress-bar {
+  --ps-progress-bar-track: var(--ps-surface-3);
+  position: relative;
+  height: var(--ps-progress-height);
+  overflow: hidden;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-progress-bar-track);
+}
+.ps-progress-bar--lg { height: var(--ps-progress-height-lg); }
+.ps-progress-bar-fill {
+  height: 100%;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-accent);
+  transition: width var(--ps-dur-4) var(--ps-ease-emphasized);   /* eases rather than snaps */
+}
+.ps-progress-bar.is-completed .ps-progress-bar-fill { background: var(--ps-success); }
+.ps-progress-bar.is-failed .ps-progress-bar-fill { background: var(--ps-danger); }
+
+/* Starting: begun, no amount yet. Material's indeterminate motion: two bars of changing length
+   sweep across, the second chasing the first. With reduced motion one bar fills from start to
+   finish, empties toward the end and pauses, in a calm loop: the only sign that work is going
+   on, so it keeps running (data-ps-keep-motion, see reduced-motion.css). Stopped, the bar
+   rests in the middle. */
+.ps-progress-bar-sweep {
+  position: absolute;
+  top: 0;
+  right: 35%;
+  bottom: 0;
+  left: 35%;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-accent);
+  animation: ps-progress-bar-sweep var(--ps-dur-pulse) cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.ps-progress-bar-sweep + .ps-progress-bar-sweep {
+  right: 100%;
+  left: 0;
+  animation: ps-progress-bar-chase var(--ps-dur-pulse) cubic-bezier(0.165, 0.84, 0.44, 1) calc(var(--ps-dur-pulse) * 0.55) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-progress-bar-sweep { animation-name: ps-progress-bar-wipe; animation-timing-function: var(--ps-ease-standard); }
+  .ps-progress-bar-sweep + .ps-progress-bar-sweep { display: none; }
+}
+@keyframes ps-progress-bar-wipe {
+  0%, 10% { right: 100%; left: 0; }
+  60% { right: 0; left: 0; }
+  100% { right: 0; left: 100%; }
+}
+@keyframes ps-progress-bar-sweep {
+  0% { right: 100%; left: -35%; }
+  60%, 100% { right: -90%; left: 100%; }
+}
+@keyframes ps-progress-bar-chase {
+  0% { right: 100%; left: -200%; }
+  60%, 100% { right: -8%; left: 107%; }
+}

@@ -26,6 +26,11 @@
 @import url('./components/Popover/popover.css') layer(ps.components);
 @import url('./components/Menu/menu.css') layer(ps.components);
 @import url('./components/Modal/modal.css') layer(ps.components);
+@import url('./components/Card/card.css') layer(ps.components);
+@import url('./components/Chip/chip.css') layer(ps.components);
+@import url('./components/IconSwap/icon-swap.css') layer(ps.components);
+@import url('./components/ProgressBar/progress-bar.css') layer(ps.components);
+@import url('./components/Toast/toast.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

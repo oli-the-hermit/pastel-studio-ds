@@ -1,0 +1,19 @@
+/* ── Chip: a small read-only label ──────────────────────────── */
+.ps-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-6);
+  height: var(--ps-chip-height);
+  max-width: 220px;
+  padding: 0 var(--ps-space-10);
+  overflow: hidden;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-surface-2);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-chip--accent { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }

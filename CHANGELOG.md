@@ -57,6 +57,19 @@ is a breaking change.
 - The shared words get their first entries: `close`, `copy`, `actions`, `moreActions`. Each
   component page lists the words it uses.
 - Tokens: `--ps-modal-max-width` (520px) and `--ps-modal-max-width-wide` (620px).
+- Surfaces and feedback, ported from Focus Space: `Card` with `CardHeader` and `PanelHeader`,
+  `Chip` (default and accent), `IconSwap`, `ProgressBar` and `Toast` with `ToastRegion`.
+- New in the port: `ProgressBar` takes a `status` (`starting`, `processing`, `completed`,
+  `failed`) in place of Focus Space's `complete`; while starting, the bar has no value and
+  shows Material's indeterminate motion (two sweeping bars). With reduced motion one bar fills
+  from start to finish and pauses, in a calm loop: `data-ps-keep-motion` exempts such a loop
+  from the reduced-motion rule. `useToasts()` keeps the list of toasts and their timing.
+  The toast region spans the window, so a toast never runs off a narrow screen, and
+  `--ps-toast-region-top` moves it below an app bar.
+- A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
+  scrollbar half a padding from the text and from the edge.
+- A menu grows with its content up to `--ps-menu-max-width` (280px, Material 3's limit). Its
+  header lines up with the items' text and ends with an ellipsis past that width.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

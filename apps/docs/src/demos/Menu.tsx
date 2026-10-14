@@ -31,7 +31,7 @@ const remove: MenuItem = { key: 'delete', label: 'Delete', icon: <IconTrash size
 
 const still = (items: MenuItem[], header?: React.ReactNode) => (
   <StaticPopover className="ps-menu">
-    {header}
+    {header && <div className="ps-menu-header">{header}</div>}
     <MenuList items={items} onPicked={noop} />
   </StaticPopover>
 );
@@ -45,6 +45,7 @@ export const demo: ComponentDemo = {
     Disabled: still([rename, { ...duplicate, disabled: true }]),
     'With dividers': still([rename, duplicate, { key: 'div', divider: true }, remove]),
     'With header': still([rename, duplicate], <p className="docs-menu-header">Weekend errands</p>),
+    'Long header': still([rename, duplicate], <p className="docs-menu-header">Everything to sort out before the move at the end of the month</p>),
   },
   variants: {
     'Small trigger': <Menu items={[rename, duplicate]} triggerSize="sm" />,

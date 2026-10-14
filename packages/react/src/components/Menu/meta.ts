@@ -11,7 +11,8 @@ export const meta: ComponentMeta = {
     { name: 'Danger', description: '`danger` marks the item that deletes or discards.' },
     { name: 'Disabled', description: 'A `disabled` item stays in place and is skipped by the arrow keys.' },
     { name: 'With dividers', description: 'A divider separates groups of actions.' },
-    { name: 'With header', description: 'A `header` above the items says what or who the actions are for.' },
+    { name: 'With header', description: 'A `header` above the items says what or who the actions are for. It lines up with the text of the items.' },
+    { name: 'Long header', description: 'The menu grows with its header up to `--ps-menu-max-width` (280px); past that each line of the header ends with an ellipsis, and the inset around it stays the same.' },
   ],
   variants: [
     { name: 'Small trigger', description: '`triggerSize="sm"` for card headers and rows.' },

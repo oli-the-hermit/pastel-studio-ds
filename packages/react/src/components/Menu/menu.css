@@ -1,6 +1,11 @@
 /* ── Menu: a list of actions in a popover ───────────────────
    --ps-menu-hover: the item hover on a menu with a different fill (see --ps-popover-bg). */
-.ps-menu { --ps-menu-hover: var(--ps-surface-4); padding: var(--ps-space-6); overflow-y: auto; }
+.ps-menu { --ps-menu-hover: var(--ps-surface-4); max-width: var(--ps-menu-max-width); padding: var(--ps-space-6); overflow-y: auto; }
+/* The header lines up with the items' text, and keeps that inset however long it is: past the
+   menu's width limit each of its lines ends with an ellipsis. */
+.ps-menu-header { padding: var(--ps-space-8) var(--ps-space-12); }
+.ps-menu-header,
+.ps-menu-header * { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .ps-menu-item {
   width: 100%;
   min-height: 40px;

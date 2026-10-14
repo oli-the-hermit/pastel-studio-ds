@@ -94,6 +94,7 @@
   --ps-progress-height-lg:  8px;
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
+  --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */
   --ps-grip-width:          8px;       /* the drag grip */
   --ps-grip-edge:           10px;      /* card edge → grip */
   --ps-grip-gap:            10px;      /* grip → the row's content */

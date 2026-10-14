@@ -32,6 +32,17 @@ describe('Menu', () => {
     expect(screen.getAllByRole('separator')).toHaveLength(1);
   });
 
+  it('puts a header above the items, in its own inset, and none when not given', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<Menu items={items()} />);
+    await user.click(trigger());
+    expect(screen.getByRole('menu').querySelector('.ps-menu-header')).toBeNull();
+    rerender(<Menu items={items()} header={<span>Weekend errands</span>} />);
+    const header = screen.getByRole('menu').firstElementChild!;
+    expect(header.className).toBe('ps-menu-header');
+    expect(header.textContent).toBe('Weekend errands');
+  });
+
   it('takes its name from ariaLabel, the labels prop or the provider, in that order', () => {
     const { rerender } = render(<LabelsProvider labels={{ moreActions: 'Más acciones' }}><Menu items={items()} /></LabelsProvider>);
     expect(trigger().getAttribute('aria-label')).toBe('Más acciones');

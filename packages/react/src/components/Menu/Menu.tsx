@@ -101,7 +101,7 @@ export interface MenuProps {
   triggerSurface?: Surface;
   /** The edge of the trigger the menu lines up with. */
   align?: 'start' | 'end';
-  /** Shown above the items, e.g. who's signed in. */
+  /** Shown above the items, e.g. who's signed in. Its lines stay on one line each and end with "…" past the menu's width limit. */
   header?: React.ReactNode;
   /** Extra class on the menu panel. */
   menuClassName?: string;
@@ -155,7 +155,7 @@ export function Menu({
         className={cx('ps-menu', menuClassName)}
         role="menu"
       >
-        {header}
+        {header && <div className="ps-menu-header">{header}</div>}
         <div onKeyDown={handleMenuKeyDown}>
           <MenuList items={items} onPicked={() => setOpen(false)} />
         </div>

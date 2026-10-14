@@ -1,0 +1,12 @@
+/* ── IconSwap: play ↔ pause, sound on ↔ off ─────────────────── */
+.ps-icon-swap { position: relative; display: inline-grid; place-items: center; }
+.ps-icon-swap > span {
+  display: grid;
+  grid-area: 1 / 1;
+  place-items: center;
+  transition: opacity var(--ps-dur-2) var(--ps-ease-standard), transform var(--ps-dur-2) var(--ps-ease-emphasized);
+}
+.ps-icon-swap.is-on .ps-icon-swap-off,
+.ps-icon-swap.is-off .ps-icon-swap-on { opacity: 0; transform: scale(0.5) rotate(-60deg); }
+.ps-icon-swap.is-on .ps-icon-swap-on,
+.ps-icon-swap.is-off .ps-icon-swap-off { opacity: 1; transform: none; }

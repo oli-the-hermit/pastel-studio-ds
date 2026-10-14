@@ -63,7 +63,8 @@ async function main() {
           await page.waitForTimeout(300);
           const dir = path.join(OUT_DIR, theme);
           fs.mkdirSync(dir, { recursive: true });
-          await page.screenshot({ path: path.join(dir, `${name}.png`), fullPage: true });
+          // Looping animations (a pulse that runs even with reduced motion) are stopped, so every run matches.
+          await page.screenshot({ path: path.join(dir, `${name}.png`), fullPage: true, animations: 'disabled' });
           count++;
         } catch (err) {
           failures.push(`${theme}/${name}: ${(err as Error).message.split('\n')[0]}`);

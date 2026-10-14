@@ -580,12 +580,31 @@
   .docs-demo-form .docs-input { width: 100%; }
   .docs-demo-actions { display: flex; justify-content: flex-end; gap: var(--ps-space-8); }
   .docs-popover-body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--ps-space-12); padding: var(--ps-space-16); max-width: 280px; }
-  .docs-popover-scroll { padding: var(--ps-space-12) var(--ps-space-16); overflow-y: auto; }
+  /* Scrolls inside the padding, like a modal's body: cut before the edge, the scrollbar half a padding from the text and from the edge. */
+  .docs-popover-scroll {
+    margin: calc(var(--ps-space-12) - 2 * var(--ps-ring-width)) var(--ps-space-8) calc(var(--ps-space-12) - 2 * var(--ps-ring-width)) calc(var(--ps-space-16) - 2 * var(--ps-ring-width));
+    padding: calc(2 * var(--ps-ring-width)) var(--ps-space-8) calc(2 * var(--ps-ring-width)) calc(2 * var(--ps-ring-width));
+    overflow-y: auto;
+  }
   .docs-popover-scroll p + p { margin-top: var(--ps-space-8); }
   .docs-popover-rounder { --ps-popover-radius: var(--ps-radius-2xl); }
   .docs-popover-tinted { --ps-popover-bg: var(--ps-accent-container); color: var(--ps-on-accent-container); }
-  .docs-menu-header { padding: var(--ps-space-8) var(--ps-space-12); font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
+  .docs-menu-header { font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
   .docs-context-area { padding: var(--ps-space-24); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); color: var(--ps-text-2); }
+  /* Cards sit on the page, so their examples get a patch of page background, full width. */
+  .docs-page-patch { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ps-space-16); width: 100%; padding: var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
+  .docs-page-patch > .ps-card { flex: 1 1 280px; }
+  .docs-page-patch > .ps-card.docs-card-narrow { flex: 0 1 360px; }
+  .docs-gallery-item:has(.docs-page-patch, .docs-gallery-span) { grid-column: 1 / -1; }
+  .docs-card-body { display: flex; flex-direction: column; gap: var(--ps-space-12); }
+  .docs-card-body p { color: var(--ps-text-2); }
+  /* As wide as the stage: progress bars and the surfaces they sit on. */
+  .docs-demo-wide { flex: 1 1 100%; min-width: 0; }
+  .docs-surface.docs-demo-wide { display: flex; }
+  .docs-surface.docs-demo-wide > * { flex: 1; }
+  .docs-demo-progress { display: flex; flex-direction: column; gap: var(--ps-space-8); width: min(360px, 100%); }
+  .docs-progress-on-3 { --ps-progress-bar-track: var(--ps-surface-4); }
+  .docs-toast-region { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-4)); }
 
   .docs-guidance { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--ps-space-16); margin: var(--ps-space-16) 0; }
   .docs-guidance-group { padding: var(--ps-space-16) var(--ps-space-20); border-radius: var(--ps-radius-lg); background: var(--ps-surface-1); }

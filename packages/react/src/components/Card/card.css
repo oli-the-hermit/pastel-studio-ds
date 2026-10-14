@@ -1,0 +1,45 @@
+/* ── Card: a tonal surface, its header, and the panel header ── */
+.ps-card {
+  min-width: 0;
+  padding: var(--ps-space-24);
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+}
+
+.ps-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ps-space-12);
+  margin-bottom: var(--ps-space-20);
+}
+.ps-card-header-main { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-4); min-width: 0; }
+.ps-card-title {
+  overflow: hidden;
+  font-size: var(--ps-font-size-2xl);
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-tight);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-card-title-row { display: flex; align-items: center; gap: var(--ps-space-10); min-width: 0; }
+.ps-card-title-row > .ps-card-title { min-width: 0; }
+.ps-card-title-row > :not(.ps-card-title) { flex: none; }
+.ps-card-subtitle-row { display: flex; flex-wrap: wrap; gap: var(--ps-space-6); margin-top: var(--ps-space-6); }
+.ps-card-header-actions { display: flex; flex: none; gap: var(--ps-space-2); }
+
+.ps-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ps-space-8);
+  margin-bottom: var(--ps-space-12);
+  padding: 0 var(--ps-space-4);
+}
+.ps-panel-header-title {
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+  color: var(--ps-text-2);
+}
