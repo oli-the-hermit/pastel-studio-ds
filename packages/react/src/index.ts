@@ -45,3 +45,5 @@ export * from './components/EmptyState';
 export * from './components/QueuePanel';
 export * from './components/PlayQueue';
 export * from './components/TrackList';
+export * from './components/MusicPlayer';
+export * from './components/NowPlayingBar';

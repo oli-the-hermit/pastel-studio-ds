@@ -601,6 +601,12 @@
   .docs-card-body { display: flex; flex-direction: column; gap: var(--ps-space-12); }
   .docs-card-body p { color: var(--ps-text-2); }
   .docs-page-patch > .docs-queue-panel { flex: 0 1 340px; }
+  /* Players measure their own width: a stage gives each example the width it shows. */
+  .docs-player-stage { width: min(440px, 100%); }
+  .docs-player-stage.is-narrow { width: min(380px, 100%); }
+  .docs-player-stage.is-wide { width: min(720px, 100%); }
+  .docs-player-stage.is-panel { width: min(280px, 100%); }
+  .docs-player-stage.is-bar { width: 100%; }
   .docs-page-patch > .docs-play-queue { flex: 0 1 var(--ps-play-queue-width); max-height: 560px; }
   .docs-card-flush { padding: var(--ps-space-8) var(--ps-space-12); color: var(--ps-text-2); }
   /* As wide as the stage: progress bars and the surfaces they sit on. */

@@ -110,6 +110,10 @@ is a breaking change.
   package on the library's pieces. `Track` and `Album` types, `formatDuration` in the reader's
   language, `IconPlaylistAdd`, 23 words, and tokens for the track row, the time column and the
   queue width.
+- `MusicPlayer` (a column or a row, chosen by its own width; a side-panel size) and `NowPlayingBar`
+  (folds its tools, then its seek into a thin progress line, then down to play), adopted from the
+  media package on the library's pieces, with sm controls throughout. TransportControls marks its
+  play button. Three icons, nine words, `--ps-progress-hairline`.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

@@ -1,0 +1,48 @@
+/* ── NowPlayingBar: the player bar along a music app ──────────── */
+.ps-now-playing-bar {
+  min-width: 0;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+  color: var(--ps-text-1);
+  container: ps-now-playing-bar / inline-size;
+}
+.ps-now-playing-bar-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ps-space-16);
+  padding: var(--ps-space-10) var(--ps-space-16) var(--ps-space-10) var(--ps-space-10);
+}
+.ps-now-playing-bar-track { display: flex; align-items: center; gap: var(--ps-space-12); min-width: 0; }
+.ps-now-playing-bar-info { flex: 0 1 auto; min-width: 0; }
+.ps-now-playing-bar-empty { color: var(--ps-text-3); font-size: var(--ps-font-size-sm); }
+.ps-now-playing-bar-center { display: flex; flex-direction: column; align-items: center; gap: var(--ps-space-2); min-width: 0; }
+.ps-now-playing-bar-seek { display: flex; align-items: center; gap: var(--ps-space-4); width: 100%; max-width: 560px; }
+.ps-now-playing-bar-tools { display: flex; align-items: center; justify-content: flex-end; gap: var(--ps-space-2); min-width: 0; }
+.ps-now-playing-bar-hairline { display: none; }
+
+/* Medium: the side tools and the seek go; a thin progress line runs across the top. */
+@container ps-now-playing-bar (max-width: 900px) {
+  .ps-now-playing-bar-tools .ps-now-playing-bar-optional,
+  .ps-now-playing-bar-volume .ps-volume-control-slider { display: none; }
+  .ps-now-playing-bar-inner { grid-template-columns: minmax(0, 1fr) auto minmax(0, auto); }
+  .ps-now-playing-bar-seek { display: none; }
+  .ps-now-playing-bar-center .ps-transport-controls { padding: var(--ps-space-4) 0; }
+  .ps-now-playing-bar-hairline {
+    position: absolute;
+    inset: 0 var(--ps-space-24) auto;
+    display: block;
+    height: var(--ps-progress-hairline);
+    overflow: hidden;
+    border-radius: var(--ps-radius-pill);
+    background: var(--ps-surface-3);
+  }
+  .ps-now-playing-bar-hairline > div { height: 100%; background: var(--ps-accent); }
+}
+/* Narrow (a phone): only play stays in the middle. */
+@container ps-now-playing-bar (max-width: 520px) {
+  .ps-now-playing-bar-center .ps-transport-controls > :not(.ps-transport-controls-play) { display: none; }
+  .ps-now-playing-bar-like,
+  .ps-now-playing-bar-volume { display: none; }
+}

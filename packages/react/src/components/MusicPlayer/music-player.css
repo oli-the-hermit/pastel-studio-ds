@@ -1,0 +1,64 @@
+/* ── MusicPlayer: the player card ───────────────────────────────
+   One markup, two arrangements chosen by the card's own width:
+     stack (narrow)  head, art, track, seek, transport, foot: Focus Space's player card
+     row   (wide)    the art on the left, everything else beside it */
+.ps-music-player {
+  min-width: 0;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+  color: var(--ps-text-1);
+  container: ps-music-player / inline-size;
+}
+.ps-music-player-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'head' 'art' 'track' 'seek' 'transport' 'foot';
+  gap: var(--ps-space-18);
+  padding: var(--ps-space-24);
+}
+.ps-music-player-head { display: flex; grid-area: head; align-items: center; justify-content: space-between; gap: var(--ps-space-12); min-width: 0; }
+.ps-music-player-source { max-width: 60%; }
+.ps-music-player-art { grid-area: art; }
+.ps-music-player-track { display: flex; grid-area: track; align-items: flex-start; gap: var(--ps-space-8); min-width: 0; }
+.ps-music-player-info { flex: 1; }
+.ps-music-player-seek { display: flex; grid-area: seek; flex-direction: column; gap: var(--ps-space-2); }
+.ps-music-player-times { display: flex; justify-content: space-between; margin: 0 calc(var(--ps-space-6) * -1); }
+.ps-music-player-transport { grid-area: transport; padding: 0 var(--ps-space-2); }
+.ps-music-player-foot { display: flex; grid-area: foot; align-items: center; gap: var(--ps-space-2); min-width: 0; margin: 0 calc(var(--ps-space-6) * -1); }
+.ps-music-player-spacer { flex: 1; }
+
+/* Row: the art beside the controls. */
+.ps-music-player--row .ps-music-player-inner {
+  grid-template-columns: minmax(160px, 38%) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'art head'
+    'art track'
+    'art .'
+    'art seek'
+    'art transport'
+    'foot foot';
+  column-gap: var(--ps-space-24);
+  row-gap: var(--ps-space-12);
+}
+@container ps-music-player (min-width: 620px) {
+  .ps-music-player:not(.ps-music-player--stack) .ps-music-player-inner {
+    grid-template-columns: minmax(160px, 38%) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      'art head'
+      'art track'
+      'art .'
+      'art seek'
+      'art transport'
+      'foot foot';
+    column-gap: var(--ps-space-24);
+    row-gap: var(--ps-space-12);
+  }
+}
+/* Very narrow (a side panel): the transport drops its circles' fill and its big play to fit. */
+@container ps-music-player (max-width: 300px) {
+  .ps-music-player-inner { gap: var(--ps-space-14); padding: var(--ps-space-16); }
+  .ps-music-player-transport .ps-player-control:not(.ps-player-control--primary, .ps-player-control--ghost) { background: transparent; }
+  .ps-music-player-transport .ps-player-control--primary { width: var(--ps-player-control-size); height: var(--ps-player-control-size); }
+}

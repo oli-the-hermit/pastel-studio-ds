@@ -105,7 +105,7 @@ export const TransportControls = forwardRef<HTMLDivElement, TransportControlsPro
             <IconStop size={glyph - 2} />
           </PlayerControl>
         )}
-        <PlayerControl size={size} variant={playVariant} label={playing ? labels.pause : labels.play} onClick={onPlayPause}>
+        <PlayerControl size={size} variant={playVariant} label={playing ? labels.pause : labels.play} onClick={onPlayPause} className="ps-transport-controls-play">
           {playing ? <IconPause size={playVariant === 'primary' ? glyph + 6 : glyph} /> : <IconPlay size={playVariant === 'primary' ? glyph + 6 : glyph} />}
         </PlayerControl>
         {onSkipForward && (

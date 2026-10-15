@@ -63,6 +63,14 @@ export const defaultLabels = {
   playTrack: 'Play {title}',
   pauseTrack: 'Pause {title}',
   trackActions: 'More actions for {title}',
+  player: 'Player',
+  nothingPlaying: 'Nothing playing',
+  seek: 'Seek',
+  timeOf: '{current} of {total}',
+  lyrics: 'Lyrics',
+  soundSettings: 'Sound settings',
+  miniPlayer: 'Mini player',
+  fullScreenPlayer: 'Full screen player',
 };
 
 export type Labels = typeof defaultLabels;

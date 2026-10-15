@@ -114,6 +114,7 @@
   --ps-track-row-height:    56px;      /* a row in a track list: cover, title and artist */
   --ps-track-time-col:      56px;      /* the duration column of a track list */
   --ps-play-queue-width:    340px;     /* the play queue beside a player */
+  --ps-progress-hairline:   3px;       /* the thin progress line of a folded player bar */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

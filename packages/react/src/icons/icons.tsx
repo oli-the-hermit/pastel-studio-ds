@@ -490,6 +490,37 @@ export const IconVolumeMute: React.FC<IconProps> = (p) => (
 );
 
 /* ── Music ── */
+export const IconLyrics: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4A2.5 2.5 0 0 1 4 13.5z" />
+    <line x1="8" y1="8" x2="16" y2="8" />
+    <line x1="8" y1="11.5" x2="13" y2="11.5" />
+  </StrokeIcon>
+);
+
+export const IconQueue: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="3" y1="6" x2="16" y2="6" />
+    <line x1="3" y1="12" x2="12" y2="12" />
+    <line x1="3" y1="18" x2="10" y2="18" />
+    <path d="M15 12.5v7.2a.6.6 0 0 0 .9.5l5.4-3.6a.6.6 0 0 0 0-1l-5.4-3.6a.6.6 0 0 0-.9.5z" fill="currentColor" />
+  </StrokeIcon>
+);
+
+export const IconSliders: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="4" y1="21" x2="4" y2="14" />
+    <line x1="4" y1="10" x2="4" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12" y2="3" />
+    <line x1="20" y1="21" x2="20" y2="16" />
+    <line x1="20" y1="12" x2="20" y2="3" />
+    <line x1="1" y1="14" x2="7" y2="14" />
+    <line x1="9" y1="8" x2="15" y2="8" />
+    <line x1="17" y1="16" x2="23" y2="16" />
+  </StrokeIcon>
+);
+
 export const IconPlaylistAdd: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <line x1="3" y1="6" x2="16" y2="6" />
