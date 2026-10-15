@@ -27,3 +27,4 @@ export * from './components/SegmentedControl';
 export * from './components/Field';
 export * from './components/Select';
 export * from './components/PlayerControl';
+export * from './components/Slider';

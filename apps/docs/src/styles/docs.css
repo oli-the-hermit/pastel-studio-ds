@@ -613,6 +613,7 @@
     --ps-player-control-on-phase: var(--ps-on-live);
     --ps-player-control-phase-text: var(--ps-live);
   }
+  .docs-slider-break { --ps-slider-fill: var(--ps-live); }
   .docs-toast-region { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-4)); }
 
   .docs-guidance { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--ps-space-16); margin: var(--ps-space-16) 0; }

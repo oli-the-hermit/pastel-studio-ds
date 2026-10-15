@@ -100,6 +100,12 @@
   --ps-player-control-size-sm-primary: 42px;
   --ps-progress-height:     6px;
   --ps-progress-height-lg:  8px;
+  --ps-slider-height:       6px;       /* the track of a seek or volume slider */
+  --ps-slider-height-sm:    4px;
+  --ps-slider-hit:          20px;      /* the pointer target around the thin track */
+  --ps-slider-knob:         16px;
+  --ps-slider-knob-sm:      12px;
+  --ps-slider-mark:         2px;       /* the gap between chapters */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

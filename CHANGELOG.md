@@ -75,6 +75,12 @@ is a breaking change.
   `PlayerControl`'s phase color is four tokens on its class (`--ps-player-control-phase`…).
 - Tokens: `--ps-switch-width`, `--ps-switch-height`, `--ps-switch-knob` and the five
   `--ps-player-control-size*` sizes, all Focus Space values. Seven shared words for Select.
+- `Slider`, adopted from the media package and kept hand-built: pointer drag, keyboard steps
+  (arrows, Page Up/Down, Home/End), a buffered range, chapter gaps, a hover preview, `sm`, and
+  a knob that is always shown, shown on hover or hidden. `readOnly` turns it into a progress
+  track, the look of Focus Space's timer scrubber. Its colors are tokens on its class; a
+  disabled slider uses the tertiary color instead of transparency. Size tokens
+  `--ps-slider-height(-sm)`, `--ps-slider-hit`, `--ps-slider-knob(-sm)`, `--ps-slider-mark`.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.
 - A menu grows with its content up to `--ps-menu-max-width` (280px, Material 3's limit). Its

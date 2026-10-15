@@ -1,0 +1,88 @@
+/* ── Slider: seek, volume and timer tracks ──────────────────────
+   Its colors are tokens on its class, so a player can retint it:
+     --ps-slider-fill (the phase color)   --ps-slider-track
+     --ps-slider-buffer                   --ps-slider-halo (the ring around the knob) */
+.ps-slider {
+  --ps-slider-fill: var(--ps-accent);
+  --ps-slider-track: var(--ps-surface-3);
+  --ps-slider-buffer: var(--ps-surface-4);
+  --ps-slider-halo: var(--ps-surface-1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: var(--ps-slider-hit);
+  cursor: pointer;
+  touch-action: none;
+}
+.ps-slider.is-disabled { --ps-slider-fill: var(--ps-text-3); cursor: default; }
+
+.ps-slider-track {
+  display: flex;
+  gap: var(--ps-slider-mark);
+  width: 100%;
+  height: var(--ps-slider-height);
+  transition: height var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-slider--sm .ps-slider-track { height: var(--ps-slider-height-sm); }
+.ps-slider-segment {
+  position: relative;
+  flex-basis: 0;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-slider-track);
+}
+.ps-slider-buffer,
+.ps-slider-fill { position: absolute; inset: 0 auto 0 0; }
+.ps-slider-buffer { background: var(--ps-slider-buffer); }
+.ps-slider-fill { background: var(--ps-slider-fill); }
+
+.ps-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: var(--ps-slider-knob);
+  height: var(--ps-slider-knob);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-slider-fill);
+  box-shadow: 0 0 0 var(--ps-ring-width-xl) var(--ps-slider-halo);
+  transform: translate(-50%, -50%);
+  transition: transform var(--ps-dur-2) var(--ps-ease-emphasized);
+}
+.ps-slider--sm .ps-slider-thumb { width: var(--ps-slider-knob-sm); height: var(--ps-slider-knob-sm); }
+.ps-slider-thumb:focus-visible { outline-offset: var(--ps-ring-width-xl); }
+
+/* A thin bar until you reach for it. */
+.ps-slider--knob-hover .ps-slider-thumb { transform: translate(-50%, -50%) scale(0); }
+.ps-slider--knob-hover:hover .ps-slider-thumb,
+.ps-slider--knob-hover.is-dragging .ps-slider-thumb,
+.ps-slider--knob-hover .ps-slider-thumb:focus-visible { transform: translate(-50%, -50%) scale(1); }
+.ps-slider--knob-hover:hover .ps-slider-track,
+.ps-slider--knob-hover.is-dragging .ps-slider-track { height: calc(var(--ps-slider-height) + var(--ps-space-2)); }
+.ps-slider--sm.ps-slider--knob-hover:hover .ps-slider-track,
+.ps-slider--sm.ps-slider--knob-hover.is-dragging .ps-slider-track { height: calc(var(--ps-slider-height-sm) + var(--ps-space-2)); }
+.ps-slider--knob-none .ps-slider-thumb { width: var(--ps-slider-height); height: var(--ps-slider-height); background: transparent; box-shadow: none; }
+.ps-slider--sm.ps-slider--knob-none .ps-slider-thumb { width: var(--ps-slider-height-sm); height: var(--ps-slider-height-sm); }
+
+/* Read only: progress, like a running timer. As tall as its track; it follows a 1s tick smoothly. */
+.ps-slider.is-read-only { height: auto; cursor: default; }
+.ps-slider.is-read-only .ps-slider-fill { transition: width var(--ps-dur-progress) linear; }
+.ps-slider.is-read-only .ps-slider-thumb { transition: left var(--ps-dur-progress) linear; }
+
+.ps-slider-preview {
+  position: absolute;
+  bottom: calc(100% + var(--ps-space-6));
+  padding: var(--ps-space-4) var(--ps-space-8);
+  border-radius: var(--ps-radius-sm);
+  background: var(--ps-surface-4);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: var(--ps-elev-overlay);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
