@@ -94,6 +94,11 @@ is a breaking change.
   `MediaController` and `MediaState` types and `useMediaElement`, plus `formatTime`.
 - Tokens: `--ps-cover-size-xs/sm/md/lg`, `--ps-dur-equalizer` (Focus Space's 900ms) and
   `--ps-dur-spin`. Icons: `IconMusic`, `IconExplicit`. Three shared words.
+- Transport, adopted from the media package on PlayerControl: `TransportControls` (the
+  buttons follow the handlers given; shuffle, repeat off/all/one with `nextRepeat`, skips,
+  stop; `md` and `sm`, cluster or spread), `LikeButton` and `VolumeControl` (expand, inline
+  or button; with `VolumeIcon`). Their words join the shared list; ten transport icons; the
+  `--ps-volume-slider-width` token.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

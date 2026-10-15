@@ -43,6 +43,9 @@
 @import url('./components/CoverArt/cover-art.css') layer(ps.components);
 @import url('./components/TrackInfo/track-info.css') layer(ps.components);
 @import url('./components/MediaTime/media-time.css') layer(ps.components);
+@import url('./components/TransportControls/transport-controls.css') layer(ps.components);
+@import url('./components/LikeButton/like-button.css') layer(ps.components);
+@import url('./components/VolumeControl/volume-control.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

@@ -37,3 +37,6 @@ export * from './components/Spinner';
 export * from './components/CoverArt';
 export * from './components/TrackInfo';
 export * from './components/MediaTime';
+export * from './components/TransportControls';
+export * from './components/LikeButton';
+export * from './components/VolumeControl';

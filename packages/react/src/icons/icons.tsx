@@ -406,6 +406,89 @@ export const IconRestore: React.FC<IconProps> = p => (
   </StrokeIcon>
 );
 
+/* ── Transport ── */
+export const IconPrevious: React.FC<IconProps> = (p) => (
+  <FillIcon {...p}>
+    <path d="M19 5.6v12.8a1 1 0 0 1-1.55.83l-9.2-6.4a1 1 0 0 1 0-1.66l9.2-6.4A1 1 0 0 1 19 5.6z" />
+    <rect x="4.4" y="5" width="2.6" height="14" rx="1.1" />
+  </FillIcon>
+);
+
+export const IconStop: React.FC<IconProps> = (p) => (
+  <FillIcon {...p}>
+    <rect x="5.5" y="5.5" width="13" height="13" rx="2.2" />
+  </FillIcon>
+);
+
+export const IconReplay10: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1" />
+    <polyline points="3.5 3.5 3.5 8.5 8.5 8.5" />
+    <path d="M10 10v5" strokeWidth={1.8} />
+    <rect x="12.6" y="10" width="3" height="5" rx="1.5" strokeWidth={1.8} />
+  </StrokeIcon>
+);
+
+export const IconForward10: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1" />
+    <polyline points="20.5 3.5 20.5 8.5 15.5 8.5" />
+    <path d="M8.6 10v5" strokeWidth={1.8} />
+    <rect x="11.2" y="10" width="3" height="5" rx="1.5" strokeWidth={1.8} />
+  </StrokeIcon>
+);
+
+export const IconShuffle: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <polyline points="16 3 21 3 21 8" />
+    <line x1="4" y1="20" x2="21" y2="3" />
+    <polyline points="21 16 21 21 16 21" />
+    <line x1="15" y1="15" x2="21" y2="21" />
+    <line x1="4" y1="4" x2="9" y2="9" />
+  </StrokeIcon>
+);
+
+export const IconRepeat: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <polyline points="17 2 21 6 17 10" />
+    <path d="M3 11V9a3 3 0 0 1 3-3h15" />
+    <polyline points="7 22 3 18 7 14" />
+    <path d="M21 13v2a3 3 0 0 1-3 3H3" />
+  </StrokeIcon>
+);
+
+export const IconRepeatOne: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <polyline points="17 2 21 6 17 10" />
+    <path d="M3 11V9a3 3 0 0 1 3-3h15" />
+    <polyline points="7 22 3 18 7 14" />
+    <path d="M21 13v2a3 3 0 0 1-3 3H3" />
+    <path d="M11 10.5 12.5 9.5V14.5" strokeWidth={1.8} />
+  </StrokeIcon>
+);
+
+/** A heart; `filled` for the liked state. */
+export const IconHeart: React.FC<IconProps & { filled?: boolean }> = ({ filled = false, ...p }) => (
+  <StrokeIcon {...p} fill={filled ? 'currentColor' : 'none'}>
+    <path d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.8 3.8 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.4 0 5.6 3.3 4.4 6.7-1.7 4.7-9.2 9.3-9.2 9.3z" />
+  </StrokeIcon>
+);
+
+export const IconVolumeLow: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M11 5 6 9H2v6h4l5 4V5z" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+  </StrokeIcon>
+);
+
+export const IconVolumeMute: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M11 5 6 9H2v6h4l5 4V5z" />
+    <line x1="22" y1="9" x2="16" y2="15" />
+    <line x1="16" y1="9" x2="22" y2="15" />
+  </StrokeIcon>
+);
+
 /* ── Music ── */
 export const IconMusic: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>

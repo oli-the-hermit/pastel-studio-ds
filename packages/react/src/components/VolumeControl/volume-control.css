@@ -1,0 +1,19 @@
+/* ── VolumeControl: a mute toggle and a volume slider ───────── */
+.ps-volume-control { display: flex; align-items: center; min-width: 0; }
+.ps-volume-control-slider { width: var(--ps-volume-slider-width); padding: 0 var(--ps-space-10) 0 var(--ps-space-4); }
+
+/* Expand: folded to the icon until hovered or focused. */
+.ps-volume-control--expand .ps-volume-control-slider {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: width var(--ps-dur-3) var(--ps-ease-emphasized), padding var(--ps-dur-3) var(--ps-ease-emphasized);
+}
+.ps-volume-control--expand:hover .ps-volume-control-slider,
+.ps-volume-control--expand:focus-within .ps-volume-control-slider {
+  width: var(--ps-volume-slider-width);
+  padding: 0 var(--ps-space-10) 0 var(--ps-space-4);
+  overflow: visible;
+  visibility: visible;
+}

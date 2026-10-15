@@ -1,0 +1,4 @@
+/* ── TransportControls: the row of player buttons ───────────── */
+.ps-transport-controls { display: flex; align-items: center; gap: var(--ps-space-10); min-width: 0; }
+.ps-transport-controls--sm { gap: var(--ps-space-6); }
+.ps-transport-controls--spread { justify-content: space-between; width: 100%; gap: 0; }

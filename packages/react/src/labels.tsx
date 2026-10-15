@@ -23,6 +23,23 @@ export const defaultLabels = {
   loading: 'Loading',
   explicit: 'Explicit',
   showRemainingTime: 'Show remaining time',
+  playback: 'Playback',
+  play: 'Play',
+  pause: 'Pause',
+  previous: 'Previous',
+  next: 'Next',
+  stop: 'Stop',
+  skipBack: 'Back {seconds} seconds',
+  skipForward: 'Forward {seconds} seconds',
+  shuffle: 'Shuffle',
+  repeatOff: 'Repeat: off',
+  repeatAll: 'Repeat: all',
+  repeatOne: 'Repeat: this track',
+  like: 'Add to Liked',
+  unlike: 'Remove from Liked',
+  mute: 'Mute',
+  unmute: 'Unmute',
+  volume: 'Volume',
 };
 
 export type Labels = typeof defaultLabels;

@@ -1,0 +1,7 @@
+/* ── LikeButton: a heart that pops when liked ───────────────── */
+.ps-like-button.is-on svg { animation: ps-like-button-pop var(--ps-dur-3) var(--ps-ease-emphasized); }
+@keyframes ps-like-button-pop {
+  0% { transform: scale(0.7); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
