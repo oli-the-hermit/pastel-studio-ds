@@ -112,6 +112,11 @@ export const defaultLabels = {
   videoPlayer: 'Video player',
   video: 'Video',
   backToPlayer: 'Back to player',
+  clearSearch: 'Clear search',
+  address: 'Address',
+  foldersIn: 'Folders in {name}',
+  earlierFolders: 'Earlier folders',
+  editPath: 'Edit path',
 };
 
 export type Labels = typeof defaultLabels;

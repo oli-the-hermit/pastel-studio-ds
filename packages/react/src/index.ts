@@ -56,3 +56,8 @@ export * from './components/VideoSurface';
 export * from './components/MediaControls';
 export * from './components/VideoPlayer';
 export * from './components/PipPlayer';
+export * from './components/Toolbar';
+export * from './components/SearchField';
+export * from './components/AddressBar';
+export * from './components/TreeView';
+export * from './components/StatusBar';

@@ -131,6 +131,15 @@ is a breaking change.
   shortcuts) and `PipPlayer` (a picture-in-picture window that shows as much as its size allows),
   adopted from the media package. The window drag regions come from `dragHandleProps`, so the
   library knows nothing about Tauri (the user's choice). `useIdle` waits while a menu is open.
+- A new Files group, adopted from the media package: `Toolbar` (with `ToolbarGroup`,
+  `ToolbarDivider`, `ToolbarSpacer`; ← and → move between its buttons), `SearchField`,
+  `AddressBar` (breadcrumbs, subfolder menus, an earlier-folders menu, an editable path that
+  gives focus back when it closes), `TreeView` (roving focus, lazy children) and `StatusBar`.
+  Five words. Tokens `--ps-row-height` (40px, the menu and option rows' existing height, now
+  shared) and `--ps-tree-indent` (16px). 31 file icons: folders, file types, drives, cut, paste,
+  rename, sort and view modes.
+- A disabled `IconButton` dims its glyph to `--ps-text-3`, like a disabled `Button` (the media
+  package's extra 50% opacity is left out: nothing rests translucent).
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

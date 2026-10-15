@@ -1,0 +1,5 @@
+/* ── Toolbar: a row of commands in groups ───────────────────── */
+.ps-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-6); min-width: 0; }
+.ps-toolbar-group { display: flex; align-items: center; gap: var(--ps-space-2); }
+.ps-toolbar-divider { width: var(--ps-hairline); height: var(--ps-space-20); margin: 0 var(--ps-space-4); background: var(--ps-surface-3); }
+.ps-toolbar-spacer { flex: 1; }

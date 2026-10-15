@@ -7,7 +7,7 @@ export const meta: ComponentMeta = {
   status: 'beta',
   states: [
     { name: 'Default', description: 'Quiet until hovered: no fill, secondary text color.' },
-    { name: 'Disabled', description: 'Set `disabled`. It cannot be pressed or focused.' },
+    { name: 'Disabled', description: 'Set `disabled`: the glyph dims and it cannot be pressed or focused.' },
     { name: 'Active', description: '`active` shows it as on, e.g. the toggle of an open panel.' },
     { name: 'Pressed', description: '`pressed` makes it a toggle: it announces on or off and shows the active look when on.' },
   ],

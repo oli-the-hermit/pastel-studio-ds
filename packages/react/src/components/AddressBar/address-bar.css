@@ -1,0 +1,43 @@
+/* ── AddressBar: breadcrumbs, folder menus and an editable path ── */
+.ps-address-bar {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  height: var(--ps-button-height);
+  padding: 0 var(--ps-space-4);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-field-bg);
+}
+.ps-address-bar.is-editing { padding: 0 var(--ps-space-16); box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-accent); }
+.ps-address-bar-input { flex: 1; min-width: 0; height: 100%; border: none; background: none; color: var(--ps-text-1); font-size: var(--ps-font-size-md); outline: none; }
+.ps-address-bar-crumbs { display: flex; align-items: center; min-width: 0; overflow: hidden; list-style: none; }
+/* Short of room, earlier crumbs shrink to "…" first; the current folder holds out longest. */
+.ps-address-bar-crumb { display: flex; flex: 0 1 auto; align-items: center; min-width: 0; }
+.ps-address-bar-crumb:last-child { flex-shrink: 0.15; }
+.ps-address-bar-crumb.is-overflow { flex: none; }
+.ps-address-bar-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ps-space-6);
+  min-width: 0;
+  height: var(--ps-button-height-xs);
+  padding: 0 var(--ps-space-10);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-medium);
+  white-space: nowrap;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-address-bar-label { overflow: hidden; text-overflow: ellipsis; }
+.ps-address-bar-segment:hover,
+.ps-address-bar-segment.is-active { background: var(--ps-field-hover); color: var(--ps-text-1); }
+.ps-address-bar-segment.is-current { color: var(--ps-text-1); font-weight: var(--ps-font-weight-semibold); }
+.ps-address-bar-overflow-icon { transform: rotate(90deg); }
+.ps-address-bar-separator,
+.ps-address-bar-chevron { display: grid; flex: none; place-items: center; width: var(--ps-space-20); height: var(--ps-button-height-xs); color: var(--ps-text-3); }
+.ps-address-bar-chevron { border-radius: var(--ps-radius-sm); transition: background var(--ps-transition), color var(--ps-transition), transform var(--ps-transition); }
+.ps-address-bar-chevron:hover { background: var(--ps-field-hover); color: var(--ps-text-1); }
+.ps-address-bar-chevron.is-active { color: var(--ps-accent-text); transform: rotate(90deg); }
+.ps-address-bar-edit { flex: 1; align-self: stretch; min-width: var(--ps-space-24); border-radius: var(--ps-radius-pill); cursor: text; }

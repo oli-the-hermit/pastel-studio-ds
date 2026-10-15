@@ -690,3 +690,257 @@ export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ clas
     </svg>
   </span>
 );
+
+// File and file-manager icons: 2px strokes on the 24 grid, like the rest of the set.
+
+export const IconFolder: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.2h7.4A2.5 2.5 0 0 1 21 9.7v7.8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" />
+  </StrokeIcon>
+);
+
+/** A folder drawn solid: folders in file views, so they read apart from files at a glance. */
+export const IconFolderSolid: React.FC<IconProps> = ({ size = 18, className = '', ...p }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden="true" {...p}>
+    <path fill="currentColor" d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.2h7.4A2.5 2.5 0 0 1 21 9.7v7.8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" />
+  </svg>
+);
+
+export const IconFolderPlus: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.2h7.4A2.5 2.5 0 0 1 21 9.7v7.8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" />
+    <line x1="12" y1="11" x2="12" y2="17" />
+    <line x1="9" y1="14" x2="15" y2="14" />
+  </StrokeIcon>
+);
+
+export const IconFile: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M14 2.5H7A2.5 2.5 0 0 0 4.5 5v14A2.5 2.5 0 0 0 7 21.5h10a2.5 2.5 0 0 0 2.5-2.5V8z" />
+    <polyline points="14 2.5 14 8 19.5 8" />
+  </StrokeIcon>
+);
+
+export const IconFileText: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M14 2.5H7A2.5 2.5 0 0 0 4.5 5v14A2.5 2.5 0 0 0 7 21.5h10a2.5 2.5 0 0 0 2.5-2.5V8z" />
+    <polyline points="14 2.5 14 8 19.5 8" />
+    <line x1="8.5" y1="13" x2="15.5" y2="13" />
+    <line x1="8.5" y1="17" x2="13" y2="17" />
+  </StrokeIcon>
+);
+
+export const IconFileImage: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="3" />
+    <circle cx="9" cy="9" r="1.8" />
+    <path d="m21 15-4.6-4.6a1.5 1.5 0 0 0-2.1 0L5 19.7" />
+  </StrokeIcon>
+);
+
+export const IconFileVideo: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2.5" y="5" width="14" height="14" rx="3" />
+    <path d="m16.5 10 5-3v10l-5-3" />
+  </StrokeIcon>
+);
+
+export const IconFileAudio: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </StrokeIcon>
+);
+
+export const IconFileCode: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <polyline points="8 7 3 12 8 17" />
+    <polyline points="16 7 21 12 16 17" />
+    <line x1="13.5" y1="5" x2="10.5" y2="19" />
+  </StrokeIcon>
+);
+
+export const IconFileArchive: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3.5" y="3" width="17" height="18" rx="3" />
+    <line x1="12" y1="3" x2="12" y2="5" />
+    <line x1="12" y1="7" x2="12" y2="9" />
+    <rect x="10" y="11" width="4" height="5" rx="1.2" />
+  </StrokeIcon>
+);
+
+export const IconFileSheet: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="3" />
+    <line x1="3" y1="9" x2="21" y2="9" />
+    <line x1="3" y1="15" x2="21" y2="15" />
+    <line x1="9.5" y1="9" x2="9.5" y2="21" />
+  </StrokeIcon>
+);
+
+export const IconFileDoc: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M14 2.5H7A2.5 2.5 0 0 0 4.5 5v14A2.5 2.5 0 0 0 7 21.5h10a2.5 2.5 0 0 0 2.5-2.5V8z" />
+    <polyline points="14 2.5 14 8 19.5 8" />
+    <path d="m8 12 1.4 5 1.6-4 1.6 4 1.4-5" />
+  </StrokeIcon>
+);
+
+export const IconFile3d: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7z" />
+    <polyline points="3.5 7 12 11.5 20.5 7" />
+    <line x1="12" y1="11.5" x2="12" y2="21.5" />
+  </StrokeIcon>
+);
+
+export const IconApp: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+    <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+    <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+    <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+  </StrokeIcon>
+);
+
+export const IconFont: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <polyline points="4 20 10 4 16 20" />
+    <line x1="6.4" y1="14" x2="13.6" y2="14" />
+    <path d="M17 13a2.5 2.5 0 1 1 0 5h0" />
+    <line x1="20" y1="11" x2="20" y2="20" />
+  </StrokeIcon>
+);
+
+export const IconDrive: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2.5" y="12" width="19" height="8" rx="2.5" />
+    <path d="M5 12 7.5 5h9L19 12" />
+    <line x1="6.5" y1="16" x2="6.51" y2="16" />
+    <line x1="10" y1="16" x2="10.01" y2="16" />
+  </StrokeIcon>
+);
+
+export const IconMonitor: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2.5" y="3.5" width="19" height="13" rx="2.5" />
+    <line x1="8" y1="21" x2="16" y2="21" />
+    <line x1="12" y1="16.5" x2="12" y2="21" />
+  </StrokeIcon>
+);
+
+export const IconNetwork: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="9" y="2.5" width="6" height="5" rx="1.5" />
+    <rect x="2.5" y="16.5" width="6" height="5" rx="1.5" />
+    <rect x="15.5" y="16.5" width="6" height="5" rx="1.5" />
+    <path d="M5.5 16.5v-2.5h13v2.5M12 7.5V14" />
+  </StrokeIcon>
+);
+
+export const IconGallery: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="6.5" y="6.5" width="15" height="13" rx="2.5" />
+    <path d="M17.5 3.5H5A2.5 2.5 0 0 0 2.5 6v10" />
+    <path d="m21.5 16-3.3-3.3a1.4 1.4 0 0 0-2 0l-5.7 5.8" />
+  </StrokeIcon>
+);
+
+export const IconCut: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <circle cx="6" cy="6" r="3" />
+    <circle cx="6" cy="18" r="3" />
+    <line x1="20" y1="4" x2="8.1" y2="15.9" />
+    <line x1="14.5" y1="14.5" x2="20" y2="20" />
+    <line x1="8.1" y1="8.1" x2="12" y2="12" />
+  </StrokeIcon>
+);
+
+export const IconPaste: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M16 4h1.5A2.5 2.5 0 0 1 20 6.5v12a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 18.5v-12A2.5 2.5 0 0 1 6.5 4H8" />
+    <rect x="8" y="2.5" width="8" height="4" rx="1.5" />
+  </StrokeIcon>
+);
+
+export const IconRename: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2.5" y="7" width="15" height="10" rx="2.5" />
+    <line x1="20.5" y1="5" x2="20.5" y2="19" />
+    <line x1="18.5" y1="5" x2="22.5" y2="5" />
+    <line x1="18.5" y1="19" x2="22.5" y2="19" />
+    <line x1="6.5" y1="12" x2="12" y2="12" />
+  </StrokeIcon>
+);
+
+export const IconSort: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M7 4v16M3.5 16.5 7 20l3.5-3.5" />
+    <path d="M17 20V4M13.5 7.5 17 4l3.5 3.5" />
+  </StrokeIcon>
+);
+
+export const IconViewDetails: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="9" y1="6" x2="21" y2="6" />
+    <line x1="9" y1="12" x2="21" y2="12" />
+    <line x1="9" y1="18" x2="21" y2="18" />
+    <line x1="3.5" y1="6" x2="4.5" y2="6" />
+    <line x1="3.5" y1="12" x2="4.5" y2="12" />
+    <line x1="3.5" y1="18" x2="4.5" y2="18" />
+  </StrokeIcon>
+);
+
+export const IconViewTiles: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="4" width="18" height="7" rx="2" />
+    <rect x="3" y="13" width="18" height="7" rx="2" />
+    <line x1="7" y1="7.5" x2="7.01" y2="7.5" />
+    <line x1="7" y1="16.5" x2="7.01" y2="16.5" />
+  </StrokeIcon>
+);
+
+export const IconViewIcons: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+    <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+    <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+    <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+  </StrokeIcon>
+);
+
+export const IconViewList: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="4" width="5" height="5" rx="1.5" />
+    <rect x="3" y="15" width="5" height="5" rx="1.5" />
+    <line x1="11" y1="6.5" x2="21" y2="6.5" />
+    <line x1="11" y1="17.5" x2="21" y2="17.5" />
+  </StrokeIcon>
+);
+
+export const IconPanelRight: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3.5" width="18" height="17" rx="3" />
+    <line x1="14.5" y1="3.5" x2="14.5" y2="20.5" />
+  </StrokeIcon>
+);
+
+export const IconEye: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" />
+    <circle cx="12" cy="12" r="3" />
+  </StrokeIcon>
+);
+
+export const IconBookmark: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M18 21 12 16.5 6 21V5.5A2.5 2.5 0 0 1 8.5 3h7A2.5 2.5 0 0 1 18 5.5z" />
+  </StrokeIcon>
+);
+
+export const IconFilter: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 5h18l-7 8.5V20l-4-2v-4.5z" />
+  </StrokeIcon>
+);

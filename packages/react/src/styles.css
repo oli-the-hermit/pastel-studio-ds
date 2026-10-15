@@ -59,6 +59,11 @@
 @import url('./components/MediaControls/media-controls.css') layer(ps.components);
 @import url('./components/VideoPlayer/video-player.css') layer(ps.components);
 @import url('./components/PipPlayer/pip-player.css') layer(ps.components);
+@import url('./components/Toolbar/toolbar.css') layer(ps.components);
+@import url('./components/SearchField/search-field.css') layer(ps.components);
+@import url('./components/AddressBar/address-bar.css') layer(ps.components);
+@import url('./components/TreeView/tree-view.css') layer(ps.components);
+@import url('./components/StatusBar/status-bar.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

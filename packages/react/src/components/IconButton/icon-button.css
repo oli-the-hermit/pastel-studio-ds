@@ -12,6 +12,7 @@
   transition: background var(--ps-transition), color var(--ps-transition);
 }
 .ps-icon-button:hover:not(:disabled) { background: var(--ps-icon-button-hover); color: var(--ps-text-1); }
+.ps-icon-button:disabled { color: var(--ps-text-3); }
 .ps-icon-button--sm { width: var(--ps-icon-button-size-sm); height: var(--ps-icon-button-size-sm); }
 .ps-icon-button--xs { width: var(--ps-icon-button-size-xs); height: var(--ps-icon-button-size-xs); border-radius: var(--ps-radius-md); }
 .ps-icon-button--danger:hover:not(:disabled) { background: var(--ps-danger-container); color: var(--ps-danger); }

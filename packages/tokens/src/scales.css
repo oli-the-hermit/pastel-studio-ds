@@ -81,6 +81,8 @@
 
   /* ── Component sizes ── */
   --ps-field-height:        44px;      /* inputs, selects, pickers, steppers */
+  --ps-row-height:          40px;      /* menu items, options, tree items, dense list rows */
+  --ps-tree-indent:         16px;      /* one level deeper in a tree */
   --ps-button-height-lg:    44px;      /* the one call to action on a card */
   --ps-button-height:       40px;
   --ps-button-height-sm:    34px;
