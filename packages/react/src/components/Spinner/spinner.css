@@ -1,0 +1,17 @@
+/* ── Spinner: a turning arc ─────────────────────────────────────
+   --ps-spinner-arc and --ps-spinner-track on its class retint it. */
+.ps-spinner {
+  --ps-spinner-arc: var(--ps-accent);
+  --ps-spinner-track: var(--ps-surface-3);
+  display: inline-grid;
+  flex: none;
+  width: var(--ps-icon-button-size-sm);
+  height: var(--ps-icon-button-size-sm);
+}
+.ps-spinner--lg { width: var(--ps-player-control-size); height: var(--ps-player-control-size); }
+.ps-spinner svg { width: 100%; height: 100%; animation: ps-spinner-turn var(--ps-dur-spin) linear infinite; }
+.ps-spinner circle { fill: none; stroke-width: 5; }
+.ps-spinner-track { stroke: var(--ps-spinner-track); }
+.ps-spinner-arc { stroke: var(--ps-spinner-arc); stroke-linecap: round; stroke-dasharray: 30 100; }
+
+@keyframes ps-spinner-turn { to { transform: rotate(360deg); } }

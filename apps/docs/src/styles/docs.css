@@ -615,6 +615,9 @@
   }
   .docs-sortable-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .docs-sortable-done .docs-sortable-text { color: var(--ps-text-3); text-decoration: line-through; }
+  .docs-demo-accent { color: var(--ps-accent-text); }
+  .docs-demo-spread { justify-content: space-between; }
+  .docs-spinner-live { --ps-spinner-arc: var(--ps-live); }
   .docs-slider-break { --ps-slider-fill: var(--ps-live); }
   .docs-toast-region { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-4)); }
 

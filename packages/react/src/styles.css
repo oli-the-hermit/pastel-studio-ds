@@ -38,6 +38,11 @@
 @import url('./components/PlayerControl/player-control.css') layer(ps.components);
 @import url('./components/Slider/slider.css') layer(ps.components);
 @import url('./components/SortableList/sortable-list.css') layer(ps.components);
+@import url('./components/Equalizer/equalizer.css') layer(ps.components);
+@import url('./components/Spinner/spinner.css') layer(ps.components);
+@import url('./components/CoverArt/cover-art.css') layer(ps.components);
+@import url('./components/TrackInfo/track-info.css') layer(ps.components);
+@import url('./components/MediaTime/media-time.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

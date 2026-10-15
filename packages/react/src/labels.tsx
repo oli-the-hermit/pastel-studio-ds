@@ -20,6 +20,9 @@ export const defaultLabels = {
   dragToReorder: 'Drag to reorder',
   reorderKeys: 'To move an item, press Alt with the up or down arrow.',
   movedTo: 'Moved to position {position} of {total}',
+  loading: 'Loading',
+  explicit: 'Explicit',
+  showRemainingTime: 'Show remaining time',
 };
 
 export type Labels = typeof defaultLabels;

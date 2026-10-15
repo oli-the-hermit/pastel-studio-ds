@@ -406,17 +406,20 @@ export const IconRestore: React.FC<IconProps> = p => (
   </StrokeIcon>
 );
 
-/** "Now playing" bars. Animates only while `playing` is true. */
-export const IconEqualizer: React.FC<{ playing?: boolean; size?: number }> = ({ playing = false, size = 14 }) => (
-  <span
-    className={`equalizer ${playing ? 'is-playing' : ''}`}
-    style={{ width: size, height: size }}
-    aria-hidden="true"
-  >
-    <span />
-    <span />
-    <span />
-  </span>
+/* ── Music ── */
+export const IconMusic: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </StrokeIcon>
+);
+
+export const IconExplicit: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="4" />
+    <path d="M14.5 8h-5v8h5M9.5 12h4" />
+  </StrokeIcon>
 );
 
 /* ── Row actions (smaller default size for dense list rows) ── */

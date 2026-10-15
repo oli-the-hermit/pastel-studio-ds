@@ -86,6 +86,14 @@ is a breaking change.
   the media package), with focus kept and the move announced. Rows glide to their new place and
   new rows slide in. New: the `--ps-grip` theme role and the `--ps-row-bg` alias (Focus Space
   values), three shared words, and a `.ps-visually-hidden` utility.
+- Music parts, adopted from the media package: `CoverArt` (placeholder, loading pulse,
+  progress ring, corner badge, four sizes or fluid, round), `TrackInfo`, `MediaTime` (pair,
+  elapsed, remaining, total; a toggle that can own its mode) and `Spinner` (it keeps turning
+  with reduced motion). `Equalizer` takes Focus Space's bars and timing and replaces
+  `IconEqualizer`, which had no styles in the library. The media controller: the
+  `MediaController` and `MediaState` types and `useMediaElement`, plus `formatTime`.
+- Tokens: `--ps-cover-size-xs/sm/md/lg`, `--ps-dur-equalizer` (Focus Space's 900ms) and
+  `--ps-dur-spin`. Icons: `IconMusic`, `IconExplicit`. Three shared words.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

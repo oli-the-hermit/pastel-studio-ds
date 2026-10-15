@@ -1,0 +1,20 @@
+/* ── Equalizer: the "now playing" bars ─────────────────────── */
+.ps-equalizer { display: inline-flex; flex: none; align-items: flex-end; justify-content: center; gap: var(--ps-space-2); }
+.ps-equalizer > span {
+  width: 3px;
+  height: 100%;
+  border-radius: var(--ps-radius-pill);
+  background: currentColor;
+  transform-origin: bottom;
+}
+.ps-equalizer > span:nth-child(1) { transform: scaleY(0.45); }
+.ps-equalizer > span:nth-child(2) { transform: scaleY(1); }
+.ps-equalizer > span:nth-child(3) { transform: scaleY(0.7); }
+.ps-equalizer.is-playing > span { animation: ps-equalizer-bounce var(--ps-dur-equalizer) ease-in-out infinite; }
+.ps-equalizer.is-playing > span:nth-child(2) { animation-delay: calc(var(--ps-dur-equalizer) / -3); }
+.ps-equalizer.is-playing > span:nth-child(3) { animation-delay: calc(var(--ps-dur-equalizer) * -2 / 3); }
+
+@keyframes ps-equalizer-bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}

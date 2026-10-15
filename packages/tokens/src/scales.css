@@ -106,6 +106,10 @@
   --ps-slider-knob:         16px;
   --ps-slider-knob-sm:      12px;
   --ps-slider-mark:         2px;       /* the gap between chapters */
+  --ps-cover-size-xs:       40px;      /* album art in a dense row */
+  --ps-cover-size-sm:       56px;      /* a track row, a now-playing bar */
+  --ps-cover-size-md:       120px;     /* a card */
+  --ps-cover-size-lg:       232px;     /* a full player */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */
@@ -133,6 +137,8 @@
   --ps-dur-4:               400ms;     /* spotlight moves, large layout shifts */
   --ps-dur-progress:        500ms;     /* progress that follows a 1s tick */
   --ps-dur-pulse:           1.6s;      /* looping status pulse */
+  --ps-dur-equalizer:       900ms;     /* one bounce of the "now playing" bars */
+  --ps-dur-spin:            900ms;     /* one turn of a loading spinner */
   --ps-ease-standard:       cubic-bezier(0.2, 0, 0, 1);
   --ps-ease-emphasized:     linear(0, 0.003 2%, 0.013 4%, 0.03 6%, 0.056 8%, 0.093 10%, 0.146 12%, 0.222 14%, 0.305 15.5%, 0.433 17%, 0.586 19%, 0.674 21%, 0.754 24%, 0.818 28%, 0.868 33%, 0.912 40%, 0.951 50%, 0.976 62%, 0.992 76%, 1);
   --ps-ease-decel:          cubic-bezier(0.05, 0.7, 0.1, 1);    /* emphasized, entering */
