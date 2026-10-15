@@ -9,5 +9,15 @@
   color: var(--ps-text-2);
 }
 
+/* Read by screen readers, not shown: instructions and announcements */
+.ps-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Hidden, whatever the component's own display rule says */
 .ps-hidden { display: none !important; }

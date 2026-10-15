@@ -40,6 +40,7 @@
 
   /* ── Structure ── */
   --ps-grid-line:           var(--ps-stone-94);
+  --ps-grip:                var(--ps-surface-4);
   --ps-focus-ring:          var(--ps-lime-40);
   --ps-scrim:               rgb(26 28 23 / 40%);
 

@@ -14,5 +14,6 @@
 [data-theme] {
   --ps-field-bg:            var(--ps-surface-2);
   --ps-field-hover:         var(--ps-surface-3);
+  --ps-row-bg:              color-mix(in oklab, var(--ps-surface-1) 50%, var(--ps-bg));   /* list rows on a card */
   --ps-row-hover:           var(--ps-surface-2);
 }

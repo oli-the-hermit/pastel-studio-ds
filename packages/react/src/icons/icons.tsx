@@ -454,7 +454,7 @@ export const IconChevronUp: React.FC<IconProps> = ({ size = 16, strokeWidth = 2.
 );
 
 /** Drag handle: two columns of three dots. The span carries the class and the title tooltip. */
-export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ className = 'drag-handle', ...props }) => (
+export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ className, ...props }) => (
   <span className={className} {...props}>
     {/* Tight box (not the 24-unit icon grid) so the handle takes little room in a row. */}
     <svg width="8" height="14" viewBox="0 0 8 14" fill="currentColor" aria-hidden="true">

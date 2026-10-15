@@ -81,6 +81,12 @@ is a breaking change.
   track, the look of Focus Space's timer scrubber. Its colors are tokens on its class; a
   disabled slider uses the tertiary color instead of transparency. Size tokens
   `--ps-slider-height(-sm)`, `--ps-slider-hit`, `--ps-slider-knob(-sm)`, `--ps-slider-mark`.
+- `SortableList`, `useSortable` and `moveById`: drag rows into a new order by their grip
+  (Focus Space's task rows and reorder hook), plus Alt + ↑ / ↓ from any control in a row (from
+  the media package), with focus kept and the move announced. Rows glide to their new place and
+  new rows slide in. New: the `--ps-grip` theme role and the `--ps-row-bg` alias (Focus Space
+  values), three shared words, and a `.ps-visually-hidden` utility.
+- Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.
 - A menu grows with its content up to `--ps-menu-max-width` (280px, Material 3's limit). Its

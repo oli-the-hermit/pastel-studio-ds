@@ -1,0 +1,37 @@
+/* ── SortableList: rows dragged into a new order by their grip ──
+   Rows sit on --ps-row-bg and hover to --ps-row-hover; a container may set both. */
+.ps-sortable-list-items { display: flex; flex-direction: column; gap: var(--ps-space-6); }
+
+.ps-sortable-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-12);
+  min-height: 48px;
+  padding: var(--ps-space-8) var(--ps-space-8) var(--ps-space-8) var(--ps-grip-edge);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-row-bg);
+  transition: background var(--ps-transition);
+}
+.ps-sortable-item:hover,
+.ps-sortable-item:focus-within { background: var(--ps-row-hover); }
+
+.ps-sortable-item-grip {
+  display: inline-flex;
+  flex: none;
+  width: var(--ps-grip-width);
+  color: var(--ps-grip);
+  cursor: grab;
+  user-select: none;
+}
+.ps-sortable-item-grip:active { cursor: grabbing; }
+
+/* The row being dragged stays in place, quiet; the row it would land on shows a line on top. */
+.ps-sortable-item.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
+.ps-sortable-item.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
+
+/* A row just created slides in. */
+.ps-sortable-item.is-new { animation: ps-sortable-item-enter var(--ps-dur-3) var(--ps-ease-decel); }
+@keyframes ps-sortable-item-enter {
+  from { opacity: 0; transform: translateY(calc(-1 * var(--ps-space-6))) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}

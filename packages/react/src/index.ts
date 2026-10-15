@@ -28,3 +28,4 @@ export * from './components/Field';
 export * from './components/Select';
 export * from './components/PlayerControl';
 export * from './components/Slider';
+export * from './components/SortableList';

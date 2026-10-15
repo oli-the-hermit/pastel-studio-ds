@@ -37,6 +37,7 @@
 @import url('./components/Select/select.css') layer(ps.components);
 @import url('./components/PlayerControl/player-control.css') layer(ps.components);
 @import url('./components/Slider/slider.css') layer(ps.components);
+@import url('./components/SortableList/sortable-list.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

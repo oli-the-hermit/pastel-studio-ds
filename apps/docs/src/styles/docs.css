@@ -613,6 +613,8 @@
     --ps-player-control-on-phase: var(--ps-on-live);
     --ps-player-control-phase-text: var(--ps-live);
   }
+  .docs-sortable-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .docs-sortable-done .docs-sortable-text { color: var(--ps-text-3); text-decoration: line-through; }
   .docs-slider-break { --ps-slider-fill: var(--ps-live); }
   .docs-toast-region { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-4)); }
 

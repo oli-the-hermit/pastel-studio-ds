@@ -17,6 +17,9 @@ export const defaultLabels = {
   noMatches: 'No matches',
   create: 'Create',
   newItemName: 'Name',
+  dragToReorder: 'Drag to reorder',
+  reorderKeys: 'To move an item, press Alt with the up or down arrow.',
+  movedTo: 'Moved to position {position} of {total}',
 };
 
 export type Labels = typeof defaultLabels;

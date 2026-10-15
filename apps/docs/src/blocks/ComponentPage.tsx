@@ -42,7 +42,13 @@ function Gallery({ entries, examples }: { entries: MetaEntry[]; examples?: Recor
   );
 }
 
-function PropsTable({ doc }: { doc: ExportDoc }) {
+/**
+ * A `labels` prop is typed from the whole shared list, which TypeScript prints unreadably once the
+ * list is long. Its words are listed under Words, so the table only points there.
+ */
+const isLabels = (name: string, words: string[]) => name === 'labels' && words.length > 0;
+
+function PropsTable({ doc, words }: { doc: ExportDoc; words: string[] }) {
   const element = doc.htmlAttributes && elementOf(doc.htmlAttributes);
   return (
     <>
@@ -60,9 +66,9 @@ function PropsTable({ doc }: { doc: ExportDoc }) {
                     <Code>{prop.name}</Code>
                     {prop.required && <span className="docs-required">Required</span>}
                   </th>
-                  <td><Code>{prop.type}</Code></td>
+                  <td><Code>{isLabels(prop.name, words) ? '{ word?: string }' : prop.type}</Code></td>
                   <td>{prop.defaultValue !== undefined && <Code>{prop.defaultValue}</Code>}</td>
-                  <td>{inline(prop.description)}</td>
+                  <td>{isLabels(prop.name, words) && !prop.description ? 'Its words for this one instance; the words are listed under Words.' : inline(prop.description)}</td>
                 </tr>
               ))}
             </tbody>
@@ -204,7 +210,7 @@ export function ComponentPage({ component }: { component: ComponentDoc }) {
           <React.Fragment key={doc.name}>
             {exports.length > 1 && <h3 className="docs-subtitle"><Code>{doc.name}</Code></h3>}
             {doc !== exports[0] && doc.description && <p>{inline(doc.description)}</p>}
-            <PropsTable doc={doc} />
+            <PropsTable doc={doc} words={meta.labels} />
           </React.Fragment>
         ))}
       </Section>
