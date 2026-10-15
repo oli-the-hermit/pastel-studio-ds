@@ -57,6 +57,8 @@
 @import url('./components/AlbumPage/album-page.css') layer(ps.components);
 @import url('./components/VideoSurface/video-surface.css') layer(ps.components);
 @import url('./components/MediaControls/media-controls.css') layer(ps.components);
+@import url('./components/VideoPlayer/video-player.css') layer(ps.components);
+@import url('./components/PipPlayer/pip-player.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

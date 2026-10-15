@@ -127,6 +127,10 @@ is a breaking change.
   bar narrows) adopted from the media package, with `buildMediaSettings` and `speedChoices` for the
   gear menu in the reader's language. TransportControls and VolumeControl take `surface="overlay"`.
   Ten video icons, 21 words.
+- `VideoPlayer` (filled or overlay controls, full screen, controls that hide while you watch, keyboard
+  shortcuts) and `PipPlayer` (a picture-in-picture window that shows as much as its size allows),
+  adopted from the media package. The window drag regions come from `dragHandleProps`, so the
+  library knows nothing about Tauri (the user's choice). `useIdle` waits while a menu is open.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

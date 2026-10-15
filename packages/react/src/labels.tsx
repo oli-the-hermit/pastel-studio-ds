@@ -109,6 +109,9 @@ export const defaultLabels = {
   playOn: 'Play on',
   normalizeVolume: 'Normalize volume',
   loop: 'Loop',
+  videoPlayer: 'Video player',
+  video: 'Video',
+  backToPlayer: 'Back to player',
 };
 
 export type Labels = typeof defaultLabels;

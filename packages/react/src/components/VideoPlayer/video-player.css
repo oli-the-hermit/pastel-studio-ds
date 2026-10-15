@@ -1,0 +1,62 @@
+/* ── VideoPlayer: the picture and its controls ──────────────────
+   filled   a card: the picture as a rounded tile, the controls under it
+   overlay  the picture edge to edge, a floating dock and a header over it */
+.ps-video-player {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-10);
+  min-width: 0;
+  padding: var(--ps-space-12) var(--ps-space-12) var(--ps-space-8);
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+  outline-offset: var(--ps-ring-width);
+}
+.ps-video-player:not(.ps-video-player--overlay) .ps-video-player-surface { border-radius: var(--ps-radius-2xl); }
+.ps-video-player--overlay { gap: 0; overflow: hidden; padding: 0; border-radius: var(--ps-radius-2xl); background: var(--ps-media-backdrop); }
+.ps-video-player.is-fullscreen { justify-content: center; border-radius: 0; }
+.ps-video-player.is-fullscreen .ps-video-player-surface { height: 100%; }
+
+/* The overlay chrome: the dock at the bottom, the header at the top; captions sit above the dock. */
+.ps-video-player--overlay .ps-video-player-controls { position: absolute; right: var(--ps-space-12); bottom: var(--ps-space-12); left: var(--ps-space-12); }
+.ps-video-player--overlay .ps-video-player-surface {
+  --ps-video-surface-caption-offset: calc(var(--ps-space-12) * 2 + var(--ps-player-control-size-sm) + var(--ps-slider-hit) + var(--ps-space-16));
+}
+.ps-video-player-header {
+  position: absolute;
+  top: var(--ps-space-12);
+  right: var(--ps-space-12);
+  left: var(--ps-space-12);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  pointer-events: none;
+}
+.ps-video-player-header > * { pointer-events: auto; }
+.ps-video-player-back.ps-icon-button { background: var(--ps-media-overlay); }
+.ps-video-player-heading {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--ps-space-6) var(--ps-space-16);
+  border-radius: var(--ps-radius-xl);
+  background: var(--ps-media-overlay);
+  color: var(--ps-media-on-overlay);
+  line-height: var(--ps-leading-snug);
+}
+.ps-video-player-overline {
+  color: var(--ps-accent);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+}
+.ps-video-player-title { overflow: hidden; font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-bold); white-space: nowrap; text-overflow: ellipsis; }
+
+/* Idle while playing: the chrome slides away; the captions drop back down. */
+.ps-video-player--overlay .ps-video-player-controls,
+.ps-video-player-header { transition: opacity var(--ps-dur-3) var(--ps-ease-standard), transform var(--ps-dur-3) var(--ps-ease-emphasized); }
+.ps-video-player.is-idle { cursor: none; }
+.ps-video-player.is-idle .ps-video-player-surface { --ps-video-surface-caption-offset: var(--ps-space-24); }
+.ps-video-player.is-idle .ps-video-player-controls { opacity: 0; transform: translateY(var(--ps-space-12)); pointer-events: none; }
+.ps-video-player.is-idle .ps-video-player-header { opacity: 0; transform: translateY(calc(var(--ps-space-12) * -1)); pointer-events: none; }

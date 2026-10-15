@@ -54,3 +54,5 @@ export * from './components/AlbumDetails';
 export * from './components/AlbumPage';
 export * from './components/VideoSurface';
 export * from './components/MediaControls';
+export * from './components/VideoPlayer';
+export * from './components/PipPlayer';
