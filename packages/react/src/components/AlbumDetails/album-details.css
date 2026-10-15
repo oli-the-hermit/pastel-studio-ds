@@ -1,0 +1,19 @@
+/* ── AlbumDetails: about an album ───────────────────────────── */
+.ps-album-details { display: flex; flex-direction: column; gap: var(--ps-space-14); min-width: 0; }
+.ps-album-details .ps-panel-header { margin-bottom: 0; padding: 0; }
+.ps-album-details-about { display: flex; flex-direction: column; align-items: flex-start; gap: var(--ps-space-4); }
+.ps-album-details-text {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-md);
+  line-height: var(--ps-leading-normal);
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+.ps-album-details-text.is-open { display: block; }
+.ps-album-details-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--ps-space-8); }
+.ps-album-details-fact { display: flex; flex-direction: column; gap: var(--ps-space-2); padding: var(--ps-space-10) var(--ps-space-14); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); }
+.ps-album-details-fact dt { color: var(--ps-text-2); font-size: var(--ps-font-size-xs); }
+.ps-album-details-fact dd { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-semibold); }
+.ps-album-details-copyright { color: var(--ps-text-3); font-size: var(--ps-font-size-xs); }

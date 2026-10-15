@@ -47,3 +47,6 @@ export * from './components/PlayQueue';
 export * from './components/TrackList';
 export * from './components/MusicPlayer';
 export * from './components/NowPlayingBar';
+export * from './components/AlbumHeader';
+export * from './components/AlbumDetails';
+export * from './components/AlbumPage';

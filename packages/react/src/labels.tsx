@@ -71,6 +71,23 @@ export const defaultLabels = {
   soundSettings: 'Sound settings',
   miniPlayer: 'Mini player',
   fullScreenPlayer: 'Full screen player',
+  ep: 'EP',
+  single: 'Single',
+  playlist: 'Playlist',
+  compilation: 'Compilation',
+  songOne: '{count} song',
+  songOther: '{count} songs',
+  saveToLibrary: 'Save to library',
+  removeFromLibrary: 'Remove from library',
+  download: 'Download',
+  share: 'Share',
+  aboutAlbum: 'About this album',
+  released: 'Released',
+  recordLabel: 'Label',
+  tracks: 'Tracks',
+  length: 'Length',
+  showMore: 'Show more',
+  showLess: 'Show less',
 };
 
 export type Labels = typeof defaultLabels;

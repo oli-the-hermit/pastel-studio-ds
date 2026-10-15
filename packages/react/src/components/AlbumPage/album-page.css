@@ -1,0 +1,14 @@
+/* ── AlbumPage: an album or playlist page on one card ───────── */
+.ps-album-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-28);
+  min-width: 0;
+  padding: var(--ps-space-28);
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+}
+.ps-album-page .ps-album-details { padding-top: var(--ps-space-8); }
+@media (max-width: 600px) {
+  .ps-album-page { padding: var(--ps-space-18) var(--ps-space-12); }
+}

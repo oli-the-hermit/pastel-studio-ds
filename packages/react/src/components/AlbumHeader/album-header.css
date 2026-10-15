@@ -1,0 +1,45 @@
+/* ── AlbumHeader: the top of an album or playlist page ──────── */
+.ps-album-header {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--ps-space-28);
+  min-width: 0;
+  container: ps-album-header / inline-size;
+}
+.ps-album-header-main { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-8); min-width: 0; }
+.ps-album-header-kind {
+  color: var(--ps-accent-text);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-heavy);
+  letter-spacing: var(--ps-tracking-caps-wide);
+  text-transform: uppercase;
+}
+.ps-album-header-title {
+  font-size: clamp(var(--ps-font-size-2xl), 6cqi, var(--ps-font-size-4xl));
+  font-weight: var(--ps-font-weight-heavy);
+  line-height: var(--ps-leading-none);
+  letter-spacing: var(--ps-tracking-tighter);
+  overflow-wrap: anywhere;
+}
+.ps-album-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ps-space-4) var(--ps-space-10);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-md);
+}
+.ps-album-header-meta > * + *::before { content: '·'; margin-right: var(--ps-space-10); color: var(--ps-text-3); }
+.ps-album-header-artist { color: var(--ps-text-1); font-weight: var(--ps-font-weight-bold); }
+button.ps-album-header-artist { border-radius: var(--ps-radius-2xs); }
+button.ps-album-header-artist:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ps-album-header-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-4); margin-top: var(--ps-space-12); }
+.ps-album-header-play.ps-player-control--primary { width: var(--ps-player-control-size); height: var(--ps-player-control-size); margin-right: var(--ps-space-8); }
+
+/* Narrow: the art on top, at under half the width. */
+@container ps-album-header (max-width: 560px) {
+  .ps-album-header-art { width: 44%; }
+}
+@media (max-width: 600px) {
+  .ps-album-header { flex-direction: column; align-items: flex-start; gap: var(--ps-space-18); }
+}

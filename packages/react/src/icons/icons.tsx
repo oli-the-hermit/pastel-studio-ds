@@ -490,6 +490,22 @@ export const IconVolumeMute: React.FC<IconProps> = (p) => (
 );
 
 /* ── Music ── */
+export const IconShare: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7" />
+    <polyline points="16 6 12 2 8 6" />
+    <line x1="12" y1="2" x2="12" y2="15" />
+  </StrokeIcon>
+);
+
+export const IconDownload: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </StrokeIcon>
+);
+
 export const IconLyrics: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4A2.5 2.5 0 0 1 4 13.5z" />

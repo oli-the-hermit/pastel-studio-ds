@@ -52,6 +52,9 @@
 @import url('./components/TrackList/track-list.css') layer(ps.components);
 @import url('./components/MusicPlayer/music-player.css') layer(ps.components);
 @import url('./components/NowPlayingBar/now-playing-bar.css') layer(ps.components);
+@import url('./components/AlbumHeader/album-header.css') layer(ps.components);
+@import url('./components/AlbumDetails/album-details.css') layer(ps.components);
+@import url('./components/AlbumPage/album-page.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);
