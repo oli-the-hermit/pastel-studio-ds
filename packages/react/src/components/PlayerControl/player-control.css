@@ -1,0 +1,42 @@
+/* ── PlayerControl: round transport buttons ─────────────────────
+   The phase color is the accent. A player retints its controls (Focus Space's break phase)
+   by setting the four phase tokens on their class. */
+.ps-player-control {
+  --ps-player-control-phase: var(--ps-accent);
+  --ps-player-control-phase-hover: var(--ps-accent-hover);
+  --ps-player-control-on-phase: var(--ps-on-accent);
+  --ps-player-control-phase-text: var(--ps-accent-text);
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--ps-player-control-size);
+  height: var(--ps-player-control-size);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-surface-2);
+  color: var(--ps-text-1);
+  transition: background var(--ps-dur-2) var(--ps-ease-standard), color var(--ps-dur-2) var(--ps-ease-standard), transform var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-player-control:hover:not(:disabled) { background: var(--ps-surface-3); }
+.ps-player-control:active:not(:disabled) { transform: scale(0.94); }
+.ps-player-control:disabled { color: var(--ps-text-3); cursor: not-allowed; }
+
+/* Full player (md) */
+.ps-player-control--ghost { width: var(--ps-player-control-size-ghost); height: var(--ps-player-control-size-ghost); background: transparent; color: var(--ps-text-2); }
+.ps-player-control--ghost:hover:not(:disabled) { background: var(--ps-surface-2); color: var(--ps-text-1); }
+.ps-player-control--ghost.is-on { color: var(--ps-player-control-phase-text); }
+.ps-player-control--primary { width: var(--ps-player-control-size-primary); height: var(--ps-player-control-size-primary); background: var(--ps-player-control-phase); color: var(--ps-player-control-on-phase); }
+.ps-player-control--primary:hover:not(:disabled) { background: var(--ps-player-control-phase-hover); }
+
+/* Bars and mini players (sm): a window resizes them through --ps-player-control-size-sm(-primary). */
+.ps-player-control--sm {
+  width: var(--ps-player-control-size-sm);
+  height: var(--ps-player-control-size-sm);
+  transition: background var(--ps-transition), transform var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-player-control--sm:active:not(:disabled) { transform: scale(0.92); }
+.ps-player-control--sm.ps-player-control--primary {
+  width: var(--ps-player-control-size-sm-primary);
+  height: var(--ps-player-control-size-sm-primary);
+  transition: background var(--ps-dur-3) var(--ps-ease-standard), color var(--ps-dur-3) var(--ps-ease-standard), transform var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-player-control--sm.ps-player-control--primary:hover:not(:disabled) { background: var(--ps-player-control-phase); filter: brightness(1.08); }

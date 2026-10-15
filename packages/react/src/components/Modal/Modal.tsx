@@ -67,7 +67,7 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
     const timer = setTimeout(() => {
       const modal = modalRef.current;
       if (!modal || modal.contains(document.activeElement)) return;
-      (modal.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select') ?? modal).focus();
+      (modal.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select, .ps-select-trigger') ?? modal).focus();
     }, 50);
 
     return () => {

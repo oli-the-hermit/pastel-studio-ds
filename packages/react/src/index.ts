@@ -22,3 +22,8 @@ export * from './components/Chip';
 export * from './components/IconSwap';
 export * from './components/ProgressBar';
 export * from './components/Toast';
+export * from './components/Switch';
+export * from './components/SegmentedControl';
+export * from './components/Field';
+export * from './components/Select';
+export * from './components/PlayerControl';

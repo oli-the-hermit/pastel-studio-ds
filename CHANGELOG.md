@@ -66,6 +66,15 @@ is a breaking change.
   from the reduced-motion rule. `useToasts()` keeps the list of toasts and their timing.
   The toast region spans the window, so a toast never runs off a narrow screen, and
   `--ps-toast-region-top` moves it below an app bar.
+- Inputs and the player button, ported from Focus Space: `Switch` (a settings row),
+  `SegmentedControl` (a radio group with the arrow keys), `Field` with `TextInput`, `TextArea`,
+  `FormHint` and `FormError`, `Select` (search, recent options first, create a new one) and
+  `PlayerControl`. New in the port: `Field` takes `hint` and `error` and links them to its
+  control (`aria-describedby`, `aria-invalid`, a red ring); `Select`'s trigger is a combobox
+  that tells screen readers which option the arrow keys are on (`aria-activedescendant`);
+  `PlayerControl`'s phase color is four tokens on its class (`--ps-player-control-phase`…).
+- Tokens: `--ps-switch-width`, `--ps-switch-height`, `--ps-switch-knob` and the five
+  `--ps-player-control-size*` sizes, all Focus Space values. Seven shared words for Select.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.
 - A menu grows with its content up to `--ps-menu-max-width` (280px, Material 3's limit). Its

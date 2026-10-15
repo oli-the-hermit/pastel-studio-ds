@@ -1,0 +1,32 @@
+/* ── SegmentedControl: a row of pill options, one selected ──────
+   The track sits one step above the surface it's on (default 0, the page). */
+.ps-segmented-control {
+  --ps-segmented-control-track: var(--ps-surface-1);
+  --ps-segmented-control-hover: var(--ps-surface-2);
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--ps-space-2);
+  padding: var(--ps-space-4);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-segmented-control-track);
+}
+.ps-segmented-control.is-on-1 {
+  --ps-segmented-control-track: var(--ps-surface-2);
+  --ps-segmented-control-hover: var(--ps-surface-3);
+}
+.ps-segmented-control-option {
+  height: var(--ps-icon-button-size-sm);
+  padding: 0 var(--ps-space-16);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-segmented-control--lg .ps-segmented-control-option {
+  height: var(--ps-button-height-sm);
+  padding: 0 var(--ps-space-18);
+  font-size: var(--ps-font-size-md);
+}
+.ps-segmented-control-option:hover { background: var(--ps-segmented-control-hover); color: var(--ps-text-1); }
+.ps-segmented-control-option.is-selected { background: var(--ps-accent); color: var(--ps-on-accent); }

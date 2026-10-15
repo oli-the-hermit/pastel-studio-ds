@@ -1,0 +1,43 @@
+/* ── Switch: a settings row with an on/off toggle ───────────── */
+.ps-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-16);
+  padding: var(--ps-space-12) var(--ps-space-14);
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-2);
+  cursor: pointer;
+}
+.ps-switch:has(.ps-switch-toggle:disabled) { cursor: default; }
+.ps-switch-text { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-2); min-width: 0; }
+.ps-switch-title { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-semibold); color: var(--ps-text-1); }
+.ps-switch-hint { font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
+
+.ps-switch-toggle {
+  position: relative;
+  flex: none;
+  width: var(--ps-switch-width);
+  height: var(--ps-switch-height);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-surface-4);
+  cursor: pointer;
+  appearance: none;
+  transition: background var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-switch-toggle::before {
+  content: '';
+  position: absolute;
+  top: calc((var(--ps-switch-height) - var(--ps-switch-knob)) / 2);
+  left: calc((var(--ps-switch-height) - var(--ps-switch-knob)) / 2);
+  width: var(--ps-switch-knob);
+  height: var(--ps-switch-knob);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-text-2);
+  transition: transform var(--ps-dur-2) var(--ps-ease-emphasized), background var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-switch-toggle:checked { background: var(--ps-accent); }
+.ps-switch-toggle:checked::before {
+  transform: translateX(calc(var(--ps-switch-width) - var(--ps-switch-height)));
+  background: var(--ps-on-accent);
+}
+.ps-switch-toggle:disabled { cursor: default; }

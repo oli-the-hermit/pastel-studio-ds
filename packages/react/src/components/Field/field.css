@@ -1,0 +1,39 @@
+/* ── Field: a label, a control, and help or an error under it ── */
+.ps-field { display: flex; flex-direction: column; gap: var(--ps-space-8); min-width: 0; }
+.ps-field--spaced { margin-top: var(--ps-space-16); }
+
+.ps-field-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ps-space-6);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+  color: var(--ps-text-2);
+}
+.ps-field-label-hint { font-weight: var(--ps-font-weight-medium); color: var(--ps-text-3); }
+.ps-field-hint { font-size: var(--ps-font-size-sm); color: var(--ps-text-3); }
+.ps-field-error { font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-medium); color: var(--ps-danger); }
+
+/* TextInput and TextArea: one step above the surface they sit on (--ps-field-bg). */
+.ps-input {
+  width: 100%;
+  height: var(--ps-field-height);
+  padding: 0 var(--ps-space-14);
+  border: none;
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-field-bg);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-md);
+  transition: background var(--ps-transition), box-shadow var(--ps-transition);
+}
+.ps-input::placeholder { color: var(--ps-text-3); }
+.ps-input:hover { background: var(--ps-field-hover); }
+.ps-input:focus { outline: none; background: var(--ps-field-bg); box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-accent); }
+.ps-input[aria-invalid='true'] { box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-danger); }
+.ps-input--area {
+  height: auto;
+  min-height: 84px;
+  padding: var(--ps-space-12) var(--ps-space-14);
+  line-height: var(--ps-leading-normal);
+  resize: vertical;
+}

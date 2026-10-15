@@ -90,6 +90,14 @@
   --ps-icon-button-size-xs: 28px;
   --ps-chip-height:         26px;
   --ps-checkbox-size:       20px;
+  --ps-switch-width:        46px;
+  --ps-switch-height:       28px;
+  --ps-switch-knob:         20px;      /* the round knob inside the switch */
+  --ps-player-control-size:            50px;  /* round transport buttons: skip, reset */
+  --ps-player-control-size-ghost:      44px;  /* quiet toggles beside them */
+  --ps-player-control-size-primary:    76px;  /* the big play / pause */
+  --ps-player-control-size-sm:         34px;  /* bars and mini players */
+  --ps-player-control-size-sm-primary: 42px;
   --ps-progress-height:     6px;
   --ps-progress-height-lg:  8px;
   --ps-modal-max-width:     520px;     /* dialogs */

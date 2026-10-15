@@ -10,6 +10,13 @@ export const defaultLabels = {
   copy: 'Copy',
   actions: 'Actions',
   moreActions: 'More actions',
+  selectPlaceholder: 'Select an option',
+  options: 'Options',
+  search: 'Search…',
+  searchOptions: 'Search options',
+  noMatches: 'No matches',
+  create: 'Create',
+  newItemName: 'Name',
 };
 
 export type Labels = typeof defaultLabels;
