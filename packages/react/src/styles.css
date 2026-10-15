@@ -27,6 +27,7 @@
 @import url('./components/Menu/menu.css') layer(ps.components);
 @import url('./components/Modal/modal.css') layer(ps.components);
 @import url('./components/Card/card.css') layer(ps.components);
+@import url('./components/EmptyState/empty-state.css') layer(ps.components);
 @import url('./components/Chip/chip.css') layer(ps.components);
 @import url('./components/IconSwap/icon-swap.css') layer(ps.components);
 @import url('./components/ProgressBar/progress-bar.css') layer(ps.components);
@@ -38,6 +39,7 @@
 @import url('./components/PlayerControl/player-control.css') layer(ps.components);
 @import url('./components/Slider/slider.css') layer(ps.components);
 @import url('./components/SortableList/sortable-list.css') layer(ps.components);
+@import url('./components/QueuePanel/queue-panel.css') layer(ps.components);
 @import url('./components/Equalizer/equalizer.css') layer(ps.components);
 @import url('./components/Spinner/spinner.css') layer(ps.components);
 @import url('./components/CoverArt/cover-art.css') layer(ps.components);

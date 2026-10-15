@@ -1,0 +1,89 @@
+/* ── QueuePanel and QueueItem: sessions, task lists ─────────── */
+.ps-queue-panel { padding: var(--ps-space-20) var(--ps-space-14) var(--ps-space-14); }
+.ps-queue-panel-list { display: flex; flex-direction: column; gap: var(--ps-space-8); }
+
+.ps-queue-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-2);
+  padding: var(--ps-space-12) var(--ps-space-12) var(--ps-space-8) calc(var(--ps-grip-edge) + var(--ps-grip-width) + var(--ps-grip-gap));
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-2);
+  color: var(--ps-text-1);
+  cursor: pointer;
+  transition: background var(--ps-dur-2) var(--ps-ease-standard), color var(--ps-dur-2) var(--ps-ease-standard), box-shadow var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-queue-item:hover { background: var(--ps-surface-3); }
+.ps-queue-item:focus-visible { outline-offset: 1px; }
+/* One line (no meta): the same room above and below. */
+.ps-queue-item--single { padding-block: var(--ps-space-14); }
+
+.ps-queue-item-grip {
+  position: absolute;
+  top: 50%;
+  left: var(--ps-grip-edge);
+  display: inline-flex;
+  width: var(--ps-grip-width);
+  color: var(--ps-grip);
+  cursor: grab;
+  user-select: none;
+  transform: translateY(-50%);
+}
+.ps-queue-item-grip:active { cursor: grabbing; }
+
+.ps-queue-item-name-row { display: flex; align-items: center; gap: var(--ps-space-8); min-width: 0; }
+.ps-queue-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-snug);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-queue-item-trailing { flex: none; color: var(--ps-text-2); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; }
+
+.ps-queue-item-meta-row { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-6); min-height: var(--ps-icon-button-size-xs); }
+.ps-queue-item-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-10);
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-xs);
+  white-space: nowrap;
+}
+.ps-queue-item-meta-item { display: inline-flex; align-items: center; gap: var(--ps-space-4); }
+
+.ps-queue-item-actions { display: flex; flex: none; gap: var(--ps-space-1); visibility: hidden; }
+.ps-queue-item:hover .ps-queue-item-actions,
+.ps-queue-item:focus-within .ps-queue-item-actions { visibility: visible; }
+/* Without a meta line the tools float over the end of the row, on its hover color. */
+.ps-queue-item-actions--floating {
+  position: absolute;
+  top: 50%;
+  right: var(--ps-space-8);
+  padding-left: var(--ps-space-8);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-surface-3);
+  transform: translateY(-50%);
+}
+
+.ps-queue-item.is-active { background: var(--ps-accent); color: var(--ps-on-accent); }
+.ps-queue-item.is-active:hover { background: var(--ps-accent-hover); }
+.ps-queue-item.is-active .ps-queue-item-meta,
+.ps-queue-item.is-active .ps-queue-item-trailing,
+.ps-queue-item.is-active .ps-queue-item-grip { color: var(--ps-on-accent-2); }
+.ps-queue-item.is-active .ps-queue-item-actions--floating { background: var(--ps-accent-hover); }
+
+/* Dragging: the dragged row stays put, quiet; the target shows a line on top. */
+.ps-queue-item.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
+.ps-queue-item.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
+.ps-queue-item.is-new { animation: ps-queue-item-enter var(--ps-dur-3) var(--ps-ease-decel); }
+@keyframes ps-queue-item-enter {
+  from { opacity: 0; transform: translateY(calc(-1 * var(--ps-space-6))) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}

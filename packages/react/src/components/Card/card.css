@@ -5,6 +5,8 @@
   border-radius: var(--ps-radius-3xl);
   background: var(--ps-surface-1);
 }
+.ps-card--pad-sm { padding: var(--ps-space-16); }
+.ps-card--pad-none { padding: 0; }
 
 .ps-card-header {
   display: flex;
@@ -37,6 +39,7 @@
   padding: 0 var(--ps-space-4);
 }
 .ps-panel-header-title {
+  line-height: inherit;
   font-size: var(--ps-font-size-xs);
   font-weight: var(--ps-font-weight-bold);
   letter-spacing: var(--ps-tracking-caps);

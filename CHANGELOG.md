@@ -99,6 +99,11 @@ is a breaking change.
   stop; `md` and `sm`, cluster or spread), `LikeButton` and `VolumeControl` (expand, inline
   or button; with `VolumeIcon`). Their words join the shared list; ten transport icons; the
   `--ps-volume-slider-width` token.
+- `QueuePanel`, `QueueItem` and `QueueMetaItem` from Focus Space (its session and list queues), on the
+  shared reorder hook, so rows also move with Alt + arrows; `EmptyState` from Focus Space. The
+  row motion (glide and slide-in) is shared in `lib/listMotion`.
+- Card takes `as` (`section`, `aside`, `article`) and `padding` (`sm`, `none`); the PanelHeader
+  title is now an `h2` with the same look, with `titleId`. Chosen by the user.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

@@ -1,0 +1,8 @@
+/* ── EmptyState: nothing to show yet ────────────────────────── */
+.ps-empty-state {
+  padding: var(--ps-space-32) var(--ps-space-16);
+  color: var(--ps-text-3);
+  font-size: var(--ps-font-size-md);
+  text-align: center;
+}
+.ps-empty-state--sm { padding: var(--ps-space-20) var(--ps-space-12); font-size: var(--ps-font-size-md); }

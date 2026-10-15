@@ -13,6 +13,15 @@ describe('Card', () => {
   });
 });
 
+describe('Card as and padding', () => {
+  it('renders the element it is asked for, with its padding as a class', () => {
+    render(<Card as="aside" padding="none" aria-label="Queue">Body</Card>);
+    const aside = screen.getByRole('complementary', { name: 'Queue' });
+    expect(aside.tagName).toBe('ASIDE');
+    expect(aside.className).toBe('ps-card ps-card--pad-none');
+  });
+});
+
 describe('CardHeader', () => {
   it('shows the title as a heading, with its tooltip', () => {
     render(<CardHeader title="Weekend errands" titleTooltip="Weekend errands, 5 tasks" />);
@@ -55,7 +64,7 @@ describe('PanelHeader', () => {
     const ref = createRef<HTMLDivElement>();
     render(<PanelHeader ref={ref} title="Up next" action={<button>Add</button>} />);
     expect(ref.current?.className).toBe('ps-panel-header');
-    expect(ref.current?.querySelector('.ps-panel-header-title')?.textContent).toBe('Up next');
+    expect(screen.getByRole('heading', { level: 2, name: 'Up next' }).className).toBe('ps-panel-header-title');
     expect(screen.getByRole('button', { name: 'Add' })).toBeTruthy();
   });
 });

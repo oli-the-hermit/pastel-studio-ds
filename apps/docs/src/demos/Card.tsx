@@ -76,6 +76,12 @@ export const demo: ComponentDemo = {
         </Card>
       </div>
     ),
+    Padding: (
+      <div className="docs-page-patch">
+        <Card padding="sm"><p>Small padding, for a compact card.</p></Card>
+        <Card padding="none"><p className="docs-card-flush">No padding: the content brings its own.</p></Card>
+      </div>
+    ),
     Plain: (
       <div className="docs-page-patch">
         <Card>
