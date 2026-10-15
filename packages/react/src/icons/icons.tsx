@@ -490,6 +490,16 @@ export const IconVolumeMute: React.FC<IconProps> = (p) => (
 );
 
 /* ── Music ── */
+export const IconPlaylistAdd: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="3" y1="6" x2="16" y2="6" />
+    <line x1="3" y1="12" x2="12" y2="12" />
+    <line x1="3" y1="18" x2="11" y2="18" />
+    <line x1="18" y1="13" x2="18" y2="21" />
+    <line x1="14" y1="17" x2="22" y2="17" />
+  </StrokeIcon>
+);
+
 export const IconMusic: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <path d="M9 18V5l12-2v13" />

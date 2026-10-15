@@ -104,6 +104,12 @@ is a breaking change.
   row motion (glide and slide-in) is shared in `lib/listMotion`.
 - Card takes `as` (`section`, `aside`, `article`) and `padding` (`sm`, `none`); the PanelHeader
   title is now an `h2` with the same look, with `titleId`. Chosen by the user.
+- `PlayQueue` (the music queue: now playing, up next with reorder and remove, history, the
+  queue menu, autoplay) and `TrackList` (number that turns into play, cover, album and date
+  columns that fold away as it narrows, heart, length, menu, reorder), adopted from the media
+  package on the library's pieces. `Track` and `Album` types, `formatDuration` in the reader's
+  language, `IconPlaylistAdd`, 23 words, and tokens for the track row, the time column and the
+  queue width.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

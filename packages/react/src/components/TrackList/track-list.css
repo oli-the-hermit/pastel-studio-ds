@@ -1,0 +1,102 @@
+/* ── TrackList: rows of tracks on one grid ──────────────────────
+   Number · title · [album] · [date] · heart · length · ⋮. The optional columns fold away as
+   the list narrows (a container query: the rows follow the list's width). */
+.ps-track-list { min-width: 0; container: ps-track-list / inline-size; }
+
+.ps-track-list-head,
+.ps-track-list-row {
+  display: grid;
+  grid-template-columns: var(--ps-icon-button-size) minmax(0, 1fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+  align-items: center;
+  column-gap: var(--ps-space-12);
+  padding: 0 var(--ps-space-8);
+}
+.ps-track-list--album :is(.ps-track-list-head, .ps-track-list-row) {
+  grid-template-columns: var(--ps-icon-button-size) minmax(0, 5fr) minmax(0, 3fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+}
+.ps-track-list--added :is(.ps-track-list-head, .ps-track-list-row) {
+  grid-template-columns: var(--ps-icon-button-size) minmax(0, 5fr) minmax(0, 2fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+}
+.ps-track-list--album.ps-track-list--added :is(.ps-track-list-head, .ps-track-list-row) {
+  grid-template-columns: var(--ps-icon-button-size) minmax(0, 5fr) minmax(0, 3fr) minmax(0, 2fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+}
+.ps-track-list--reorderable :is(.ps-track-list-head, .ps-track-list-row) {
+  padding-left: calc(var(--ps-grip-edge) + var(--ps-grip-width) + var(--ps-grip-gap) - var(--ps-space-8));
+}
+
+.ps-track-list-head {
+  height: var(--ps-button-height-sm);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+}
+.ps-track-list-rows { display: flex; flex-direction: column; gap: var(--ps-space-2); list-style: none; }
+
+.ps-track-list-row {
+  position: relative;
+  min-height: var(--ps-track-row-height);
+  border-radius: var(--ps-radius-lg);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  transition: background var(--ps-transition);
+}
+.ps-track-list-row:hover,
+.ps-track-list-row:focus-within { background: var(--ps-row-hover); }
+.ps-track-list-row:focus-visible { outline-offset: calc(var(--ps-ring-width) * -1); }
+.ps-track-list-row.is-current .ps-track-info-title,
+.ps-track-list-row.is-current .ps-track-list-num-text { color: var(--ps-accent-text); }
+.ps-track-list-row.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
+.ps-track-list-row.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
+
+.ps-track-list-grip {
+  position: absolute;
+  top: 50%;
+  left: var(--ps-grip-edge);
+  display: inline-flex;
+  width: var(--ps-grip-width);
+  color: var(--ps-grip);
+  cursor: grab;
+  transform: translateY(-50%);
+}
+.ps-track-list-num { position: relative; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+.ps-track-list-num-play { position: absolute; visibility: hidden; }
+.ps-track-list-row:hover .ps-track-list-num-play,
+.ps-track-list-row:focus-within .ps-track-list-num-play { visibility: visible; }
+.ps-track-list-row:hover .ps-track-list-num-text,
+.ps-track-list-row:focus-within .ps-track-list-num-text { visibility: hidden; }
+.ps-track-list-title { display: flex; align-items: center; gap: var(--ps-space-12); min-width: 0; }
+.ps-track-list-title > .ps-track-info { flex: 1; }
+.ps-track-list-album,
+.ps-track-list-added { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ps-track-list-duration { display: flex; justify-content: flex-end; font-variant-numeric: tabular-nums; text-align: right; }
+.ps-track-list-like,
+.ps-track-list-more { display: grid; place-items: center; }
+
+/* Row tools appear on hover and focus; a liked heart always shows. */
+.ps-track-list-row .ps-track-list-more > *,
+.ps-track-list-row .ps-track-list-like > :not(.ps-track-list-liked) { visibility: hidden; }
+.ps-track-list-row:hover .ps-track-list-more > *,
+.ps-track-list-row:focus-within .ps-track-list-more > *,
+.ps-track-list-row:hover .ps-track-list-like > *,
+.ps-track-list-row:focus-within .ps-track-list-like > *,
+.ps-track-list-row .ps-track-list-more > [aria-expanded='true'] { visibility: visible; }
+
+/* Narrow: drop the date, then the album. */
+@container ps-track-list (max-width: 720px) {
+  .ps-track-list--added :is(.ps-track-list-head, .ps-track-list-row) {
+    grid-template-columns: var(--ps-icon-button-size) minmax(0, 1fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+  }
+  .ps-track-list--album.ps-track-list--added :is(.ps-track-list-head, .ps-track-list-row) {
+    grid-template-columns: var(--ps-icon-button-size) minmax(0, 5fr) minmax(0, 3fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+  }
+  .ps-track-list-added { display: none; }
+}
+@container ps-track-list (max-width: 520px) {
+  .ps-track-list--album :is(.ps-track-list-head, .ps-track-list-row),
+  .ps-track-list--album.ps-track-list--added :is(.ps-track-list-head, .ps-track-list-row) {
+    grid-template-columns: var(--ps-icon-button-size) minmax(0, 1fr) var(--ps-player-control-size-sm) var(--ps-track-time-col) var(--ps-icon-button-size-xs);
+  }
+  .ps-track-list-album { display: none; }
+}

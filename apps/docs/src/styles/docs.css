@@ -597,9 +597,11 @@
   .docs-page-patch > .ps-card { flex: 1 1 280px; }
   .docs-page-patch > .ps-card.docs-card-narrow { flex: 0 1 360px; }
   .docs-gallery-item:has(.docs-page-patch, .docs-gallery-span) { grid-column: 1 / -1; }
+  .docs-gallery-span { width: 100%; }
   .docs-card-body { display: flex; flex-direction: column; gap: var(--ps-space-12); }
   .docs-card-body p { color: var(--ps-text-2); }
   .docs-page-patch > .docs-queue-panel { flex: 0 1 340px; }
+  .docs-page-patch > .docs-play-queue { flex: 0 1 var(--ps-play-queue-width); max-height: 560px; }
   .docs-card-flush { padding: var(--ps-space-8) var(--ps-space-12); color: var(--ps-text-2); }
   /* As wide as the stage: progress bars and the surfaces they sit on. */
   .docs-demo-wide { flex: 1 1 100%; min-width: 0; }

@@ -1,0 +1,68 @@
+/* ── PlayQueue: the music queue as a side card ──────────────────
+   Its rows are QueueItem's look: raised rows, a grip at the edge, the playing one in accent. */
+.ps-play-queue { display: flex; flex-direction: column; width: min(var(--ps-play-queue-width), 100%); min-height: 0; }
+.ps-play-queue-head { display: flex; flex: none; flex-direction: column; gap: var(--ps-space-10); padding: var(--ps-space-18) var(--ps-space-14) var(--ps-space-10) var(--ps-space-18); }
+.ps-play-queue-head .ps-panel-header { margin-bottom: 0; }
+.ps-play-queue-head .ps-segmented-control { align-self: flex-start; }
+.ps-play-queue-head-tools { display: flex; gap: var(--ps-space-2); }
+.ps-play-queue-body { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-16); min-height: 0; overflow-y: auto; padding: var(--ps-space-4) var(--ps-space-14) var(--ps-space-14); }
+.ps-play-queue-section { display: flex; flex-direction: column; gap: var(--ps-space-8); }
+.ps-play-queue-label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ps-space-8);
+  padding: 0 var(--ps-space-4);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+}
+.ps-play-queue-label-meta { color: var(--ps-text-3); font-weight: var(--ps-font-weight-medium); font-variant-numeric: tabular-nums; }
+.ps-play-queue-empty { padding: var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); color: var(--ps-text-2); font-size: var(--ps-font-size-sm); text-align: center; }
+.ps-play-queue-list { display: flex; flex-direction: column; gap: var(--ps-space-6); list-style: none; }
+.ps-play-queue-foot { flex: none; padding: 0 var(--ps-space-14) var(--ps-space-14); }
+
+.ps-play-queue-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-12);
+  padding: var(--ps-space-8) var(--ps-space-12) var(--ps-space-8) var(--ps-space-8);
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-2);
+  cursor: pointer;
+  transition: background var(--ps-dur-2) var(--ps-ease-standard), color var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-play-queue-row--reorderable { padding-left: calc(var(--ps-grip-edge) + var(--ps-grip-width) + var(--ps-grip-gap)); }
+.ps-play-queue-row:hover { background: var(--ps-surface-3); }
+.ps-play-queue-row-grip {
+  position: absolute;
+  top: 50%;
+  left: var(--ps-grip-edge);
+  display: inline-flex;
+  width: var(--ps-grip-width);
+  color: var(--ps-grip);
+  cursor: grab;
+  transform: translateY(-50%);
+}
+.ps-play-queue-row-info { flex: 1; }
+.ps-play-queue-row-time { flex: none; color: var(--ps-text-2); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; }
+.ps-play-queue-row-tools {
+  position: absolute;
+  top: 50%;
+  right: var(--ps-space-8);
+  padding-left: var(--ps-space-8);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-surface-3);
+  visibility: hidden;
+  transform: translateY(-50%);
+}
+.ps-play-queue-row:hover .ps-play-queue-row-tools,
+.ps-play-queue-row:focus-within .ps-play-queue-row-tools { visibility: visible; }
+.ps-play-queue-row.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
+.ps-play-queue-row.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
+
+.ps-play-queue-row.is-active { background: var(--ps-accent); color: var(--ps-on-accent); cursor: default; }
+.ps-play-queue-row.is-active .ps-track-info-title { color: var(--ps-on-accent); }
+.ps-play-queue-row.is-active .ps-track-info-meta,
+.ps-play-queue-row.is-active .ps-play-queue-row-time { color: var(--ps-on-accent-2); }
+.ps-play-queue-row.is-active .ps-cover-art-badge { background: var(--ps-on-accent); color: var(--ps-accent); }

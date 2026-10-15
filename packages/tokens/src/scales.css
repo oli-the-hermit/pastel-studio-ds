@@ -111,6 +111,9 @@
   --ps-cover-size-md:       120px;     /* a card */
   --ps-cover-size-lg:       232px;     /* a full player */
   --ps-volume-slider-width: 96px;      /* the slider beside a mute button */
+  --ps-track-row-height:    56px;      /* a row in a track list: cover, title and artist */
+  --ps-track-time-col:      56px;      /* the duration column of a track list */
+  --ps-play-queue-width:    340px;     /* the play queue beside a player */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */
