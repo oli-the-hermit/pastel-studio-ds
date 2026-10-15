@@ -5,7 +5,7 @@ import { Code, Page } from '../../blocks/Page';
 const PRINCIPLES: { title: string; body: React.ReactNode }[] = [
   {
     title: 'Flat, with depth from tone',
-    body: <>Surfaces sit apart by tonal steps, from <Code>--ps-bg</Code> up to <Code>--ps-surface-4</Code>. No borders between areas, no gradients, no see-through layers, no decorative shadows. Only things that float above the page, like menus and dialogs, cast a shadow. See <Link to="/foundations/elevation">Elevation</Link>.</>,
+    body: <>Surfaces sit apart by tonal steps, from <Code>--ps-bg</Code> up to <Code>--ps-surface-4</Code>. No borders between areas, no gradients, no decorative shadows, and nothing see-through except the scrim behind dialogs and the dock of controls over video. Only things that float above the page, like menus and dialogs, cast a shadow. See <Link to="/foundations/elevation">Elevation</Link>.</>,
   },
   {
     title: 'One accent, used with intent',

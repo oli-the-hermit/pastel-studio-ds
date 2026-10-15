@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Field, Slider } from '@pastel-studio/react';
 import type { ComponentDemo } from './types';
+import { OnVideo } from '../blocks/OnVideo';
 
 const noop = () => {};
 const wide = (node: React.ReactNode) => <div className="docs-demo-wide">{node}</div>;
@@ -68,6 +69,7 @@ export const demo: ComponentDemo = {
     sm: wide(<Slider label="Volume" value={40} size="sm" onChange={noop} />),
     'Knob on hover': wide(<Slider label="Seek" value={40} knob="hover" onChange={noop} />),
     'No knob': wide(<Slider label="Session progress" value={62} knob="none" readOnly />),
+    'On video': <OnVideo wide><Slider label="Seek" value={40} buffered={65} surface="overlay" onChange={noop} /></OnVideo>,
     Retinted: wide(<Slider label="Break progress" value={40} className="docs-slider-break" readOnly />),
   },
   dos: [

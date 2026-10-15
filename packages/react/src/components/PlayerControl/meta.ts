@@ -15,6 +15,7 @@ export const meta: ComponentMeta = {
     { name: 'secondary', description: 'The default: skip, reset, previous, next.' },
     { name: 'ghost', description: '`variant="ghost"`: no fill, for toggles like sound or loop.' },
     { name: 'sm', description: '`size="sm"` for bars and mini players; the primary stays a step bigger than its neighbours.' },
+    { name: 'On video', description: '`surface="overlay"` on the see-through dock over video: light ghosts with no fill; the primary keeps the phase color.' },
     { name: 'Retinted', description: 'Set `--ps-player-control-phase` (and `-hover`, `on-phase`, `-text`) on its class for another phase, like a break.' },
   ],
   keyboard: [

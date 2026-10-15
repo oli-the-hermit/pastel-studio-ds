@@ -14,6 +14,7 @@ export const meta: ComponentMeta = {
     { name: 'remaining', description: '`mode="remaining"`: "-2:16".' },
     { name: 'total', description: '`mode="total"`: "3:20", e.g. in a track row.' },
     { name: 'sm', description: '`size="sm"` for bars.' },
+    { name: 'On video', description: '`surface="overlay"` on the dock over video: light figures.' },
   ],
   keyboard: [
     { keys: 'Enter / Space', action: 'On a toggle, flips between the time played and the time left.' },

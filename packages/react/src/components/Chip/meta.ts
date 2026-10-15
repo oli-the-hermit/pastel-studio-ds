@@ -10,6 +10,7 @@ export const meta: ComponentMeta = {
   ],
   variants: [
     { name: 'default', description: 'Quiet: a raised surface and secondary text, for tags and meta.' },
+    { name: 'overlay', description: '`tone="overlay"` on video: the see-through dock color with light text, e.g. a quality or chapter label.' },
     { name: 'accent', description: '`tone="accent"`: the accent container, for the one count or status that matters on a card.' },
   ],
   keyboard: [],

@@ -17,6 +17,7 @@ export const meta: ComponentMeta = {
     { name: 'sm', description: '`size="sm"`: a thinner track and a smaller knob, for bars and volume.' },
     { name: 'Knob on hover', description: '`knob="hover"`: a thin bar that grows a knob when the pointer or the keyboard reaches it.' },
     { name: 'No knob', description: '`knob="none"`: a plain bar, like a mini player\'s timer.' },
+    { name: 'On video', description: '`surface="overlay"` on the dock over video: a light track and buffer the picture shows through, no halo.' },
     { name: 'Retinted', description: 'Set `--ps-slider-fill` (and `-track`, `-buffer`, `-halo`) on its class for another phase.' },
   ],
   keyboard: [

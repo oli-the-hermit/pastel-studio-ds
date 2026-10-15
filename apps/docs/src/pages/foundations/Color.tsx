@@ -15,7 +15,8 @@ const GROUP_INTRO: Record<string, string> = {
   Text: 'Three levels of text, all readable on every surface. Most text is text-1; text-2 for supporting text; text-3, the quietest, for hints and meta.',
   Accent: 'The solar lime and the colors that sit on it. "On" colors are for text and icons placed on the matching fill.',
   Status: 'Danger, warning, success and live, each with a container for calmer, tinted backgrounds.',
-  Structure: 'Grid lines, the focus ring and the scrim behind dialogs.',
+  Structure: 'Grid lines, drag grips, the focus ring and the scrim behind dialogs.',
+  Media: 'Video stays dark whatever the theme, so these are the same in both: the letterbox, and the dock of controls that floats over the picture. The dock is see-through, the second exception after the scrim, so the picture stays visible under the controls.',
 };
 
 const SURFACES = ['--ps-bg', '--ps-surface-1', '--ps-surface-2', '--ps-surface-3', '--ps-surface-4'];

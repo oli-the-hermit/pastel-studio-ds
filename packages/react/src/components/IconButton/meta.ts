@@ -17,6 +17,7 @@ export const meta: ComponentMeta = {
     { name: 'xs', description: '`size="xs"` for dense rows; its corners are squarer.' },
     { name: 'danger', description: '`tone="danger"`: hovers in the danger color, for delete and remove.' },
     { name: 'On a raised surface', description: '`surface={2}` or `surface={3}`: the hover steps up with it.' },
+    { name: 'On video', description: '`surface="overlay"` on the see-through dock over video: a light icon and a see-through hover.' },
     { name: 'On accent', description: '`surface="accent"`: the icon takes the color for text on accent.' },
   ],
   keyboard: [

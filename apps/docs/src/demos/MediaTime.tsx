@@ -2,6 +2,7 @@ import React from 'react';
 import { IconPause, IconPlay, IconSwap, MediaTime, PlayerControl, Slider } from '@pastel-studio/react';
 import { useSimulatedPlayback } from '../sim/useSimulatedPlayback';
 import type { ComponentDemo } from './types';
+import { OnVideo } from '../blocks/OnVideo';
 
 const noop = () => {};
 
@@ -32,6 +33,7 @@ export const demo: ComponentDemo = {
     remaining: <MediaTime current={64} duration={200} mode="remaining" />,
     total: <MediaTime current={64} duration={200} mode="total" />,
     sm: <MediaTime current={64} duration={200} size="sm" onModeChange={noop} />,
+    'On video': <OnVideo><MediaTime current={64} duration={200} surface="overlay" toggleable /></OnVideo>,
   },
   dos: [
     'Put the elapsed time at the start of a seek bar and the total or the remaining time at its end.',

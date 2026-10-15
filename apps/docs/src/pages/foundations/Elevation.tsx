@@ -40,7 +40,7 @@ export function Elevation() {
         </Example>
       </Section>
 
-      <Section title="Behind a dialog: the scrim" description={<>A dialog dims the page with <Code>--ps-scrim</Code>, the one see-through color, so attention moves to the dialog without losing the context behind it.</>}>
+      <Section title="Behind a dialog: the scrim" description={<>A dialog dims the page with <Code>--ps-scrim</Code>, one of the two see-through colors (the other is the dock over video), so attention moves to the dialog without losing the context behind it.</>}>
         <Example flush>
           <div className="docs-elev-modal">
             <div className="docs-elev-behind">

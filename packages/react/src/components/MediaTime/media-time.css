@@ -12,3 +12,5 @@
 .ps-media-time--sm { font-size: var(--ps-font-size-xs); }
 .ps-media-time.is-toggle { transition: background var(--ps-transition), color var(--ps-transition); }
 .ps-media-time.is-toggle:hover { background: var(--ps-surface-2); color: var(--ps-text-1); }
+.ps-media-time.is-on-overlay { color: var(--ps-media-on-overlay); }
+.ps-media-time.is-on-overlay.is-toggle:hover { background: var(--ps-media-overlay-hover); color: var(--ps-media-on-overlay); }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconPause, IconPlay, IconReset, IconSkip, IconSoundOff, IconSoundOn, IconSwap, PlayerControl } from '@pastel-studio/react';
 import type { ComponentDemo } from './types';
+import { OnVideo } from '../blocks/OnVideo';
 
 function Demo() {
   const [playing, setPlaying] = useState(false);
@@ -44,6 +45,13 @@ export const demo: ComponentDemo = {
         <PlayerControl size="sm" variant="primary" label="Play"><IconPlay size={18} /></PlayerControl>
         <PlayerControl size="sm" label="Skip"><IconSkip size={16} /></PlayerControl>
       </>
+    ),
+    'On video': (
+      <OnVideo>
+        <PlayerControl surface="overlay" size="sm" label="Back"><IconReset size={16} /></PlayerControl>
+        <PlayerControl surface="overlay" size="sm" variant="primary" label="Play"><IconPlay size={18} /></PlayerControl>
+        <PlayerControl surface="overlay" size="sm" variant="ghost" label="Sound" pressed><IconSoundOn size={16} /></PlayerControl>
+      </OnVideo>
     ),
     Retinted: <PlayerControl variant="primary" label="Play" className="docs-player-break"><IconPlay size={28} /></PlayerControl>,
   },

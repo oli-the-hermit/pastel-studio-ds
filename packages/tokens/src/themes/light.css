@@ -44,6 +44,15 @@
   --ps-focus-ring:          var(--ps-lime-40);
   --ps-scrim:               rgb(26 28 23 / 40%);
 
+
+  /* ── Media (the same in both themes: video stays dark, and so does what floats over it) ── */
+  --ps-media-backdrop:      var(--ps-graphite-1);   /* the letterbox behind the picture */
+  --ps-media-overlay:       color-mix(in srgb, var(--ps-graphite-4) 84%, transparent);   /* the control dock over video: see-through, like the scrim */
+  --ps-media-overlay-hover: color-mix(in srgb, var(--ps-graphite-22) 88%, transparent);  /* a control hovered on the dock */
+  --ps-media-overlay-track: color-mix(in srgb, var(--ps-stone-95) 24%, transparent);     /* a slider's track on the dock */
+  --ps-media-overlay-buffer: color-mix(in srgb, var(--ps-stone-95) 42%, transparent);    /* the loaded part of that track */
+  --ps-media-on-overlay:    var(--ps-stone-95);     /* text and icons on the dock */
+  --ps-media-on-overlay-2:  var(--ps-stone-70);     /* quieter text on the dock */
   /* ── Elevation ── */
   --ps-elev-overlay:        0 12px 32px rgb(26 28 23 / 16%), 0 2px 8px rgb(26 28 23 / 10%);
 

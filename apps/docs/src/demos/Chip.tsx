@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Chip } from '@pastel-studio/react';
 import type { ComponentDemo } from './types';
+import { OnVideo } from '../blocks/OnVideo';
 
 function Demo() {
   const [left, setLeft] = useState(3);
@@ -25,6 +26,7 @@ export const demo: ComponentDemo = {
   variants: {
     default: <Chip>Reading</Chip>,
     accent: <Chip tone="accent">3 tasks left</Chip>,
+    overlay: <OnVideo><Chip tone="overlay">HD · Chapter 2</Chip></OnVideo>,
   },
   dos: [
     'Keep it to a word or two, or a number with its noun: "3 tasks left".',

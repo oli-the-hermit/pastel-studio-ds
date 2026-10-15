@@ -628,6 +628,11 @@
   .docs-demo-accent { color: var(--ps-accent-text); }
   .docs-demo-spread { justify-content: space-between; }
   .docs-spinner-live { --ps-spinner-arc: var(--ps-live); }
+  /* A still video frame with the control dock over it (blocks/OnVideo.tsx). */
+  .docs-on-video { position: relative; display: inline-flex; overflow: hidden; padding: var(--ps-space-24) var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-media-backdrop); }
+  .docs-on-video.is-wide { display: flex; width: 100%; }
+  .docs-on-video > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .docs-on-video-dock { position: relative; display: inline-flex; flex: 1; align-items: center; gap: var(--ps-space-8); padding: var(--ps-space-6) var(--ps-space-10); border-radius: var(--ps-radius-pill); background: var(--ps-media-overlay); }
   .docs-slider-break { --ps-slider-fill: var(--ps-live); }
   .docs-toast-region { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-4)); }
 

@@ -40,3 +40,9 @@
   transition: background var(--ps-dur-3) var(--ps-ease-standard), color var(--ps-dur-3) var(--ps-ease-standard), transform var(--ps-dur-1) var(--ps-ease-standard);
 }
 .ps-player-control--sm.ps-player-control--primary:hover:not(:disabled) { background: var(--ps-player-control-phase); filter: brightness(1.08); }
+
+/* Over video: the dock is the fill; the controls are light ghosts on it, the primary keeps its phase color. */
+.ps-player-control.is-on-overlay:not(.ps-player-control--primary) { background: transparent; color: var(--ps-media-on-overlay); }
+.ps-player-control.is-on-overlay:not(.ps-player-control--primary):hover:not(:disabled) { background: var(--ps-media-overlay-hover); color: var(--ps-media-on-overlay); }
+.ps-player-control.is-on-overlay.ps-player-control--ghost.is-on { color: var(--ps-accent); }
+.ps-player-control.is-on-overlay:disabled { color: var(--ps-media-on-overlay-2); }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconButton, IconClose, IconList, IconMore, IconPin, IconSettings, IconSoundOff, IconSoundOn, IconStar, IconTrash } from '@pastel-studio/react';
 import { OnSurface } from '../blocks/OnSurface';
+import { OnVideo } from '../blocks/OnVideo';
 import type { ComponentDemo } from './types';
 
 function Demo() {
@@ -36,6 +37,7 @@ export const demo: ComponentDemo = {
         <OnSurface surface={3}><IconButton label="More actions" surface={3}><IconMore /></IconButton></OnSurface>
       </>
     ),
+    'On video': <OnVideo><IconButton label="More actions" surface="overlay"><IconMore /></IconButton><IconButton label="Close" surface="overlay"><IconClose /></IconButton></OnVideo>,
     'On accent': <OnSurface surface="accent"><IconButton label="More actions" surface="accent"><IconMore /></IconButton></OnSurface>,
   },
   dos: [

@@ -32,6 +32,8 @@ export interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   /** Shows progress that can't be changed, like a running timer: no drag or keys, read out as progress. */
   readOnly?: boolean;
   disabled?: boolean;
+  /** `overlay` on the see-through dock over video: a light track and buffer, no halo. */
+  surface?: 'default' | 'overlay';
 }
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
@@ -59,6 +61,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
       knob = 'always',
       readOnly = false,
       disabled = false,
+      surface = 'default',
       className,
       ...rest
     },
@@ -148,6 +151,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
           size === 'sm' && 'ps-slider--sm',
           knob !== 'always' && `ps-slider--knob-${knob}`,
           readOnly && 'is-read-only',
+          surface === 'overlay' && 'is-on-overlay',
           drag !== null && 'is-dragging',
           disabled && 'is-disabled',
           className

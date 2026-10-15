@@ -23,3 +23,5 @@
 .ps-icon-button.is-on-accent { color: var(--ps-on-accent-2); }
 .ps-icon-button.is-on-accent:hover:not(:disabled) { background: var(--ps-on-accent); color: var(--ps-accent); }
 .ps-icon-button.is-on-accent-container { color: var(--ps-on-accent-container); }
+.ps-icon-button.is-on-overlay { color: var(--ps-media-on-overlay); }
+.ps-icon-button.is-on-overlay:hover:not(:disabled) { background: var(--ps-media-overlay-hover); color: var(--ps-media-on-overlay); }

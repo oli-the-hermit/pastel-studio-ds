@@ -10,6 +10,8 @@ export interface PlayerControlProps extends Omit<React.ButtonHTMLAttributes<HTML
   size?: 'md' | 'sm';
   /** A toggle that's on: sets aria-pressed, and a ghost takes the phase color. */
   pressed?: boolean;
+  /** `overlay` on the see-through dock over video: light icons, no fill; the primary keeps its phase color. */
+  surface?: 'default' | 'overlay';
 }
 
 /**
@@ -18,7 +20,7 @@ export interface PlayerControlProps extends Omit<React.ButtonHTMLAttributes<HTML
  * the accent; set --ps-player-control-phase (and its family) on its class to retint it.
  */
 export const PlayerControl = forwardRef<HTMLButtonElement, PlayerControlProps>(
-  ({ label, variant = 'secondary', size = 'md', pressed, className, title, type = 'button', children, ...rest }, ref) => (
+  ({ label, variant = 'secondary', size = 'md', pressed, surface = 'default', className, title, type = 'button', children, ...rest }, ref) => (
     <button
       ref={ref}
       type={type}
@@ -26,6 +28,7 @@ export const PlayerControl = forwardRef<HTMLButtonElement, PlayerControlProps>(
         'ps-player-control',
         variant !== 'secondary' && `ps-player-control--${variant}`,
         size === 'sm' && 'ps-player-control--sm',
+        surface === 'overlay' && 'is-on-overlay',
         pressed && 'is-on',
         className
       )}

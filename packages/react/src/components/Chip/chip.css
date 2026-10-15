@@ -17,3 +17,4 @@
   text-overflow: ellipsis;
 }
 .ps-chip--accent { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+.ps-chip--overlay { background: var(--ps-media-overlay); color: var(--ps-media-on-overlay); }

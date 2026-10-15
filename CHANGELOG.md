@@ -117,6 +117,10 @@ is a breaking change.
 - `AlbumHeader`, `AlbumDetails` and `AlbumPage` (an album or playlist page on one card), adopted from
   the media package. The kind and the song count come from shared words, so they translate.
   `IconShare`, `IconDownload`, 17 words.
+- Media roles, the same in both themes: `--ps-media-backdrop`, the see-through `--ps-media-overlay` dock and
+  its hover, track, buffer and text colors, all from the reference palette (new tone `--ps-graphite-1`).
+  The dock is the second documented exception to the flat rule, after the scrim (the user's choice).
+  `surface="overlay"` on PlayerControl, IconButton, Slider and MediaTime, and `tone="overlay"` on Chip.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.
