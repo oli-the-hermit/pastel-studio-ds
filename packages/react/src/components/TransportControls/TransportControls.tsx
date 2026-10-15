@@ -38,6 +38,8 @@ export interface TransportControlsProps extends Omit<React.HTMLAttributes<HTMLDi
   variant?: 'secondary' | 'ghost';
   /** `spread` fills the width (a player card); `cluster` hugs the buttons (a bar). */
   layout?: 'cluster' | 'spread';
+  /** `overlay` on the see-through dock over video. */
+  surface?: 'default' | 'overlay';
   labels?: LabelOverrides<TransportWords>;
 }
 
@@ -67,6 +69,7 @@ export const TransportControls = forwardRef<HTMLDivElement, TransportControlsPro
       playVariant = 'primary',
       variant = 'ghost',
       layout = 'cluster',
+      surface = 'default',
       labels: ownLabels,
       className,
       ...rest
@@ -86,40 +89,40 @@ export const TransportControls = forwardRef<HTMLDivElement, TransportControlsPro
         {...rest}
       >
         {onShuffleChange && (
-          <PlayerControl size={size} variant="ghost" label={labels.shuffle} pressed={!!shuffle} onClick={() => onShuffleChange(!shuffle)}>
+          <PlayerControl size={size} surface={surface} variant="ghost" label={labels.shuffle} pressed={!!shuffle} onClick={() => onShuffleChange(!shuffle)}>
             <IconShuffle size={glyph - 1} />
           </PlayerControl>
         )}
         {onPrevious && (
-          <PlayerControl size={size} variant={variant} label={labels.previous} disabled={!hasPrevious} onClick={onPrevious}>
+          <PlayerControl size={size} surface={surface} variant={variant} label={labels.previous} disabled={!hasPrevious} onClick={onPrevious}>
             <IconPrevious size={glyph} />
           </PlayerControl>
         )}
         {onSkipBack && (
-          <PlayerControl size={size} variant={variant} label={seconds(labels.skipBack)} onClick={onSkipBack}>
+          <PlayerControl size={size} surface={surface} variant={variant} label={seconds(labels.skipBack)} onClick={onSkipBack}>
             <IconReplay10 size={glyph + 1} />
           </PlayerControl>
         )}
         {onStop && (
-          <PlayerControl size={size} variant={variant} label={labels.stop} onClick={onStop}>
+          <PlayerControl size={size} surface={surface} variant={variant} label={labels.stop} onClick={onStop}>
             <IconStop size={glyph - 2} />
           </PlayerControl>
         )}
-        <PlayerControl size={size} variant={playVariant} label={playing ? labels.pause : labels.play} onClick={onPlayPause} className="ps-transport-controls-play">
+        <PlayerControl size={size} surface={surface} variant={playVariant} label={playing ? labels.pause : labels.play} onClick={onPlayPause} className="ps-transport-controls-play">
           {playing ? <IconPause size={playVariant === 'primary' ? glyph + 6 : glyph} /> : <IconPlay size={playVariant === 'primary' ? glyph + 6 : glyph} />}
         </PlayerControl>
         {onSkipForward && (
-          <PlayerControl size={size} variant={variant} label={seconds(labels.skipForward)} onClick={onSkipForward}>
+          <PlayerControl size={size} surface={surface} variant={variant} label={seconds(labels.skipForward)} onClick={onSkipForward}>
             <IconForward10 size={glyph + 1} />
           </PlayerControl>
         )}
         {onNext && (
-          <PlayerControl size={size} variant={variant} label={labels.next} disabled={!hasNext} onClick={onNext}>
+          <PlayerControl size={size} surface={surface} variant={variant} label={labels.next} disabled={!hasNext} onClick={onNext}>
             <IconSkip size={glyph} />
           </PlayerControl>
         )}
         {onRepeatChange && (
-          <PlayerControl size={size} variant="ghost" label={repeatLabel} pressed={repeat !== 'off'} onClick={() => onRepeatChange(nextRepeat(repeat))}>
+          <PlayerControl size={size} surface={surface} variant="ghost" label={repeatLabel} pressed={repeat !== 'off'} onClick={() => onRepeatChange(nextRepeat(repeat))}>
             {repeat === 'one' ? <IconRepeatOne size={glyph - 1} /> : <IconRepeat size={glyph - 1} />}
           </PlayerControl>
         )}

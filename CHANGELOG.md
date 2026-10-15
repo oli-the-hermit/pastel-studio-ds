@@ -121,6 +121,12 @@ is a breaking change.
   its hover, track, buffer and text colors, all from the reference palette (new tone `--ps-graphite-1`).
   The dock is the second documented exception to the flat rule, after the scrim (the user's choice).
   `surface="overlay"` on PlayerControl, IconButton, Slider and MediaTime, and `tone="overlay"` on Chip.
+- Menu: in-place submenus with a Back row (→ opens, ← goes back), check rows (`checked`, `radio`),
+  `keepOpen`, and `surface="overlay"` for a dark panel over video, as the user chose.
+- `VideoSurface` and `MediaControls` (basic, movie and audio; filled or overlay; folding as the
+  bar narrows) adopted from the media package, with `buildMediaSettings` and `speedChoices` for the
+  gear menu in the reader's language. TransportControls and VolumeControl take `surface="overlay"`.
+  Ten video icons, 21 words.
 - Component pages show a `labels` prop briefly and point to the Words section.
 - A modal's long content scrolls inside the dialog's padding, cut before the edge, with the
   scrollbar half a padding from the text and from the edge.

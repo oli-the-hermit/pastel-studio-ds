@@ -489,6 +489,86 @@ export const IconVolumeMute: React.FC<IconProps> = (p) => (
   </StrokeIcon>
 );
 
+/* ── Video ── */
+export const IconCaptions: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2" y="5" width="20" height="14" rx="3" />
+    <path d="M10.5 10.2a2.4 2.4 0 1 0 0 3.6" />
+    <path d="M17 10.2a2.4 2.4 0 1 0 0 3.6" />
+  </StrokeIcon>
+);
+
+export const IconFullscreen: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 8V5a2 2 0 0 1 2-2h3" />
+    <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+    <path d="M21 16v3a2 2 0 0 1-2 2h-3" />
+    <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
+  </StrokeIcon>
+);
+
+export const IconFullscreenExit: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+    <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+    <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+    <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+  </StrokeIcon>
+);
+
+export const IconPip: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2" y="4" width="20" height="16" rx="3" />
+    <rect x="12" y="11" width="7" height="6" rx="1.5" fill="currentColor" stroke="none" />
+  </StrokeIcon>
+);
+
+export const IconTheater: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2" y="6" width="20" height="12" rx="2.5" />
+  </StrokeIcon>
+);
+
+export const IconSpeed: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M4.2 17.5a9 9 0 1 1 15.6 0" />
+    <line x1="12" y1="13" x2="16" y2="8.5" />
+    <circle cx="12" cy="13" r="1.2" fill="currentColor" />
+  </StrokeIcon>
+);
+
+export const IconHd: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="2" y="5" width="20" height="14" rx="3" />
+    <path d="M7 9.5v5M7 12h3.5M10.5 9.5v5" />
+    <path d="M14 9.5v5h1.5a2.5 2.5 0 0 0 0-5z" />
+  </StrokeIcon>
+);
+
+export const IconAudioTrack: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="4" y1="10" x2="4" y2="14" />
+    <line x1="8" y1="6" x2="8" y2="18" />
+    <line x1="12" y1="3" x2="12" y2="21" />
+    <line x1="16" y1="7" x2="16" y2="17" />
+    <line x1="20" y1="10" x2="20" y2="14" />
+  </StrokeIcon>
+);
+
+export const IconSpeaker: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="5" y="2" width="14" height="20" rx="2.5" />
+    <circle cx="12" cy="14" r="3.5" />
+    <line x1="12" y1="6" x2="12.01" y2="6" />
+  </StrokeIcon>
+);
+
+export const IconMoon: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+  </StrokeIcon>
+);
+
 /* ── Music ── */
 export const IconShare: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>

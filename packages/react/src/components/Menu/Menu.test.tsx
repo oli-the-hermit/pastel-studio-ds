@@ -108,4 +108,42 @@ describe('tidyMenuItems', () => {
     const tidy = tidyMenuItems([divider('a'), false, action('one'), divider('b'), null, divider('c'), action('two'), undefined, divider('d')]);
     expect(tidy.map((i) => i.key)).toEqual(['one', 'b', 'two']);
   });
+
+  it('opens a submenu in place, picks a radio row, and goes back with the Back row or ←', async () => {
+    const onSpeed = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <Menu
+        items={[
+          { key: 'speed', label: 'Playback speed', hint: '1×', items: [{ key: '1', label: 'Normal', checked: true, radio: true, onSelect: noop }, { key: '2', label: '2×', checked: false, radio: true, onSelect: () => onSpeed(2) }] },
+          { key: 'loop', label: 'Loop', checked: false, keepOpen: true, onSelect: noop },
+        ]}
+      />
+    );
+    await user.click(trigger());
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Loop' }).getAttribute('aria-checked')).toBe('false');
+    await user.click(screen.getByRole('menuitemcheckbox', { name: 'Loop' }));
+    expect(screen.getByRole('menu')).toBeTruthy();
+    await user.click(screen.getByRole('menuitem', { name: /Playback speed/ }));
+    expect(screen.getByRole('menuitemradio', { name: 'Normal' }).getAttribute('aria-checked')).toBe('true');
+    expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Back: Playback speed' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Back: Playback speed' }));
+    expect(screen.queryByRole('menuitemradio')).toBeNull();
+    screen.getByRole('menuitem', { name: /Playback speed/ }).focus();
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('menuitemradio', { name: '2×' })).toBeTruthy();
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.queryByRole('menuitemradio')).toBeNull();
+    await user.click(screen.getByRole('menuitem', { name: /Playback speed/ }));
+    await user.click(screen.getByRole('menuitemradio', { name: '2×' }));
+    expect(onSpeed).toHaveBeenCalledWith(2);
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
+
+  it('takes the dock color over video', async () => {
+    const user = userEvent.setup();
+    render(<Menu items={items()} surface="overlay" />);
+    await user.click(trigger());
+    expect(screen.getByRole('menu').className).toContain('ps-menu--overlay');
+  });
 });

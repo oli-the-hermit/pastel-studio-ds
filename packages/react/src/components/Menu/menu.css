@@ -37,3 +37,17 @@
   font-variant-numeric: tabular-nums;
 }
 .ps-menu-divider { height: var(--ps-hairline); margin: var(--ps-space-6) var(--ps-space-4); background: var(--ps-menu-hover); }
+
+/* The rows' wrapper takes no room of its own. */
+.ps-menu-list { display: contents; }
+/* A submenu row ends with a chevron; its Back row is quieter. */
+.ps-menu-item-more { display: grid; flex: none; place-items: center; margin-left: var(--ps-space-4); color: var(--ps-text-2); }
+.ps-menu-item--back { color: var(--ps-text-2); font-weight: var(--ps-font-weight-semibold); }
+.ps-menu-item-check { display: grid; flex: none; place-items: center; margin-left: var(--ps-space-8); }
+.ps-menu-item.is-checked .ps-menu-item-icon,
+.ps-menu-item-check { color: var(--ps-accent-text); }
+/* Over video: the panel takes the dock's dark, see-through color, whatever the theme. */
+.ps-menu--overlay { --ps-popover-bg: var(--ps-media-overlay); --ps-menu-hover: var(--ps-media-overlay-hover); color: var(--ps-media-on-overlay); }
+.ps-menu--overlay .ps-menu-item { color: var(--ps-media-on-overlay); }
+.ps-menu--overlay :is(.ps-menu-item-icon, .ps-menu-item-hint, .ps-menu-item-more, .ps-menu-item--back) { color: var(--ps-media-on-overlay-2); }
+.ps-menu--overlay :is(.ps-menu-item.is-checked .ps-menu-item-icon, .ps-menu-item-check) { color: var(--ps-accent); }

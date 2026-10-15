@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IconCopy, IconEdit, IconPin, IconTrash, Menu, MenuList, type MenuItem } from '@pastel-studio/react';
+import { OnVideo } from '../blocks/OnVideo';
 import { StaticPopover } from '../blocks/StaticOverlay';
 import type { ComponentDemo } from './types';
 
@@ -45,9 +46,18 @@ export const demo: ComponentDemo = {
     Disabled: still([rename, { ...duplicate, disabled: true }]),
     'With dividers': still([rename, duplicate, { key: 'div', divider: true }, remove]),
     'With header': still([rename, duplicate], <p className="docs-menu-header">Weekend errands</p>),
+    Submenu: still([{ key: 'speed', label: 'Playback speed', hint: '1×', items: [] }, { key: 'quality', label: 'Quality', hint: 'Auto', items: [] }]),
+    'Check rows': still([{ key: 'n', label: 'Normal', checked: true, radio: true, onSelect: noop }, { key: 'f', label: '1.5×', checked: false, radio: true, onSelect: noop }, { key: 'div', divider: true }, { key: 'loop', label: 'Loop', checked: true, keepOpen: true, onSelect: noop }]),
     'Long header': still([rename, duplicate], <p className="docs-menu-header">Everything to sort out before the move at the end of the month</p>),
   },
   variants: {
+    'On video': (
+      <OnVideo>
+        <StaticPopover className="ps-menu ps-menu--overlay">
+          <MenuList items={[{ key: 'speed', label: 'Playback speed', hint: '1×', items: [] }, { key: 'loop', label: 'Loop', checked: true, onSelect: noop }]} onPicked={noop} />
+        </StaticPopover>
+      </OnVideo>
+    ),
     'Small trigger': <Menu items={[rename, duplicate]} triggerSize="sm" />,
     'Custom trigger': <Menu items={[rename, duplicate]} trigger="Options" triggerClassName="ps-button ps-button--sm" ariaLabel="Options" />,
     'Aligned to the start': <Menu items={[rename, duplicate]} align="start" />,

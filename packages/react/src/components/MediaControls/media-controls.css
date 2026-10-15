@@ -1,0 +1,60 @@
+/* ── MediaControls: a seek row over a bar of three slots ────────
+   The bar is its own container, so it folds by its own width, not the window's. */
+.ps-media-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-2);
+  min-width: 0;
+  color: var(--ps-text-1);
+  container: ps-media-controls / inline-size;
+}
+.ps-media-controls--overlay {
+  padding: var(--ps-space-6) var(--ps-space-10) var(--ps-space-8);
+  border-radius: var(--ps-radius-2xl);
+  background: var(--ps-media-overlay);
+  color: var(--ps-media-on-overlay);
+}
+.ps-media-controls-seek { display: flex; align-items: center; gap: var(--ps-space-6); padding: 0 var(--ps-space-6); }
+.ps-media-controls-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ps-space-8);
+}
+.ps-media-controls-start,
+.ps-media-controls-end { display: flex; align-items: center; gap: var(--ps-space-2); min-width: 0; }
+.ps-media-controls-end { justify-content: flex-end; }
+.ps-media-controls-center { display: flex; justify-content: center; min-width: 0; }
+
+/* Movie: the title sits between the clusters. */
+.ps-media-controls--movie .ps-media-controls-bar { grid-template-columns: auto minmax(0, 1fr) auto; }
+.ps-media-controls--movie .ps-media-controls-transport { margin-right: var(--ps-space-4); }
+.ps-media-controls-title { display: flex; flex-direction: column; align-items: center; min-width: 0; line-height: var(--ps-leading-snug); text-align: center; }
+.ps-media-controls-chapter {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ps-accent-text);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-media-controls--overlay .ps-media-controls-chapter { color: var(--ps-accent); }
+.ps-media-controls-name { max-width: 100%; overflow: hidden; font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-semibold); white-space: nowrap; text-overflow: ellipsis; }
+.ps-media-controls-gear svg { transition: transform var(--ps-transition-md); }
+.ps-media-controls-gear.is-active svg { transform: rotate(60deg); }
+
+/* Audio: the transport is the center of gravity. */
+.ps-media-controls--audio { gap: var(--ps-space-6); }
+
+/* Folding: the extras first, then the optional ones. */
+@container ps-media-controls (max-width: 620px) {
+  .ps-media-controls-extra { display: none; }
+}
+@container ps-media-controls (max-width: 440px) {
+  .ps-media-controls-optional,
+  .ps-media-controls--movie .ps-transport-controls > :not(.ps-transport-controls-play) { display: none; }
+  .ps-media-controls--audio .ps-volume-control { display: none; }
+}

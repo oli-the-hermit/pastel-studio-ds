@@ -1,0 +1,48 @@
+/* ── VideoSurface: the picture area ─────────────────────────────
+   --ps-video-surface-caption-offset on its class lifts the captions above a control dock. */
+.ps-video-surface {
+  --ps-video-surface-caption-offset: var(--ps-space-24);
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--ps-media-backdrop);
+  color: var(--ps-media-on-overlay);
+  isolation: isolate;
+  container: ps-video-surface / inline-size;
+}
+.ps-video-surface--fill { height: 100%; }
+.ps-video-surface-media { position: absolute; inset: 0; display: grid; place-items: center; }
+.ps-video-surface-media > :is(video, canvas, img) { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+.ps-video-surface-layer { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.ps-video-surface-layer > * { pointer-events: auto; }
+.ps-video-surface .ps-spinner { --ps-spinner-track: var(--ps-media-overlay-track); }
+.ps-video-surface-center { animation: ps-video-surface-pop var(--ps-dur-3) var(--ps-ease-emphasized); }
+
+/* Captions: a pill of the dock color, centered above the controls. */
+.ps-video-surface-caption {
+  position: absolute;
+  right: var(--ps-space-24);
+  bottom: var(--ps-video-surface-caption-offset);
+  left: var(--ps-space-24);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transition: bottom var(--ps-transition-md);
+}
+.ps-video-surface-caption > span {
+  max-width: min(100%, 720px);
+  padding: var(--ps-space-6) var(--ps-space-14);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-media-overlay);
+  color: var(--ps-media-on-overlay);
+  font-size: clamp(var(--ps-font-size-sm), 2.4cqi, var(--ps-font-size-xl));
+  font-weight: var(--ps-font-weight-semibold);
+  line-height: var(--ps-leading-snug);
+  text-align: center;
+}
+
+@keyframes ps-video-surface-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
+}

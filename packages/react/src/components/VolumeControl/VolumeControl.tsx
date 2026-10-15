@@ -26,17 +26,19 @@ export interface VolumeControlProps extends Omit<React.HTMLAttributes<HTMLDivEle
   layout?: 'inline' | 'expand' | 'button';
   /** `sm` (default) for bars, `md` for full players. */
   size?: 'md' | 'sm';
+  /** `overlay` on the see-through dock over video. */
+  surface?: 'default' | 'overlay';
   labels?: LabelOverrides<'mute' | 'unmute' | 'volume'>;
 }
 
 /** A mute toggle with a volume slider; the slider steps 5% with the arrow keys. */
 export const VolumeControl = forwardRef<HTMLDivElement, VolumeControlProps>(
-  ({ volume, muted, onVolumeChange, onMuteToggle, layout = 'expand', size = 'sm', labels: ownLabels, className, ...rest }, ref) => {
+  ({ volume, muted, onVolumeChange, onMuteToggle, layout = 'expand', size = 'sm', surface = 'default', labels: ownLabels, className, ...rest }, ref) => {
     const labels = useLabels(ownLabels);
     const level = muted ? 0 : volume;
     return (
       <div ref={ref} className={cx('ps-volume-control', layout !== 'inline' && `ps-volume-control--${layout}`, className)} {...rest}>
-        <PlayerControl variant="ghost" size={size} label={muted ? labels.unmute : labels.mute} onClick={onMuteToggle}>
+        <PlayerControl variant="ghost" size={size} surface={surface} label={muted ? labels.unmute : labels.mute} onClick={onMuteToggle}>
           <VolumeIcon volume={volume} muted={muted} size={size === 'sm' ? 17 : 19} />
         </PlayerControl>
         {layout !== 'button' && (
@@ -46,6 +48,7 @@ export const VolumeControl = forwardRef<HTMLDivElement, VolumeControlProps>(
               max={100}
               step={5}
               size="sm"
+              surface={surface}
               label={labels.volume}
               valueText={(v) => `${Math.round(v)}%`}
               onChange={(v) => onVolumeChange(v / 100)}
