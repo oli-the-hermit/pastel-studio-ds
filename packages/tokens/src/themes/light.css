@@ -44,7 +44,7 @@
 
   /* ── Structure ── */
   --ps-grid-line:           var(--ps-stone-94);
-  --ps-grip:                var(--ps-surface-4);
+  --ps-grip:                var(--ps-stone-80);   /* drag grips: a step down from the row */
   --ps-focus-ring:          var(--ps-lime-40);
   --ps-scrim:               rgb(26 28 23 / 40%);
 
