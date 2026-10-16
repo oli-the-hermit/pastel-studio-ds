@@ -125,6 +125,7 @@
   --ps-file-icon-tile:      64px;      /* a large file icon on its tile */
   --ps-details-pane-icon:   88px;      /* the file icon at the top of a details pane */
   --ps-details-pane-width:  288px;     /* a details pane beside a file view */
+  --ps-tree-width:          248px;     /* a navigation tree beside a file view */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

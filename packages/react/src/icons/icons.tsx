@@ -691,6 +691,33 @@ export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ clas
   </span>
 );
 
+export const IconBack: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </StrokeIcon>
+);
+
+export const IconForward: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </StrokeIcon>
+);
+
+export const IconRefresh: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M21 12a9 9 0 1 1-3-6.7" />
+    <polyline points="21 3 21 9 15 9" />
+  </StrokeIcon>
+);
+
+export const IconHome: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />
+  </StrokeIcon>
+);
+
 export const IconArrowUp: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <line x1="12" y1="19" x2="12" y2="5" />

@@ -1,0 +1,68 @@
+/* ── FileExplorer: a file manager ──────────────────────────────
+   On the page: navigation, address and search. Below: tree | content | details, three tonal
+   cards with the shell's gap between them. Narrower, the details pane goes first, then the tree. */
+.ps-file-explorer {
+  container: ps-file-explorer / inline-size;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--ps-space-12);
+  height: 100%;
+  min-height: 0;
+  color: var(--ps-text-1);
+}
+/* The fields on the page sit on the background, so they take the card's color. */
+.ps-file-explorer-top {
+  --ps-field-bg: var(--ps-surface-1);
+  --ps-field-hover: var(--ps-surface-2);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  min-width: 0;
+}
+.ps-file-explorer-nav { flex: none; flex-wrap: nowrap; gap: var(--ps-space-2); }
+.ps-file-explorer-search { flex: 0 1 300px; }
+
+.ps-file-explorer-body {
+  display: grid;
+  grid-template-columns: var(--ps-tree-width) minmax(0, 1fr);
+  gap: var(--ps-space-12);
+  min-height: 0;
+}
+.ps-file-explorer.is-details-open .ps-file-explorer-body { grid-template-columns: var(--ps-tree-width) minmax(0, 1fr) var(--ps-details-pane-width); }
+.ps-file-explorer-tree,
+.ps-file-explorer-main,
+.ps-file-explorer-details {
+  min-height: 0;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+}
+.ps-file-explorer-tree { overflow-y: auto; padding: var(--ps-space-12) var(--ps-space-8); }
+.ps-file-explorer-main { container: ps-file-explorer-main / inline-size; display: flex; flex-direction: column; gap: var(--ps-space-8); min-width: 0; padding: var(--ps-space-12) var(--ps-space-12) var(--ps-space-6); }
+/* The command bar keeps one line: its labelled buttons fold to icons first. */
+.ps-file-explorer-commands { flex: none; flex-wrap: nowrap; padding: 0 var(--ps-space-4) var(--ps-space-4); }
+.ps-file-explorer-view { flex: 1; }
+.ps-file-explorer-status { flex: none; padding: 0 var(--ps-space-6) 0 var(--ps-space-12); }
+.ps-file-explorer-details { overflow-y: auto; padding: var(--ps-space-16); }
+
+@container ps-file-explorer (max-width: 1080px) {
+  .ps-file-explorer.is-details-open .ps-file-explorer-body,
+  .ps-file-explorer-body { grid-template-columns: var(--ps-tree-width) minmax(0, 1fr); }
+  .ps-file-explorer-details { display: none; }
+}
+@container ps-file-explorer (max-width: 720px) {
+  .ps-file-explorer.is-details-open .ps-file-explorer-body,
+  .ps-file-explorer-body { grid-template-columns: minmax(0, 1fr); }
+  .ps-file-explorer-tree { display: none; }
+  .ps-file-explorer-top { flex-wrap: wrap; }
+  .ps-file-explorer-top .ps-address-bar { flex-basis: 100%; order: 3; }
+  .ps-file-explorer-search { flex: 1 1 160px; }
+}
+@container ps-file-explorer-main (max-width: 600px) {
+  .ps-file-explorer-commands .ps-button.is-collapsible { min-width: var(--ps-button-height-sm); padding: 0; }
+  .ps-file-explorer-commands .ps-button.is-collapsible .ps-button-label,
+  .ps-file-explorer-commands .ps-button.is-collapsible .ps-button-trailing { display: none; }
+}
+@container ps-file-explorer-main (max-width: 520px) {
+  .ps-file-explorer-commands { gap: var(--ps-space-2); }
+  .ps-file-explorer-commands .ps-toolbar-divider { display: none; }
+}

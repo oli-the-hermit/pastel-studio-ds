@@ -602,6 +602,10 @@
   .docs-file-frame > .ps-file-view { flex: 1; }
   .docs-demo-form .docs-file-frame { height: 420px; }
   .docs-file-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--ps-space-8) var(--ps-space-12); width: 100%; list-style: none; }
+  .docs-scaled-stage { width: 100%; min-width: 0; overflow: hidden; border-radius: var(--ps-radius-lg); background: var(--ps-bg); padding: var(--ps-space-12); }
+  .docs-scaled-stage-box { position: relative; }
+  .docs-scaled-stage-content { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+  .docs-explorer-narrow { width: min(560px, 100%); height: 560px; padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
   .docs-file-icons li { display: flex; align-items: center; gap: var(--ps-space-8); color: var(--ps-text-2); font-size: var(--ps-font-size-sm); }
   .docs-card-body { display: flex; flex-direction: column; gap: var(--ps-space-12); }
   .docs-card-body p { color: var(--ps-text-2); }

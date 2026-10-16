@@ -145,6 +145,11 @@ is a breaking change.
   are words with an `{ext}` placeholder, so they translate. `formatBytes` and `formatDateTime`
   follow the reader's locale. 35 words, two arrow icons, six size tokens. Unavailable and hidden
   files fade to `--ps-text-3` instead of the media package's opacity.
+- `FileExplorer`, adopted from the media package: navigation, address and search over a folder
+  tree, the folder's content and a details pane, as three tonal cards that step aside as the
+  window narrows. It changes no files itself: each command shows only when the app gives its
+  operation. Its `labels` reach its parts too. `buttonClass()` lets a Menu trigger look like a
+  labelled Button. Four icons (back, forward, refresh, home), `--ps-tree-width`, 37 words.
 - `ProgressBar` takes `tone="warning"` or `"danger"`; drive meters turn amber past 75% full and
   red past 90% (the user's choice).
 - `--ps-measure` (72ch), the longest comfortable line of running text; an album's description

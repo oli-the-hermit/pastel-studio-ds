@@ -67,6 +67,7 @@
 @import url('./components/FileIcon/file-icon.css') layer(ps.components);
 @import url('./components/FileView/file-view.css') layer(ps.components);
 @import url('./components/DetailsPane/details-pane.css') layer(ps.components);
+@import url('./components/FileExplorer/file-explorer.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);
