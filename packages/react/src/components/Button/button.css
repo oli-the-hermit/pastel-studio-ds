@@ -25,7 +25,9 @@
 
 .ps-button--primary { background: var(--ps-accent); color: var(--ps-on-accent); }
 .ps-button--primary:hover:not(:disabled) { background: var(--ps-accent-hover); }
-.ps-button--primary:disabled { background: var(--ps-surface-2); color: var(--ps-text-3); }
+/* Disabled, it falls back to the neutral fill for the surface it's on, so it never
+   matches its container and disappears. */
+.ps-button--primary:disabled { background: var(--ps-button-fill); color: var(--ps-text-3); }
 
 .ps-button--tonal { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
 .ps-button--tonal:hover:not(:disabled) { background: var(--ps-accent); color: var(--ps-on-accent); }

@@ -179,6 +179,8 @@ is a breaking change.
 - The drag grip reads as a handle in both themes: `--ps-grip` steps up to `--ps-surface-4` in
   dark instead of sinking below the row, and down to the new `--ps-stone-80` in light, the same
   distance from the row either way. `IconGrip` stands about twice as tall (six rows of dots).
+- A disabled `primary` button keeps the neutral fill of the surface it sits on instead of being
+  pinned to `--ps-surface-2`, where it matched a raised panel and read as bare text.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

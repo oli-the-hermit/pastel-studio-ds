@@ -37,6 +37,7 @@ export const demo: ComponentDemo = {
       <>
         <OnSurface surface={2}><Button surface={2}>Cancel</Button></OnSurface>
         <OnSurface surface={3}><Button surface={3}>Cancel</Button></OnSurface>
+        <OnSurface surface={2}><Button variant="primary" surface={2} disabled>Add task</Button></OnSurface>
       </>
     ),
     'On accent': <OnSurface surface="accent"><Button variant="primary" surface="accent">Start</Button></OnSurface>,
