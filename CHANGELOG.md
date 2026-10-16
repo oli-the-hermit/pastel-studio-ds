@@ -176,6 +176,8 @@ is a breaking change.
   scrollbar half a padding from the text and from the edge.
 - A menu grows with its content up to `--ps-menu-max-width` (280px, Material 3's limit). Its
   header lines up with the items' text and ends with an ellipsis past that width.
+- The drag grip reads as a handle: `--ps-grip` steps up to `--ps-surface-4` in dark instead of
+  sinking below the row, and `IconGrip` stands about twice as tall (six rows of dots).
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

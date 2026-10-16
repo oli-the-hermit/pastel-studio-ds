@@ -51,7 +51,7 @@
 
   /* ── Structure ── */
   --ps-grid-line:           var(--ps-graphite-12);
-  --ps-grip:                color-mix(in oklab, var(--ps-bg) 55%, black);   /* drag grips: dots pressed into the surface */
+  --ps-grip:                var(--ps-surface-4);   /* drag grips: a step up from the row */
   --ps-focus-ring:          var(--ps-lime-85);
   --ps-scrim:               rgb(6 7 8 / 72%);     /* the one translucent role: behind modals */
 

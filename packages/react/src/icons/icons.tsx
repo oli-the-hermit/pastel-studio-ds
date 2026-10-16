@@ -676,17 +676,23 @@ export const IconChevronUp: React.FC<IconProps> = ({ size = 16, strokeWidth = 2.
   </StrokeIcon>
 );
 
-/** Drag handle: two columns of three dots. The span carries the class and the title tooltip. */
+/** Drag handle: two columns of six dots. The span carries the class and the title tooltip. */
 export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ className, ...props }) => (
   <span className={className} {...props}>
     {/* Tight box (not the 24-unit icon grid) so the handle takes little room in a row. */}
-    <svg width="8" height="14" viewBox="0 0 8 14" fill="currentColor" aria-hidden="true">
+    <svg width="8" height="26" viewBox="0 0 8 26" fill="currentColor" aria-hidden="true">
       <circle cx="2" cy="3" r="1.25" />
       <circle cx="6" cy="3" r="1.25" />
       <circle cx="2" cy="7" r="1.25" />
       <circle cx="6" cy="7" r="1.25" />
       <circle cx="2" cy="11" r="1.25" />
       <circle cx="6" cy="11" r="1.25" />
+      <circle cx="2" cy="15" r="1.25" />
+      <circle cx="6" cy="15" r="1.25" />
+      <circle cx="2" cy="19" r="1.25" />
+      <circle cx="6" cy="19" r="1.25" />
+      <circle cx="2" cy="23" r="1.25" />
+      <circle cx="6" cy="23" r="1.25" />
     </svg>
   </span>
 );
