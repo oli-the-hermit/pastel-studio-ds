@@ -155,6 +155,16 @@ is a breaking change.
   tree it is given and never touches a disk. `Modal` takes a `className`; `Switch` takes
   `layout="inline"` (the user's choice), a smaller switch beside its label. Six size tokens,
   15 words.
+- `NavRail`, ported from Focus Space's navigation drawer (the source, compared with the media
+  package's): the mark doubles as the expand toggle, the app's name shows as an overline when
+  expanded, badges have their own words, and the current item's pill is a view-transition layer.
+  `useDrawer` remembers the choice on the device and keeps the rail under 1024px. Items carry
+  `data-key` (Focus Space used `data-tab`). New roles `--ps-drawer-bg` and `--ps-drawer-hover`,
+  a step below the page and tinted with the accent's hue (four lime tones), with their contrast
+  pairs. `IconSidebar`, two words.
+- `AppLayout`: an app bar across the top (for a title bar or a File, Edit, View row), the drawer,
+  the page and a side panel, and a bottom bar, as the user chose; no phone layout. Container
+  queries, so it also works in a window of a page; gaps grow with the window as in Focus Space.
 - `ProgressBar` takes `tone="warning"` or `"danger"`; drive meters turn amber past 75% full and
   red past 90% (the user's choice).
 - `--ps-measure` (72ch), the longest comfortable line of running text; an album's description

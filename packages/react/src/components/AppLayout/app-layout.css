@@ -1,0 +1,74 @@
+/* ── AppLayout: the app's shell ────────────────────────────────
+   The app bar runs edge to edge; below it the panels float on the background with gaps that
+   grow with the window (16, 20 from 1024px, 24 from 1920px). It measures itself, not the
+   screen, so it also works inside a window of the page. */
+.ps-app-layout {
+  container: ps-app-layout / inline-size;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--ps-bg);
+  color: var(--ps-text-1);
+}
+.ps-app-layout-app-bar { flex: none; min-width: 0; }
+.ps-app-layout-grid {
+  --ps-app-layout-gap: var(--ps-space-16);
+  display: grid;
+  flex: 1;
+  grid-template-areas: 'top' 'main' 'bottom';
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ps-app-layout-gap);
+  min-height: 0;
+  padding: var(--ps-app-layout-gap);
+}
+.ps-app-layout-grid:has(> .ps-app-layout-nav) {
+  grid-template-areas: 'nav top' 'nav main' 'bottom bottom';
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.ps-app-layout-grid:has(> .ps-app-layout-nav):has(> .ps-app-layout-aside) {
+  grid-template-areas: 'nav top top' 'nav main aside' 'bottom bottom bottom';
+  grid-template-columns: auto minmax(0, 1fr) var(--ps-aside-width);
+}
+.ps-app-layout-grid:not(:has(> .ps-app-layout-nav)):has(> .ps-app-layout-aside) {
+  grid-template-areas: 'top top' 'main aside' 'bottom bottom';
+  grid-template-columns: minmax(0, 1fr) var(--ps-aside-width);
+}
+/* Without a top bar its row is empty: the page starts at the top. */
+.ps-app-layout-grid:not(:has(> .ps-app-layout-top)) { grid-template-rows: 0 minmax(0, 1fr) auto; row-gap: 0; }
+.ps-app-layout-grid:not(:has(> .ps-app-layout-top)) > .ps-app-layout-bottom { margin-top: var(--ps-app-layout-gap); }
+.ps-app-layout-nav { display: flex; grid-area: nav; min-height: 0; }
+.ps-app-layout-top { grid-area: top; min-width: 0; }
+.ps-app-layout-main { grid-area: main; min-width: 0; min-height: 0; overflow-y: auto; }
+.ps-app-layout-aside { display: flex; grid-area: aside; min-height: 0; animation: ps-app-layout-aside-in var(--ps-dur-3) var(--ps-ease-decel); }
+.ps-app-layout-aside > * { flex: 1; min-width: 0; }
+.ps-app-layout-bottom { grid-area: bottom; min-width: 0; }
+
+@keyframes ps-app-layout-aside-in { from { transform: translateX(var(--ps-space-24)); opacity: 0; } }
+
+@container ps-app-layout (min-width: 1024px) {
+  .ps-app-layout-grid { --ps-app-layout-gap: var(--ps-space-20); }
+}
+@container ps-app-layout (min-width: 1920px) {
+  .ps-app-layout-grid { --ps-app-layout-gap: var(--ps-space-24); }
+}
+/* Narrower, the side panel floats over the end of the page, raised. */
+@container ps-app-layout (max-width: 1023px) {
+  .ps-app-layout-grid:has(> .ps-app-layout-nav):has(> .ps-app-layout-aside) {
+    grid-template-areas: 'nav top' 'nav main' 'bottom bottom';
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ps-app-layout-grid:not(:has(> .ps-app-layout-nav)):has(> .ps-app-layout-aside) {
+    grid-template-areas: 'top' 'main' 'bottom';
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ps-app-layout-aside {
+    z-index: var(--ps-z-sticky);
+    grid-area: main;
+    justify-self: end;
+    width: min(var(--ps-aside-width), 100%);
+    border-radius: var(--ps-radius-3xl);
+    box-shadow: var(--ps-elev-overlay);
+  }
+}

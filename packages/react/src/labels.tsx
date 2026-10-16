@@ -203,6 +203,8 @@ export const defaultLabels = {
   removeBookmark: 'Remove bookmark',
   noFolders: 'No folders here.',
   places: 'Places',
+  expandMenu: 'Expand menu',
+  collapseMenu: 'Collapse menu',
 };
 
 export type Labels = typeof defaultLabels;

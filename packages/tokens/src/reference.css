@@ -35,7 +35,9 @@
   --ps-white:         #FFFFFF;
 
   /* ── Lime: the accent (solar lime #D1DD23 is lime-85) ── */
+  --ps-lime-3:        #0A0B05;   /* the drawer, dark: oklch(0.145 0.014) on the accent's hue */
   --ps-lime-10:       #1A1D00;
+  --ps-lime-12:       #202117;   /* the drawer's hover, dark: oklch(0.243 0.018) */
   --ps-lime-25:       #3A3F0A;
   --ps-lime-26:       #3B4100;
   --ps-lime-33:       #4A5200;
@@ -43,8 +45,10 @@
   --ps-lime-80:       #C3CF14;
   --ps-lime-85:       #D1DD23;
   --ps-lime-89:       #DDE84A;
+  --ps-lime-91:       #E4E6D7;   /* the drawer, light: oklch(0.92 0.02) */
   --ps-lime-92:       #E8F07A;
   --ps-lime-94:       #EEF3B8;
+  --ps-lime-96:       #F3F5E6;   /* the drawer's hover, light: oklch(0.965 0.02) */
 
   /* ── Coral: danger and "live" ── */
   --ps-coral-10:      #3B0A05;

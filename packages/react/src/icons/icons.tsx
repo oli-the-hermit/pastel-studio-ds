@@ -691,6 +691,13 @@ export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ clas
   </span>
 );
 
+export const IconSidebar: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2.5" />
+    <line x1="9.5" y1="4" x2="9.5" y2="20" />
+  </StrokeIcon>
+);
+
 export const IconBack: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <line x1="19" y1="12" x2="5" y2="12" />

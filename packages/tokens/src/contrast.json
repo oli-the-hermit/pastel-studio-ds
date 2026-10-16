@@ -23,6 +23,9 @@
     { "fg": "--ps-success", "on": ["--ps-success-container"], "rule": "text", "use": "Success text in its container" },
     { "fg": "--ps-live", "on": "surfaces", "rule": "ui", "use": "\"Now\" markers" },
     { "fg": "--ps-on-live", "on": ["--ps-live"], "rule": "text", "use": "Counters on live badges" },
-    { "fg": "--ps-focus-ring", "on": "surfaces", "rule": "ui", "use": "Focus ring" }
+    { "fg": "--ps-focus-ring", "on": "surfaces", "rule": "ui", "use": "Focus ring" },
+    { "fg": "--ps-text-1", "on": ["--ps-drawer-bg", "--ps-drawer-hover"], "rule": "text", "use": "Drawer items, hovered and current" },
+    { "fg": "--ps-text-2", "on": ["--ps-drawer-bg", "--ps-drawer-hover"], "rule": "text", "use": "Drawer items" },
+    { "fg": "--ps-focus-ring", "on": ["--ps-drawer-bg"], "rule": "ui", "use": "Focus ring in the drawer" }
   ]
 }
