@@ -13,7 +13,8 @@
   background: var(--ps-drawer-bg);
 }
 
-.ps-nav-rail-head { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-12); }
+/* As a rail the head stacks, so the mark and the toggle both fit its width. */
+.ps-nav-rail-head { display: flex; flex-direction: column; align-items: center; gap: var(--ps-space-12); }
 .ps-nav-rail-brand {
   display: grid;
   flex: none;
@@ -25,8 +26,20 @@
   color: var(--ps-on-accent);
   transition: background var(--ps-transition);
 }
-.ps-nav-rail-brand.is-toggle:hover { background: var(--ps-accent-hover); }
 .ps-nav-rail-brand-name { white-space: nowrap; user-select: none; }
+
+/* The expand and collapse button: quiet in the rail, an accent icon when expanded. */
+.ps-nav-rail-toggle {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--ps-icon-button-size-sm);
+  height: var(--ps-icon-button-size-sm);
+  border-radius: var(--ps-radius-round);
+  color: var(--ps-text-2);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-nav-rail-toggle:hover { background: var(--ps-drawer-hover); color: var(--ps-text-1); }
 
 /* Centered between the mark and the footer; the drawer's gap keeps them apart on short windows. */
 .ps-nav-rail-items { display: flex; flex-direction: column; gap: var(--ps-space-12); margin-block: auto; }
@@ -96,10 +109,13 @@
 /* ── Expanded: labels beside the icons ── */
 .ps-nav-rail--expanded { align-items: stretch; width: var(--ps-drawer-expanded); padding-inline: var(--ps-space-16); }
 /* The head lines up like a card's: overline and mark at the edges, a card's padding from the sides. */
-.ps-nav-rail--expanded .ps-nav-rail-head { padding-inline: calc(var(--ps-space-24) - var(--ps-space-16)); }
-/* Expanded, the toggle drops its tile: an accent icon, like the player's volume button. */
-.ps-nav-rail--expanded .ps-nav-rail-brand.is-toggle { border-radius: var(--ps-radius-round); background: none; color: var(--ps-accent-text); }
-.ps-nav-rail--expanded .ps-nav-rail-brand.is-toggle:hover { background: var(--ps-drawer-hover); }
+.ps-nav-rail--expanded .ps-nav-rail-head {
+  flex-direction: row;
+  justify-content: space-between;
+  padding-inline: calc(var(--ps-space-24) - var(--ps-space-16));
+}
+/* Expanded, the toggle is an accent icon, like the player's volume button. */
+.ps-nav-rail--expanded .ps-nav-rail-toggle { color: var(--ps-accent-text); }
 .ps-nav-rail--expanded .ps-nav-rail-items { gap: var(--ps-space-10); }
 .ps-nav-rail--expanded .ps-nav-rail-item {
   position: relative;

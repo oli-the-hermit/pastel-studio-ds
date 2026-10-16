@@ -20,9 +20,9 @@
   --ps-surface-3:           var(--ps-graphite-17);
   --ps-surface-4:           var(--ps-graphite-22);
 
-  /* The navigation drawer: a step below the page, tinted with the accent's hue. */
-  --ps-drawer-bg:           var(--ps-lime-3);
-  --ps-drawer-hover:        var(--ps-lime-12);
+  /* The navigation drawer: the same surface as the page's cards, so the shell reads as one. */
+  --ps-drawer-bg:           var(--ps-surface-1);
+  --ps-drawer-hover:        var(--ps-surface-2);
 
   /* ── Text ── */
   --ps-text-1:              var(--ps-stone-95);

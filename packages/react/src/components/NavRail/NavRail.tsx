@@ -21,9 +21,10 @@ export interface NavRailProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
   onSelect: (key: string) => void;
   /** `rail` icons with tooltips; `expanded` labels beside the icons. */
   variant?: 'rail' | 'expanded';
-  /** The app's mark at the top; its name shows as an overline when expanded. */
-  brand: { mark: React.ReactNode; name: string };
-  /** Makes the mark the expand and collapse button (it turns into a side-panel icon when expanded). */
+  /** The app's mark at the top; its name shows as an overline when expanded. Leave it out when the
+   *  app carries its mark somewhere else, such as an app bar. */
+  brand?: { mark: React.ReactNode; name: string };
+  /** Adds the expand and collapse button to the head, beside the mark. */
   onToggle?: () => void;
   /** Pinned to the bottom, e.g. the account. */
   footer?: React.ReactNode;
@@ -33,9 +34,9 @@ export interface NavRailProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
 }
 
 /**
- * The app's navigation drawer: a floating panel tinted with the accent's hue, the items centered
- * between the mark and the footer. The current item's pill is its own layer, named for a view
- * transition, so a page change can slide it from item to item.
+ * The app's navigation drawer: a floating panel on the same surface as the page's cards, the items
+ * centered between the head and the footer. The current item's pill is its own layer, named for a
+ * view transition, so a page change can slide it from item to item.
  */
 export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
   label, items, activeKey, onSelect, variant = 'rail', brand, onToggle, footer, children, labels: ownLabels, className, ...rest
@@ -45,17 +46,19 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
   const toggleLabel = expanded ? labels.collapseMenu : labels.expandMenu;
   return (
     <nav ref={ref} className={cx('ps-nav-rail', expanded && 'ps-nav-rail--expanded', className)} aria-label={label} {...rest}>
-      {/* Expanded: the name as an overline at the start, the mark at the end, like a card's head. */}
-      <div className="ps-nav-rail-head">
-        {expanded && <span className="ps-overline ps-nav-rail-brand-name" aria-hidden="true">{brand.name}</span>}
-        {onToggle ? (
-          <button type="button" className="ps-nav-rail-brand is-toggle" aria-label={toggleLabel} title={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
-            {expanded ? <IconSidebar size={16} /> : brand.mark}
-          </button>
-        ) : (
-          <div className="ps-nav-rail-brand" title={brand.name}>{brand.mark}</div>
-        )}
-      </div>
+      {/* Expanded: the name as an overline at the start, the mark and the toggle at the end, like a
+          card's head. As a rail they stack, so two controls still fit its width. */}
+      {(brand || onToggle) && (
+        <div className="ps-nav-rail-head">
+          {expanded && brand && <span className="ps-overline ps-nav-rail-brand-name" aria-hidden="true">{brand.name}</span>}
+          {brand && <div className="ps-nav-rail-brand" title={brand.name}>{brand.mark}</div>}
+          {onToggle && (
+            <button type="button" className="ps-nav-rail-toggle" aria-label={toggleLabel} title={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
+              <IconSidebar size={16} />
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="ps-nav-rail-items">
         {items.map((item) => {

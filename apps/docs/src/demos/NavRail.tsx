@@ -31,7 +31,7 @@ function Demo() {
           footer={account}
         />
       )}
-      <span className="docs-demo-status" role="status">On {page}. {drawer.canExpand ? 'The mark expands and collapses it; the choice is remembered.' : 'Under 1024px it stays a rail.'}</span>
+      <span className="docs-demo-status" role="status">On {page}. {drawer.canExpand ? 'The toggle expands and collapses it; the choice is remembered.' : 'Under 1024px it stays a rail.'}</span>
     </div>
   );
 }
@@ -42,6 +42,7 @@ export const demo: ComponentDemo = {
     'Current page': stage(<NavRail label="Main" items={items.slice(0, 4)} activeKey="library" onSelect={noop} brand={brand} />),
     'With badge': stage(<NavRail label="Main" items={items} activeKey="home" onSelect={noop} brand={brand} />),
     'With toggle': stage(<NavRail label="Main" items={items} activeKey="home" onSelect={noop} brand={brand} onToggle={noop} footer={account} />),
+    'Without a mark': stage(<NavRail label="Main" items={items} activeKey="home" onSelect={noop} onToggle={noop} footer={account} />),
   },
   variants: {
     rail: stage(<NavRail label="Main" items={items} activeKey="files" onSelect={noop} brand={brand} footer={account} />),

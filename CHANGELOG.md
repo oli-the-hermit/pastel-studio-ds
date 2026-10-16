@@ -181,6 +181,11 @@ is a breaking change.
   distance from the row either way. `IconGrip` stands about twice as tall (six rows of dots).
 - A disabled `primary` button keeps the neutral fill of the surface it sits on instead of being
   pinned to `--ps-surface-2`, where it matched a raised panel and read as bare text.
+- The navigation drawer sits on `--ps-surface-1`, the same surface as the page's cards, in both
+  themes. The accent tint is gone, and with it the four lime tones that existed only for it.
+- `NavRail` has its own expand and collapse button in the head instead of making the app's mark
+  the toggle, and `brand` is now optional, for apps that carry their mark in an app bar. As a rail
+  the head stacks, so both controls fit its width.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for
