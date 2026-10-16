@@ -25,7 +25,10 @@ export const demo: ComponentDemo = {
     'With hint': wide(<Switch label="Sound alerts" hint="A chime when a session ends" checked onChange={noop} />),
     Disabled: wide(<Switch label="Desktop notifications" hint="Blocked by your system settings" checked={false} onChange={noop} disabled />),
   },
-  variants: {},
+  variants: {
+    Row: wide(<Switch label="Hidden items" checked onChange={noop} />),
+    Inline: <Switch label="Hidden items" layout="inline" checked onChange={noop} />,
+  },
   dos: [
     'Name the setting, not the action: "Sound alerts", not "Turn on sound".',
     'Use it for a setting that applies at once; nothing waits for a Save button.',

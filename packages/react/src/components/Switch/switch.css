@@ -1,5 +1,8 @@
 /* ── Switch: a settings row with an on/off toggle ───────────── */
 .ps-switch {
+  --ps-switch-track-width: var(--ps-switch-width);
+  --ps-switch-track-height: var(--ps-switch-height);
+  --ps-switch-knob-size: var(--ps-switch-knob);
   display: flex;
   align-items: center;
   gap: var(--ps-space-16);
@@ -9,6 +12,17 @@
   cursor: pointer;
 }
 .ps-switch:has(.ps-switch-toggle:disabled) { cursor: default; }
+/* Inline: the label first, then a smaller switch, with no row behind them. */
+.ps-switch--inline {
+  --ps-switch-track-width: var(--ps-switch-width-sm);
+  --ps-switch-track-height: var(--ps-switch-height-sm);
+  --ps-switch-knob-size: var(--ps-switch-knob-sm);
+  display: inline-flex;
+  gap: var(--ps-space-10);
+  padding: 0;
+  background: none;
+}
+.ps-switch--inline .ps-switch-title { font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-medium); color: var(--ps-text-2); }
 .ps-switch-text { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-2); min-width: 0; }
 .ps-switch-title { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-semibold); color: var(--ps-text-1); }
 .ps-switch-hint { font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
@@ -16,8 +30,8 @@
 .ps-switch-toggle {
   position: relative;
   flex: none;
-  width: var(--ps-switch-width);
-  height: var(--ps-switch-height);
+  width: var(--ps-switch-track-width);
+  height: var(--ps-switch-track-height);
   border-radius: var(--ps-radius-pill);
   background: var(--ps-surface-4);
   cursor: pointer;
@@ -27,17 +41,17 @@
 .ps-switch-toggle::before {
   content: '';
   position: absolute;
-  top: calc((var(--ps-switch-height) - var(--ps-switch-knob)) / 2);
-  left: calc((var(--ps-switch-height) - var(--ps-switch-knob)) / 2);
-  width: var(--ps-switch-knob);
-  height: var(--ps-switch-knob);
+  top: calc((var(--ps-switch-track-height) - var(--ps-switch-knob-size)) / 2);
+  left: calc((var(--ps-switch-track-height) - var(--ps-switch-knob-size)) / 2);
+  width: var(--ps-switch-knob-size);
+  height: var(--ps-switch-knob-size);
   border-radius: var(--ps-radius-round);
   background: var(--ps-text-2);
   transition: transform var(--ps-dur-2) var(--ps-ease-emphasized), background var(--ps-dur-2) var(--ps-ease-standard);
 }
 .ps-switch-toggle:checked { background: var(--ps-accent); }
 .ps-switch-toggle:checked::before {
-  transform: translateX(calc(var(--ps-switch-width) - var(--ps-switch-height)));
+  transform: translateX(calc(var(--ps-switch-track-width) - var(--ps-switch-track-height)));
   background: var(--ps-on-accent);
 }
 .ps-switch-toggle:disabled { cursor: default; }

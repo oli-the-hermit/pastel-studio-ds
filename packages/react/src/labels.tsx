@@ -188,6 +188,21 @@ export const defaultLabels = {
   itemOne: '{count} item',
   itemOther: '{count} items',
   selectedCount: '{count} selected',
+  cancel: 'Cancel',
+  save: 'Save',
+  saveAs: 'Save as',
+  selectFolder: 'Select folder',
+  folderField: 'Folder',
+  fileNameField: 'File name',
+  pickFile: 'Pick a file',
+  pickFiles: 'Pick one or more files',
+  untitled: 'Untitled',
+  fileTypeFilter: 'File type',
+  newFolder: 'New folder',
+  bookmarkFolder: 'Bookmark folder',
+  removeBookmark: 'Remove bookmark',
+  noFolders: 'No folders here.',
+  places: 'Places',
 };
 
 export type Labels = typeof defaultLabels;

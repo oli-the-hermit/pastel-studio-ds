@@ -97,6 +97,9 @@
   --ps-switch-width:        46px;
   --ps-switch-height:       28px;
   --ps-switch-knob:         20px;      /* the round knob inside the switch */
+  --ps-switch-width-sm:     38px;      /* an inline switch */
+  --ps-switch-height-sm:    22px;
+  --ps-switch-knob-sm:      16px;
   --ps-player-control-size:            50px;  /* round transport buttons: skip, reset */
   --ps-player-control-size-ghost:      44px;  /* quiet toggles beside them */
   --ps-player-control-size-primary:    76px;  /* the big play / pause */
@@ -126,6 +129,9 @@
   --ps-details-pane-icon:   88px;      /* the file icon at the top of a details pane */
   --ps-details-pane-width:  288px;     /* a details pane beside a file view */
   --ps-tree-width:          248px;     /* a navigation tree beside a file view */
+  --ps-file-dialog-width:   1040px;    /* the app's own open and save dialog */
+  --ps-file-dialog-height:  680px;
+  --ps-file-dialog-places:  220px;     /* the places beside its files */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

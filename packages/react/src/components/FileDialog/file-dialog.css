@@ -1,0 +1,39 @@
+/* ── FileDialog: the app's own open and save dialog ────────────
+   A fixed-size Modal: the top row, places and files fill it; only the panels scroll. */
+.ps-file-dialog {
+  container: ps-file-dialog / inline-size;
+  width: min(var(--ps-file-dialog-width), 100%);
+  height: min(var(--ps-file-dialog-height), 100%);
+}
+.ps-file-dialog .ps-modal-body { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-14); min-height: 0; overflow: hidden; }
+.ps-file-dialog .ps-modal-body > * + * { margin-top: 0; }
+.ps-file-dialog-body { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-12); min-width: 0; min-height: 0; }
+.ps-file-dialog-top { display: flex; align-items: center; gap: var(--ps-space-8); min-width: 0; }
+.ps-file-dialog-nav { display: flex; flex: none; gap: var(--ps-space-2); }
+.ps-file-dialog-search { flex: 0 1 240px; }
+.ps-file-dialog-main { display: grid; flex: 1; grid-template-columns: var(--ps-file-dialog-places) minmax(0, 1fr); gap: var(--ps-space-10); min-height: 0; }
+
+/* Places and files sit in sunken panels inside the dialog's card, so what is raised in them
+   takes the card's color. */
+.ps-file-dialog-places,
+.ps-file-dialog-files { min-height: 0; border-radius: var(--ps-radius-2xl); background: var(--ps-bg); }
+.ps-file-dialog-places { overflow-y: auto; padding: var(--ps-space-8) var(--ps-space-6); }
+.ps-file-dialog-places .ps-tree-view-item:hover { background: var(--ps-surface-1); }
+.ps-file-dialog-files { --ps-row-hover: var(--ps-surface-1); display: flex; flex-direction: column; gap: var(--ps-space-6); min-width: 0; padding: var(--ps-space-10) var(--ps-space-10) var(--ps-space-6); }
+.ps-file-dialog-files .ps-file-icon--lg:not(.is-folder),
+.ps-file-dialog-files .ps-file-icon--xl:not(.is-folder) { background: var(--ps-surface-1); }
+.ps-file-dialog-tools { display: flex; align-items: center; gap: var(--ps-space-6); min-width: 0; }
+.ps-file-dialog-spacer { flex: 1; }
+.ps-file-dialog-view { flex: 1; }
+
+.ps-file-dialog-footer { display: flex; flex: none; flex-direction: column; gap: var(--ps-space-14); }
+.ps-file-dialog-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 280px); align-items: end; gap: var(--ps-space-12); }
+.ps-file-dialog-fields:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+.ps-file-dialog-actions { display: flex; align-items: center; gap: var(--ps-space-8); }
+
+@container ps-file-dialog (max-width: 720px) {
+  .ps-file-dialog-main,
+  .ps-file-dialog-fields { grid-template-columns: minmax(0, 1fr); }
+  .ps-file-dialog-places,
+  .ps-file-dialog-hidden { display: none; }
+}

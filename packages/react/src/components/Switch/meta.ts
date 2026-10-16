@@ -11,7 +11,10 @@ export const meta: ComponentMeta = {
     { name: 'With hint', description: '`hint` adds a muted line under the label that says what the setting does.' },
     { name: 'Disabled', description: '`disabled`: it cannot be changed or focused. It looks the same as Focus Space\'s, so say why nearby.' },
   ],
-  variants: [],
+  variants: [
+    { name: 'Row', description: 'The default: a tonal settings row, the label on the left and the switch on the right.' },
+    { name: 'Inline', description: '`layout="inline"`: a smaller switch with its label beside it and no row, for a toolbar or a dialog\'s footer.' },
+  ],
   keyboard: [
     { keys: 'Space', action: 'Turns it on or off.' },
   ],

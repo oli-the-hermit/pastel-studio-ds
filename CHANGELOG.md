@@ -150,6 +150,11 @@ is a breaking change.
   window narrows. It changes no files itself: each command shows only when the app gives its
   operation. Its `labels` reach its parts too. `buttonClass()` lets a Menu trigger look like a
   labelled Button. Four icons (back, forward, refresh, home), `--ps-tree-width`, 37 words.
+- `FileDialog`, adopted from the media package: the app's own open, save and folder dialog,
+  with recent and bookmarked places, a type filter, New folder and hidden items. It reads the
+  tree it is given and never touches a disk. `Modal` takes a `className`; `Switch` takes
+  `layout="inline"` (the user's choice), a smaller switch beside its label. Six size tokens,
+  15 words.
 - `ProgressBar` takes `tone="warning"` or `"danger"`; drive meters turn amber past 75% full and
   red past 90% (the user's choice).
 - `--ps-measure` (72ch), the longest comfortable line of running text; an album's description

@@ -69,3 +69,4 @@ export * from './components/FileIcon';
 export * from './components/FileView';
 export * from './components/DetailsPane';
 export * from './components/FileExplorer';
+export * from './components/FileDialog';

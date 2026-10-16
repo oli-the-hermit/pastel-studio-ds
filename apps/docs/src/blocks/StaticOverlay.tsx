@@ -14,7 +14,8 @@ export function StaticPopover({ className, style, children }: { className?: stri
   );
 }
 
-/** A small window for an open Modal: its scrim and dialog stay inside this frame. */
-export function ModalStage({ children }: { children: React.ReactNode }) {
-  return <div className="docs-modal-stage" {...inert}>{children}</div>;
+/** A small window for an open Modal: its scrim and dialog stay inside this frame. `height` for a big dialog. */
+export function ModalStage({ height, children }: { height?: number; children: React.ReactNode }) {
+  const style = height ? ({ '--docs-stage-height': `${height}px` } as React.CSSProperties) : undefined;
+  return <div className="docs-modal-stage" style={style} {...inert}>{children}</div>;
 }

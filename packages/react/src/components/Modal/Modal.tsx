@@ -20,13 +20,15 @@ export interface ModalProps {
    */
   dismissible?: boolean;
   children: React.ReactNode;
+  /** Extra class on the dialog, e.g. to size a dialog built on it. */
+  className?: string;
   labels?: LabelOverrides<'close'>;
 }
 
 const FOCUSABLE = 'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 
 /** A dialog over the page: a title, a close button and whatever it asks or shows. */
-export function Modal({ isOpen, title, onClose, wide = false, dismissible = false, children, labels: ownLabels }: ModalProps) {
+export function Modal({ isOpen, title, onClose, wide = false, dismissible = false, children, className, labels: ownLabels }: ModalProps) {
   const labels = useLabels(ownLabels);
   const titleId = useId();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -103,7 +105,7 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
     <div className={cx('ps-modal-backdrop', !isOpen && 'is-closing')} aria-hidden={!isOpen || undefined}>
       <div
         ref={modalRef}
-        className={cx('ps-modal', wide && 'ps-modal--wide')}
+        className={cx('ps-modal', wide && 'ps-modal--wide', className)}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}

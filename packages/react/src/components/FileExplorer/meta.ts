@@ -27,5 +27,5 @@ export const meta: ComponentMeta = {
     'Its `labels` reach its parts too (FileView, DetailsPane, AddressBar…), so one object translates the whole explorer.',
     'It never changes files: every command calls the app\'s `operations`, which confirms anything destructive.',
   ],
-  related: ['FileView', 'DetailsPane', 'TreeView'],
+  related: ['FileView', 'FileDialog', 'TreeView'],
 };
