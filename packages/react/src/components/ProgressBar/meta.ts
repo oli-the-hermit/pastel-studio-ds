@@ -14,6 +14,8 @@ export const meta: ComponentMeta = {
   variants: [
     { name: 'md', description: 'The default height, for rows and lists.' },
     { name: 'lg', description: '`size="lg"`: a thicker track, for the main progress on a card.' },
+    { name: 'Warning', description: '`tone="warning"`: an amber fill for a level running high.' },
+    { name: 'Danger', description: '`tone="danger"`: a red fill for a level near its limit, such as a drive past 90%.' },
     { name: 'Custom track', description: 'Set `--ps-progress-bar-track` on its class when it sits on a raised surface, so the track stays one step above.' },
   ],
   keyboard: [],
@@ -21,7 +23,7 @@ export const meta: ComponentMeta = {
   aria: [
     'A `progressbar` from 0 to 100 with its value; while starting it has no value, which tells a screen reader the amount is unknown.',
     'Give it a `label` that names the task ("Exporting report"), or point `aria-labelledby` at a visible one.',
-    'Completed and failed are shown by color: say it in words beside the bar too.',
+    'Completed, failed and the tones are shown by color: say it in words beside the bar too.',
   ],
   related: ['Toast', 'Card'],
 };

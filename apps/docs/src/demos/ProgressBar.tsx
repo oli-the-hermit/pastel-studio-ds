@@ -40,6 +40,8 @@ export const demo: ComponentDemo = {
   variants: {
     md: wide(<ProgressBar value={42} label="Exporting" />),
     lg: wide(<ProgressBar value={42} size="lg" label="Exporting" />),
+    Warning: wide(<ProgressBar value={82} tone="warning" label="Drive used" />),
+    Danger: wide(<ProgressBar value={94} tone="danger" label="Drive used" />),
     'Custom track': (
       <OnSurface surface={3} className="docs-demo-wide">
         <ProgressBar value={42} label="Exporting" className="docs-progress-on-3" />

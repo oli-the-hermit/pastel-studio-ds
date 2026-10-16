@@ -1,0 +1,28 @@
+/* ── FileIcon: one glyph per file type ─────────────────────────
+   Large sizes sit on a tonal tile; set --ps-file-icon-tile-size and --ps-file-icon-radius on its
+   class to change the xl tile. */
+.ps-file-icon { display: inline-grid; flex: none; place-items: center; color: var(--ps-text-2); }
+.ps-file-icon.is-folder { color: var(--ps-accent-text); }
+.ps-file-icon.is-drive { color: var(--ps-text-1); }
+.ps-file-icon--lg { width: var(--ps-icon-button-size); height: var(--ps-icon-button-size); border-radius: var(--ps-radius-md); background: var(--ps-surface-2); }
+.ps-file-icon--xl {
+  --ps-file-icon-tile-size: var(--ps-file-icon-tile);
+  --ps-file-icon-radius: var(--ps-radius-lg);
+  align-content: center;
+  gap: var(--ps-space-2);
+  width: var(--ps-file-icon-tile-size);
+  height: var(--ps-file-icon-tile-size);
+  border-radius: var(--ps-file-icon-radius);
+  background: var(--ps-surface-2);
+}
+/* Folders keep their own shape: no tile behind them. */
+.ps-file-icon--lg.is-folder,
+.ps-file-icon--xl.is-folder { background: none; }
+.ps-file-icon-ext {
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-none);
+  letter-spacing: var(--ps-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ps-text-3);
+}

@@ -16,5 +16,5 @@ export const meta: ComponentMeta = {
     'The counts are a `role="status"`, so a screen reader reads the new count politely after a selection or a filter.',
     'Long text ends with "…"; the controls at the end never shrink.',
   ],
-  related: ['Toolbar', 'TreeView'],
+  related: ['FileView', 'Toolbar'],
 };

@@ -155,7 +155,7 @@
   .docs-anchor { color: inherit; }
   .docs-anchor:hover { color: var(--ps-accent-text); }
   .docs-section-description { max-width: 72ch; margin-bottom: var(--ps-space-16); color: var(--ps-text-2); }
-  .docs-page p { max-width: 72ch; }
+  .docs-page p:not([class^='ps-']) { max-width: var(--ps-measure); }   /* the docs' prose, not a component's own paragraphs */
   .docs-section > p + p:not(.docs-note) { margin-top: var(--ps-space-12); }
   .docs-note { margin-top: var(--ps-space-8); font-size: var(--ps-font-size-sm); color: var(--ps-text-2); }
 
@@ -598,6 +598,11 @@
   .docs-page-patch > .ps-card.docs-card-narrow { flex: 0 1 360px; }
   .docs-gallery-item:has(.docs-page-patch, .docs-gallery-span) { grid-column: 1 / -1; }
   .docs-gallery-span { width: 100%; }
+  .docs-file-frame { display: flex; flex-direction: column; min-width: 0; }
+  .docs-file-frame > .ps-file-view { flex: 1; }
+  .docs-demo-form .docs-file-frame { height: 420px; }
+  .docs-file-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--ps-space-8) var(--ps-space-12); width: 100%; list-style: none; }
+  .docs-file-icons li { display: flex; align-items: center; gap: var(--ps-space-8); color: var(--ps-text-2); font-size: var(--ps-font-size-sm); }
   .docs-card-body { display: flex; flex-direction: column; gap: var(--ps-space-12); }
   .docs-card-body p { color: var(--ps-text-2); }
   .docs-page-patch > .docs-queue-panel { flex: 0 1 340px; }

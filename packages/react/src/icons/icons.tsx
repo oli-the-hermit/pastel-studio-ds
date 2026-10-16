@@ -691,6 +691,20 @@ export const IconGrip: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ clas
   </span>
 );
 
+export const IconArrowUp: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5 12 12 5 19 12" />
+  </StrokeIcon>
+);
+
+export const IconArrowDown: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <polyline points="19 12 12 19 5 12" />
+  </StrokeIcon>
+);
+
 // File and file-manager icons: 2px strokes on the 24 grid, like the rest of the set.
 
 export const IconFolder: React.FC<IconProps> = (p) => (

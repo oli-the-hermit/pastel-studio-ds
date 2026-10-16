@@ -40,6 +40,8 @@
   --ps-tracking-caps:       0.12em;    /* uppercase overlines */
   --ps-tracking-caps-wide:  0.17em;
 
+  --ps-measure:             72ch;      /* the longest comfortable line of running text */
+
   /* ── Space: px values on a 2px grid; the name is the size ── */
   --ps-space-1:             1px;       /* hairline gaps between grouped buttons */
   --ps-space-2:             2px;
@@ -117,6 +119,12 @@
   --ps-track-time-col:      56px;      /* the duration column of a track list */
   --ps-play-queue-width:    340px;     /* the play queue beside a player */
   --ps-progress-hairline:   3px;       /* the thin progress line of a folded player bar */
+  --ps-file-tile-width:     232px;     /* the narrowest tile in a file view's tiles */
+  --ps-file-icon-cell:      112px;     /* one cell of a file view's icons */
+  --ps-file-list-col:       220px;     /* the narrowest column of a file view's list */
+  --ps-file-icon-tile:      64px;      /* a large file icon on its tile */
+  --ps-details-pane-icon:   88px;      /* the file icon at the top of a details pane */
+  --ps-details-pane-width:  288px;     /* a details pane beside a file view */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

@@ -13,6 +13,8 @@ export interface ProgressBarProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   size?: 'md' | 'lg';
   /** Accessible name, e.g. "Session progress". */
   label?: string;
+  /** The fill's color while processing: `warning` or `danger` for a level running high, such as a nearly full drive. */
+  tone?: 'accent' | 'warning' | 'danger';
 }
 
 /**
@@ -20,13 +22,13 @@ export interface ProgressBarProps extends Omit<React.HTMLAttributes<HTMLDivEleme
  * --ps-progress-bar-track on its class to change it.
  */
 export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
-  ({ value = 0, status = 'processing', size = 'md', label, className, ...rest }, ref) => {
+  ({ value = 0, status = 'processing', size = 'md', label, tone = 'accent', className, ...rest }, ref) => {
     const pct = status === 'completed' ? 100 : Math.min(100, Math.max(0, value));
     const starting = status === 'starting';
     return (
       <div
         ref={ref}
-        className={cx('ps-progress-bar', size === 'lg' && 'ps-progress-bar--lg', status !== 'processing' && `is-${status}`, className)}
+        className={cx('ps-progress-bar', size === 'lg' && 'ps-progress-bar--lg', tone !== 'accent' && `ps-progress-bar--${tone}`, status !== 'processing' && `is-${status}`, className)}
         role="progressbar"
         aria-label={label}
         aria-valuemin={0}

@@ -138,6 +138,17 @@ is a breaking change.
   Five words. Tokens `--ps-row-height` (40px, the menu and option rows' existing height, now
   shared) and `--ps-tree-indent` (16px). 31 file icons: folders, file types, drives, cut, paste,
   rename, sort and view modes.
+- `FileIcon`, `FileView` (details, list, tiles and icons; a desktop's selection and keyboard;
+  sorting, renaming in place, search results) and `DetailsPane`, adopted from the media package,
+  with `useFileBrowser` (folder, history, selection, sort, view, search, hidden files) and the
+  `FsEntry` helpers (`categoryOf`, `typeLabel`, `findPath`…). Type names such as "PNG image"
+  are words with an `{ext}` placeholder, so they translate. `formatBytes` and `formatDateTime`
+  follow the reader's locale. 35 words, two arrow icons, six size tokens. Unavailable and hidden
+  files fade to `--ps-text-3` instead of the media package's opacity.
+- `ProgressBar` takes `tone="warning"` or `"danger"`; drive meters turn amber past 75% full and
+  red past 90% (the user's choice).
+- `--ps-measure` (72ch), the longest comfortable line of running text; an album's description
+  keeps to it.
 - A disabled `IconButton` dims its glyph to `--ps-text-3`, like a disabled `Button` (the media
   package's extra 50% opacity is left out: nothing rests translucent).
 - Component pages show a `labels` prop briefly and point to the Words section.

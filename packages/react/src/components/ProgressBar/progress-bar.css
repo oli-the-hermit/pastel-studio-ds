@@ -15,6 +15,8 @@
   background: var(--ps-accent);
   transition: width var(--ps-dur-4) var(--ps-ease-emphasized);   /* eases rather than snaps */
 }
+.ps-progress-bar--warning .ps-progress-bar-fill { background: var(--ps-warning); }
+.ps-progress-bar--danger .ps-progress-bar-fill { background: var(--ps-danger); }
 .ps-progress-bar.is-completed .ps-progress-bar-fill { background: var(--ps-success); }
 .ps-progress-bar.is-failed .ps-progress-bar-fill { background: var(--ps-danger); }
 
