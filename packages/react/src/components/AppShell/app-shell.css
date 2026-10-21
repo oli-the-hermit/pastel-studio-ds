@@ -75,6 +75,20 @@
   }
 }
 
+/* The bottom-right stack (an update card); it lets clicks through between its cards. */
+.ps-app-shell-corner {
+  position: fixed;
+  right: var(--ps-space-24);
+  bottom: var(--ps-space-24);
+  z-index: var(--ps-z-toast);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ps-space-8);
+  pointer-events: none;
+}
+.ps-app-shell-corner > * { pointer-events: auto; }
+
 /* ── Pages ── */
 .ps-app-shell-page { display: none; }
 .ps-app-shell-page.is-active { display: block; animation: ps-app-shell-page-in var(--ps-dur-3) var(--ps-ease-emphasized); }

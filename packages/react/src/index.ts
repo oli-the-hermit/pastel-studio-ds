@@ -84,4 +84,7 @@ export * from './components/ActionRow';
 export * from './components/ConfirmModal';
 export * from './components/FormLayout';
 export * from './components/FormActions';
+export * from './components/Tour';
+export * from './components/CrashScreen';
+export * from './components/UpdateCard';
 export * from './theme';

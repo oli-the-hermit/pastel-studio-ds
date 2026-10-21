@@ -243,6 +243,18 @@ is a breaking change.
   footer buttons, a confirm dialog's body (Cancel and a focused danger action), the form footer whose Cancel appears once something was
   edited, the column of a dialog's fields, two fields side by side (or an emoji button and a field, `--ps-emoji-field-width` 64px) and a
   form nested on a tinted panel. Step 0.6g of the shared shell for Pastel Media Pro.
+- `Tour`, Focus Space's onboarding engine without its steps: a welcome card, spot steps that find their target by `data-tour`, dim
+  everything else through a hole whose shadow is the scrim, and place the card beside the target with an arrow, then a closing card.
+  Steps belong to the app (`steps`, `chapters`, `onShow` to show a step's page); a step whose target isn't on screen is skipped. Arrows,
+  Enter and Escape are captured, Tab stays in the card. Words: `tour`, `tourStart`, `tourLater`, `tourDone`, `tourClose`, `tourStepCount`.
+- `CrashBoundary` and `CrashScreen`: the calm screen after a render crash, on Focus Space's sign-in card (Reload, Copy details, a hint);
+  the app adds its version and platform to the report through `details` and logs through `onError`. Six `crash…` words.
+- `UpdateCard`: the frame of Focus Space's update offer (icon, title, a line or a status, Later and Install); the app checks and installs.
+  `AppShell` gains `corner`, the bottom-right stack it sits in.
+- Tokens for these at Focus Space's values (tour card widths, badge, arrow, dots and 38px buttons; the centered card and the app's mark;
+  the update card and its icon). A progress bar in the UpdateCard gets a track one step above the card (in Focus Space it matched the
+  card and vanished). The Themes page's sample progress bar now shows 60%, not 0.6%. Step 0.6h, the last of the shared shell
+  for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

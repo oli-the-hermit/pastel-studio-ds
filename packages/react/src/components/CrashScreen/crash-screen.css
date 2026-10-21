@@ -1,0 +1,33 @@
+/* ── CrashScreen: a card alone in the window ─────────────────────
+   Focus Space's sign-in card, holding the crash message. Give it a height (the window's). */
+.ps-crash-screen {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: var(--ps-space-24);
+  background: var(--ps-bg);
+  color: var(--ps-text-1);
+}
+.ps-crash-screen-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-6);
+  width: min(var(--ps-center-card-width), 100%);
+  padding: var(--ps-space-40) var(--ps-space-36) var(--ps-space-32);
+  border-radius: var(--ps-radius-4xl);
+  background: var(--ps-surface-1);
+}
+.ps-crash-screen-mark {
+  display: grid;
+  place-items: center;
+  width: var(--ps-app-mark-size);
+  height: var(--ps-app-mark-size);
+  margin-bottom: var(--ps-space-14);
+  border-radius: var(--ps-radius-2xl);
+  background: var(--ps-accent);
+  color: var(--ps-on-accent);
+}
+.ps-crash-screen-title { font-size: var(--ps-font-size-2xl); font-weight: var(--ps-font-weight-heavy); }
+.ps-crash-screen-body { color: var(--ps-text-2); font-size: var(--ps-font-size-md); }
+.ps-crash-screen-actions { display: flex; flex-wrap: wrap; gap: var(--ps-space-10); margin-top: var(--ps-space-22); }
+.ps-crash-screen-hint { margin-top: var(--ps-space-14); color: var(--ps-text-3); font-size: var(--ps-font-size-sm); }

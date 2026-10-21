@@ -83,6 +83,9 @@
 @import url('./components/ConfirmModal/confirm-modal.css') layer(ps.components);
 @import url('./components/FormLayout/form-layout.css') layer(ps.components);
 @import url('./components/FormActions/form-actions.css') layer(ps.components);
+@import url('./components/Tour/tour.css') layer(ps.components);
+@import url('./components/CrashScreen/crash-screen.css') layer(ps.components);
+@import url('./components/UpdateCard/update-card.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

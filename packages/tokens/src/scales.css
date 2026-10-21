@@ -150,6 +150,17 @@
   --ps-status-chip-height:  36px;      /* a live status pill in the top bar */
   --ps-status-dot-size:     8px;       /* the dot that says a status is live */
   --ps-emoji-field-width:   64px;      /* an emoji button beside a field */
+  --ps-tour-card-width:     360px;     /* a tour step beside what it points at */
+  --ps-tour-card-width-wide: 440px;    /* the tour's welcome and closing cards */
+  --ps-tour-badge-size:     52px;      /* the mark on those cards */
+  --ps-tour-arrow-size:     14px;      /* the arrow from a step to its target */
+  --ps-tour-dot-size:       6px;       /* a chapter's dot */
+  --ps-tour-dot-current:    18px;      /* the current chapter's dot, stretched */
+  --ps-tour-button-height:  38px;      /* the tour card's buttons, between sm and md */
+  --ps-center-card-width:   420px;     /* a card alone in the window: sign-in, a crash */
+  --ps-app-mark-size:       56px;      /* the app's mark on such a card */
+  --ps-update-card-width:   360px;     /* the card offering an update */
+  --ps-update-card-icon-size: 36px;    /* its icon tile */
   --ps-badge-size:          18px;      /* a count on an icon */
   --ps-aside-width:         340px;     /* a side panel in the app layout */
   --ps-grip-width:          8px;       /* the drag grip */

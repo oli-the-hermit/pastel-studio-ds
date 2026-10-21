@@ -1,0 +1,115 @@
+/* ── Tour: a guided tour with a spotlight ──────────────────────────
+   The hole is the clear window and its huge shadow is the dim layer around it (the scrim, the one
+   translucent role). The card sits beside the hole with an arrow pointing at it. */
+.ps-tour {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ps-z-tour);
+  /* Everything underneath is inert while the tour runs. */
+  pointer-events: auto;
+}
+.ps-tour-hole {
+  position: fixed;
+  border-radius: var(--ps-radius-2xl);
+  box-shadow: 0 0 0 200vmax var(--ps-scrim);
+  pointer-events: none;
+  transition:
+    top var(--ps-dur-4) var(--ps-ease-emphasized),
+    left var(--ps-dur-4) var(--ps-ease-emphasized),
+    width var(--ps-dur-4) var(--ps-ease-emphasized),
+    height var(--ps-dur-4) var(--ps-ease-emphasized),
+    border-radius var(--ps-dur-4) var(--ps-ease-emphasized);
+  animation: ps-tour-scrim-in var(--ps-dur-3) var(--ps-ease-decel);
+}
+.ps-tour-hole.is-round { border-radius: var(--ps-radius-pill); }
+/* The scrim fades in with the hole: opacity only in transit. */
+@keyframes ps-tour-scrim-in { from { opacity: 0; } }
+
+.ps-tour-card {
+  /* Where the arrow sits along the card's edge; the tour sets it for each step. */
+  --ps-tour-arrow: var(--ps-space-24);
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-10);
+  width: min(var(--ps-tour-card-width), calc(100vw - 2 * var(--ps-space-16)));
+  padding: var(--ps-space-20) var(--ps-space-20) var(--ps-space-18);
+  border-radius: var(--ps-radius-2xl);
+  background: var(--ps-surface-3);
+  color: var(--ps-text-1);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-tour-card-in var(--ps-dur-3) var(--ps-ease-decel);
+}
+.ps-tour-card.is-center {
+  top: 50%;
+  left: 50%;
+  gap: var(--ps-space-12);
+  width: min(var(--ps-tour-card-width-wide), calc(100vw - 2 * var(--ps-space-16)));
+  padding: var(--ps-space-28);
+  transform: translate(-50%, -50%);
+  animation-name: ps-tour-center-in;
+}
+.ps-tour-card.is-spot { transition: top var(--ps-dur-4) var(--ps-ease-emphasized), left var(--ps-dur-4) var(--ps-ease-emphasized); }
+@keyframes ps-tour-card-in {
+  from { opacity: 0; transform: translateY(var(--ps-space-8)) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ps-tour-center-in {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + var(--ps-space-12))) scale(0.98); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* The arrow pointing at the highlighted element. */
+.ps-tour-card.is-spot::before {
+  position: absolute;
+  width: var(--ps-tour-arrow-size);
+  height: var(--ps-tour-arrow-size);
+  border-radius: var(--ps-radius-2xs);
+  background: inherit;
+  transform: rotate(45deg);
+  content: '';
+}
+.ps-tour-card.is-side-right::before { top: calc(var(--ps-tour-arrow) - var(--ps-tour-arrow-size) / 2); left: calc(var(--ps-tour-arrow-size) / -2 + var(--ps-hairline)); }
+.ps-tour-card.is-side-left::before { top: calc(var(--ps-tour-arrow) - var(--ps-tour-arrow-size) / 2); right: calc(var(--ps-tour-arrow-size) / -2 + var(--ps-hairline)); }
+.ps-tour-card.is-side-bottom::before { top: calc(var(--ps-tour-arrow-size) / -2 + var(--ps-hairline)); left: calc(var(--ps-tour-arrow) - var(--ps-tour-arrow-size) / 2); }
+.ps-tour-card.is-side-top::before { bottom: calc(var(--ps-tour-arrow-size) / -2 + var(--ps-hairline)); left: calc(var(--ps-tour-arrow) - var(--ps-tour-arrow-size) / 2); }
+.ps-tour-card.is-side-center::before { display: none; }
+
+.ps-tour-close { position: absolute; top: var(--ps-space-10); right: var(--ps-space-10); color: var(--ps-text-2); }
+.ps-tour-close:hover:not(:disabled) { background: var(--ps-surface-4); }
+.ps-tour-badge {
+  display: grid;
+  place-items: center;
+  width: var(--ps-tour-badge-size);
+  height: var(--ps-tour-badge-size);
+  border-radius: var(--ps-radius-xl);
+  background: var(--ps-accent);
+  color: var(--ps-on-accent);
+  animation: ps-tour-badge-in var(--ps-dur-4) var(--ps-ease-decel) both;
+  animation-delay: var(--ps-dur-1);
+}
+.ps-tour-badge.is-done { border-radius: var(--ps-radius-round); }
+@keyframes ps-tour-badge-in {
+  from { transform: scale(0.6) rotate(-12deg); }
+  to { transform: none; }
+}
+.ps-tour-meta { display: flex; align-items: center; gap: var(--ps-space-10); padding-right: var(--ps-space-32); }
+.ps-tour-meta .ps-overline { color: var(--ps-accent-text); }
+.ps-tour-count { color: var(--ps-text-2); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; }
+.ps-tour-title { padding-right: var(--ps-space-28); font-size: var(--ps-font-size-lg); font-weight: var(--ps-font-weight-bold); line-height: var(--ps-leading-snug); }
+.ps-tour-card.is-center .ps-tour-title { font-size: var(--ps-font-size-2xl); }
+.ps-tour-body { color: var(--ps-text-2); font-size: var(--ps-font-size-md); line-height: var(--ps-leading-normal); }
+.ps-tour-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-12); margin-top: var(--ps-space-6); }
+.ps-tour-card.is-center .ps-tour-footer { justify-content: flex-end; }
+.ps-tour-actions { display: flex; gap: var(--ps-space-8); margin-left: auto; }
+/* The card's buttons sit between sm and md, to fit the small card. */
+.ps-tour-actions .ps-button { height: var(--ps-tour-button-height); padding: 0 var(--ps-space-16); }
+.ps-tour-dots { display: flex; gap: var(--ps-space-4); }
+.ps-tour-dot {
+  width: var(--ps-tour-dot-size);
+  height: var(--ps-tour-dot-size);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-surface-4);
+  transition: width var(--ps-dur-3) var(--ps-ease-emphasized), background var(--ps-dur-3) var(--ps-ease-emphasized);
+}
+.ps-tour-dot.is-current { width: var(--ps-tour-dot-current); background: var(--ps-accent); }

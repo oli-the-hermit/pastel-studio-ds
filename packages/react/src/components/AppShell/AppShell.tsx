@@ -10,6 +10,8 @@ export interface AppShellProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   children: React.ReactNode;
   /** Rendered inside the shell, above everything: toasts, alerts, celebrations, the tour. */
   overlays?: React.ReactNode;
+  /** A stack in the bottom-right corner of the window, e.g. the UpdateCard (toasts sit at the top right). */
+  corner?: React.ReactNode;
   /** A bar across the column under the page, e.g. the now-playing bar. */
   bottomBar?: React.ReactNode;
   /** A side panel beside the page, e.g. a queue; shown while `asideOpen`. */
@@ -26,7 +28,7 @@ export interface AppShellProps extends Omit<React.HTMLAttributes<HTMLDivElement>
  * It measures itself, not the screen, so it also fits a window inside a page. Give it a height.
  */
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(({
-  nav, topBar, children, overlays, bottomBar, aside, asideOpen = false, surface = 'solid', className, ...rest
+  nav, topBar, children, overlays, corner, bottomBar, aside, asideOpen = false, surface = 'solid', className, ...rest
 }, ref) => (
   <div ref={ref} className={cx('ps-app-shell', className)} data-surface={surface} {...rest}>
     <div className="ps-app-shell-frame">
@@ -40,6 +42,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(({
         {bottomBar && <div className="ps-app-shell-bottom">{bottomBar}</div>}
       </div>
     </div>
+    {corner && <div className="ps-app-shell-corner">{corner}</div>}
     {overlays}
   </div>
 ));

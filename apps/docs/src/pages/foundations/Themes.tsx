@@ -24,7 +24,7 @@ function Sample({ accent, theme }: { accent: AccentId; theme: ResolvedTheme }) {
         <TextButton>Text button</TextButton>
         <Chip tone="accent">Accent chip</Chip>
       </div>
-      <ProgressBar value={0.6} label="Progress" />
+      <ProgressBar value={60} label="Progress" />
       <Switch label="A setting" checked={on} onChange={setOn} />
       <p className="docs-theme-sample-text">The accent as text: <span className="docs-theme-accent-text">a highlighted word</span>. Tab to a button for the focus ring.</p>
     </div>

@@ -1,0 +1,27 @@
+/* ── UpdateCard: an update offered in the corner ── */
+.ps-update-card {
+  display: flex;
+  gap: var(--ps-space-12);
+  width: min(var(--ps-update-card-width), calc(100vw - var(--ps-space-48)));
+  padding: var(--ps-space-16);
+  border-radius: var(--ps-radius-xl);
+  background: var(--ps-surface-3);
+  color: var(--ps-text-1);
+  box-shadow: var(--ps-elev-overlay);
+  pointer-events: auto;
+}
+.ps-update-card-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--ps-update-card-icon-size);
+  height: var(--ps-update-card-icon-size);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-accent-container);
+  color: var(--ps-on-accent-container);
+}
+.ps-update-card-text { display: flex; flex: 1; flex-direction: column; gap: var(--ps-space-6); min-width: 0; color: var(--ps-text-2); font-size: var(--ps-font-size-md); }
+.ps-update-card-title { color: var(--ps-text-1); font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-bold); }
+.ps-update-card-actions { display: flex; justify-content: flex-end; gap: var(--ps-space-8); margin-top: var(--ps-space-6); }
+/* A progress bar inside sits one step above the card (Focus Space left it on the card's own surface, where its track vanished). */
+.ps-update-card .ps-progress-bar { --ps-progress-bar-track: var(--ps-surface-4); }

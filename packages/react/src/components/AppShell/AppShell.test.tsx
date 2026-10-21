@@ -33,6 +33,11 @@ describe('AppShell', () => {
     expect(shell.lastElementChild?.getAttribute('role')).toBe('status');
   });
 
+  it('puts the corner stack in the shell, after the frame', () => {
+    const { container } = render(<AppShell nav={nav} topBar={null} corner={<aside>Update</aside>}><p>Page</p></AppShell>);
+    expect(container.querySelector('.ps-app-shell > .ps-app-shell-corner')?.textContent).toBe('Update');
+  });
+
   it('says whether the page is solid or transparent, and forwards the ref and attributes', () => {
     const ref = React.createRef<HTMLDivElement>();
     const { rerender } = render(<AppShell ref={ref} nav={nav} topBar={null} data-tour="shell"><p>Page</p></AppShell>);
