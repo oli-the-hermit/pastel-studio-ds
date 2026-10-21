@@ -143,6 +143,7 @@
   --ps-window-button-width: 40px;      /* a window button in the title bar */
   --ps-window-button-height: 36px;
   --ps-window-button-size-sm: 26px;    /* a window button in a small window, e.g. a mini player */
+  --ps-swatch-size:         36px;      /* a color swatch to pick from */
   --ps-badge-size:          18px;      /* a count on an icon */
   --ps-aside-width:         340px;     /* a side panel in the app layout */
   --ps-grip-width:          8px;       /* the drag grip */

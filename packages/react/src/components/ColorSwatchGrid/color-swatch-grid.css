@@ -1,0 +1,35 @@
+/* ── ColorSwatchGrid: round color swatches to pick from ──────────
+   Each swatch's fill and ink come from its option, set inline, so the grid shows any palette
+   without new tokens; the defaults below only cover a swatch drawn without them. */
+.ps-color-swatch-grid {
+  --ps-color-swatch-columns: 8;
+  display: grid;
+  grid-template-columns: repeat(var(--ps-color-swatch-columns), var(--ps-swatch-size));
+  gap: var(--ps-space-10);
+}
+.ps-color-swatch {
+  --ps-color-swatch-fill: var(--ps-accent);
+  --ps-color-swatch-ink: var(--ps-on-accent);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--ps-swatch-size);
+  height: var(--ps-swatch-size);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-color-swatch-fill);
+  color: var(--ps-color-swatch-ink);
+  transition: transform var(--ps-dur-2) var(--ps-ease-standard), box-shadow var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-color-swatch:hover { transform: scale(1.08); }
+/* Selected: a ring in the swatch's own color, a small gap away from it. */
+.ps-color-swatch.is-selected::before {
+  position: absolute;
+  inset: calc(-1 * var(--ps-ring-width-xl));
+  border-radius: var(--ps-radius-round);
+  box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-color-swatch-fill);
+  content: '';
+}
+/* The focus ring sits outside the selection ring. */
+.ps-color-swatch:focus-visible { outline-offset: var(--ps-ring-width-xl); }
+.ps-color-swatch.is-selected svg { animation: ps-color-swatch-pop var(--ps-dur-2) var(--ps-ease-decel); }
+@keyframes ps-color-swatch-pop { from { transform: scale(0.4); } }

@@ -210,6 +210,14 @@ is a breaking change.
   (Focus Space's break colors) when an app asks; the library's own palette has none. Color math and the generator live in `scripts/accents`.
 - Documentation: a Themes and accents page with a live chooser and every preset's roles in both themes. Step 0.6c of the shared shell
   for Pastel Media Pro.
+- `ColorSwatchGrid`, from Focus Space: round color swatches as a radio group laid out in rows (one tab stop, arrow keys move and
+  select, Home and End). Each option brings its fill and its ink, so it shows any palette; the selected swatch gets a check and a ring in
+  its own color. New token `--ps-swatch-size` (36px).
+- `AppearancePanel`, from Focus Space's Appearance view: the theme (light, dark, system) and the accent from the recent colors and the 32
+  presets in their three groups. It reports (`onThemeChange`, `onAccentChange`) and asks to remember the accents used (`onRemember`) when it
+  goes away; `recent` is read once so the grid never moves under the pointer. Spaced like a dialog's body, so it sits in a Modal unchanged.
+  Words: the headings and the 32 color names join the shared list (`colorSolarLime`…); the hint is generic ("Colors buttons, highlights and
+  the focus ring."), Focus Space passes its own. Step 0.6d of the shared shell for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

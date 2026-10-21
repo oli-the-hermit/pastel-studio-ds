@@ -3,8 +3,10 @@
  * derives every accent token for both themes, checks contrast and writes palette.json, which
  * the theme module reads at runtime. Solar Lime is the brand color: its tokens are the ones the
  * themes already define, copied as they are. This file is plain data, so the generator can read it
- * under Node; imports in it carry no extensions for that reason. Names belong to the app's words.
+ * under Node: its one import is a type, which Node erases. The names are shared words (accentWord).
  */
+
+import type { Labels } from '../labels';
 
 export const ACCENT_GROUPS = ['vibrant', 'calm', 'muted'] as const;
 export type AccentGroup = (typeof ACCENT_GROUPS)[number];
@@ -75,5 +77,11 @@ export const ACCENT_TOKENS = [
   '--ps-accent-text',
   '--ps-focus-ring',
 ] as const;
+
+/** The shared words that name the presets: colorSolarLime, colorMossGrey… */
+export type AccentWord = Extract<keyof Labels, `color${string}`>;
+
+/** The word for a preset's name: 'moss-grey' → colorMossGrey. */
+export const accentWord = (id: AccentId) => `color${id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join('')}` as AccentWord;
 
 export const isAccentId = (v: unknown): v is AccentId => ACCENT_PRESETS.some((p) => p.id === v);

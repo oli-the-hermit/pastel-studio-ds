@@ -1,0 +1,11 @@
+/* ── AppearancePanel: the theme and the accent color ───────────────
+   Spaced like a dialog's body (16px between parts), so it sits in a Modal unchanged. */
+.ps-appearance-panel > * + * { margin-top: var(--ps-space-16); }
+.ps-appearance-panel-title { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-bold); }
+/* A quiet break between the theme and the accent. */
+.ps-appearance-panel-divider { height: 0; margin: var(--ps-space-12) 0; }
+.ps-appearance-panel-hint { margin-top: var(--ps-space-4); color: var(--ps-text-2); font-size: var(--ps-font-size-md); }
+.ps-appearance-panel-section { display: flex; flex-direction: column; gap: var(--ps-space-12); }
+.ps-appearance-panel-section-title { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-semibold); }
+.ps-appearance-panel-group { display: flex; flex-direction: column; gap: var(--ps-space-8); }
+.ps-appearance-panel-group-label { color: var(--ps-text-2); font-size: var(--ps-font-size-sm); }

@@ -74,4 +74,6 @@ export * from './components/NavRail';
 export * from './components/AppShell';
 export * from './components/TopBar';
 export * from './components/WindowControls';
+export * from './components/ColorSwatchGrid';
+export * from './components/AppearancePanel';
 export * from './theme';
