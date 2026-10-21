@@ -1,7 +1,8 @@
 /* ── Checkbox: recessed into its row ─────────────────────────────
-   Not a ring on the row but a filled square a step darker than it (the page background by
-   default; --ps-checkbox-fill for another surface). Checked: the accent with the check painted
-   through a mask in --ps-on-accent, so it follows the theme and the accent. */
+   A filled square a step darker than its row (the page background by default; --ps-checkbox-fill
+   for another surface), with a thin ring in --ps-text-3 so its edge reaches 3:1 on any surface
+   (WCAG 1.4.11; the fill alone is about 1.1:1). Checked: the accent with the check painted through
+   a mask in --ps-on-accent, so it follows the theme and the accent. */
 .ps-checkbox {
   --ps-checkbox-fill: var(--ps-bg);
   display: inline-grid;
@@ -11,15 +12,16 @@
   height: var(--ps-checkbox-size);
   border-radius: var(--ps-radius-xs);
   background: var(--ps-checkbox-fill);
+  box-shadow: inset 0 0 0 var(--ps-hairline) var(--ps-text-3);
   cursor: pointer;
   appearance: none;
-  transition: background var(--ps-transition);
+  transition: background var(--ps-transition), box-shadow var(--ps-transition);
 }
-.ps-checkbox:hover { background: color-mix(in oklab, var(--ps-checkbox-fill) 80%, var(--ps-text-3)); }
+.ps-checkbox:hover { box-shadow: inset 0 0 0 var(--ps-hairline) var(--ps-text-2); }
 /* Read-only (aria-disabled): its state comes from elsewhere; it keeps its tooltip. */
 .ps-checkbox[aria-disabled='true'] { cursor: default; }
-.ps-checkbox[aria-disabled='true']:hover:not(:checked) { background: var(--ps-checkbox-fill); }
-.ps-checkbox:checked { background: var(--ps-accent); animation: ps-checkbox-pop var(--ps-dur-3) var(--ps-ease-emphasized); }
+.ps-checkbox[aria-disabled='true']:hover:not(:checked) { box-shadow: inset 0 0 0 var(--ps-hairline) var(--ps-text-3); }
+.ps-checkbox:checked { background: var(--ps-accent); box-shadow: none; animation: ps-checkbox-pop var(--ps-dur-3) var(--ps-ease-emphasized); }
 .ps-checkbox:checked::after {
   width: var(--ps-checkbox-mark-size);
   height: var(--ps-checkbox-mark-size);

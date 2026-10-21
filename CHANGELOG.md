@@ -233,7 +233,8 @@ is a breaking change.
   with the large radius (14px) at the top; the panel has the 2xl radius. A tab list with automatic activation: one tab stop, the arrows
   move and open (wrapping), Home and End; an optional icon per tab. Step 0.6f of the shared shell for Pastel Media Pro.
 - `Checkbox`, from Focus Space, in the corrected look (L9): recessed into its row, a filled square a step darker than its surface
-  (`--ps-checkbox-fill`, the page background by default) with no outline; checked, the accent with a check painted in `--ps-on-accent`.
+  (`--ps-checkbox-fill`, the page background by default) with a thin ring in `--ps-text-3`, which keeps its edge at 4.8:1 or more on
+  every surface (the fill alone was about 1.1:1, under WCAG's 3:1); checked, the accent with a check painted in `--ps-on-accent`.
   New token `--ps-checkbox-mark-size` (14px).
 - `StatusChip`, from Focus Space: a live status in the top bar (dot, label, value, action). Tones `idle`, `live` (the dot pulses in the
   accent) and `paused` (amber); the colors are custom properties on the chip (`--ps-status-dot`, `--ps-status-value`, `--ps-status-pulse`),
