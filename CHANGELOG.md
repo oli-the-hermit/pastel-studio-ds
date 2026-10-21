@@ -218,6 +218,14 @@ is a breaking change.
   goes away; `recent` is read once so the grid never moves under the pointer. Spaced like a dialog's body, so it sits in a Modal unchanged.
   Words: the headings and the 32 color names join the shared list (`colorSolarLime`…); the hint is generic ("Colors buttons, highlights and
   the focus ring."), Focus Space passes its own. Step 0.6d of the shared shell for Pastel Media Pro.
+- `AccountMenu`, from Focus Space's user badge and account dialog: the signed-in profile at the bottom of the drawer. Its avatar (a
+  picture or the initials, with an optional marker dot) opens a menu with the name and handle, the app's views and the exit; a view opens
+  in a wide Modal titled by it, and stays while the dialog closes. The exit ("Sign out", "Switch profile") is disabled while its promise
+  runs. `compact` shows the avatar alone, for the rail; the view can be controlled with `view` and `onViewChange`. It uses the library's
+  own menu look (Focus Space tinted it with the drawer's accent, which the library dropped). New tokens `--ps-avatar-size` (40px) and
+  `--ps-avatar-marker-size` (12px).
+- `NavRail`'s `footer` can be a function of `{ expanded }`, so an account badge can follow the drawer. Step 0.6e of the shared shell
+  for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

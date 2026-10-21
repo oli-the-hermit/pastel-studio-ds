@@ -12,6 +12,15 @@ const items: NavRailItem[] = [
 const brand = { mark: <svg />, name: 'Focus Space' };
 
 describe('NavRail', () => {
+  it('gives a footer function whether the drawer is expanded', () => {
+    const footer = vi.fn(({ expanded }: { expanded: boolean }) => <span>{expanded ? 'Sam Rivera' : 'SR'}</span>);
+    const { rerender } = render(<NavRail label="Main" items={items} activeKey="home" onSelect={() => {}} footer={footer} />);
+    expect(screen.getByText('SR')).toBeTruthy();
+    rerender(<NavRail label="Main" items={items} activeKey="home" onSelect={() => {}} footer={footer} variant="expanded" />);
+    expect(screen.getByText('Sam Rivera')).toBeTruthy();
+    expect(footer).toHaveBeenLastCalledWith({ expanded: true });
+  });
+
   it('is a named nav with the current page marked, tooltips and a labelled badge', async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();

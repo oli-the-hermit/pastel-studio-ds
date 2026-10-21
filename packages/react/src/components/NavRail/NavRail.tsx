@@ -26,8 +26,8 @@ export interface NavRailProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
   brand?: { mark: React.ReactNode; name: string };
   /** Adds the expand and collapse button to the head, beside the mark. */
   onToggle?: () => void;
-  /** Pinned to the bottom, e.g. the account. */
-  footer?: React.ReactNode;
+  /** Pinned to the bottom, e.g. the account. A function gets whether the drawer is expanded (an account badge shows its name then). */
+  footer?: React.ReactNode | ((state: { expanded: boolean }) => React.ReactNode);
   /** Rendered after the drawer's content, e.g. a dialog opened from it. */
   children?: React.ReactNode;
   labels?: LabelOverrides<'expandMenu' | 'collapseMenu'>;
@@ -84,7 +84,7 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
         })}
       </div>
 
-      <div className="ps-nav-rail-footer">{footer}</div>
+      <div className="ps-nav-rail-footer">{typeof footer === 'function' ? footer({ expanded }) : footer}</div>
       {children}
     </nav>
   );
