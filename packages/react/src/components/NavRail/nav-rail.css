@@ -1,5 +1,5 @@
 /* ── NavRail: the app's navigation drawer ─────────────────────
-   A floating panel: its height comes from where it is placed (AppLayout stretches it). */
+   A floating panel: its height comes from where it is placed (AppShell stretches it). */
 .ps-nav-rail {
   display: flex;
   flex-direction: column;

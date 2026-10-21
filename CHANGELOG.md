@@ -162,9 +162,6 @@ is a breaking change.
   `data-key` (Focus Space used `data-tab`). New roles `--ps-drawer-bg` and `--ps-drawer-hover`,
   a step below the page and tinted with the accent's hue (four lime tones), with their contrast
   pairs. `IconSidebar`, two words.
-- `AppLayout`: an app bar across the top (for a title bar or a File, Edit, View row), the drawer,
-  the page and a side panel, and a bottom bar, as the user chose; no phone layout. Container
-  queries, so it also works in a window of a page; gaps grow with the window as in Focus Space.
 - `ProgressBar` takes `tone="warning"` or `"danger"`; drive meters turn amber past 75% full and
   red past 90% (the user's choice).
 - `--ps-measure` (72ch), the longest comfortable line of running text; an album's description
@@ -186,6 +183,14 @@ is a breaking change.
 - `NavRail` has its own expand and collapse button in the head instead of making the app's mark
   the toggle, and `brand` is now optional, for apps that carry their mark in an app bar. As a rail
   the head stacks, so both controls fit its width.
+- `AppShell` and `AppShellPage` replace `AppLayout` (removed with its demo and docs page; nothing else used it). It is Focus Space's
+  window: the drawer floats at the left with the page margin around it, and beside it a column holds the top bar over the page, which
+  scrolls on its own. Slots: `nav`, `topBar`, the page, `overlays`, `bottomBar`, and `aside` with `asideOpen` (a column beside the page;
+  under 1024px wide it floats over the end of the page). `surface="transparent"` leaves the page see-through for a picture drawn behind
+  the window, while the top bar and the drawer's gutter keep the background. The margin and gutter are 16px, 20 from 1024 and 24 from
+  1920, set on the shell with container queries (it measures itself, not the screen), so everything inside reads `--ps-grid-margin`
+  and `--ps-grid-gutter`. `AppShellPage` keeps every page mounted and shows the active one, sliding it in; `fill` makes a page a column
+  as tall as the shell. Step 0.6a of the shared shell for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

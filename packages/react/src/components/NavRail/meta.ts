@@ -25,5 +25,5 @@ export const meta: ComponentMeta = {
     'The toggle says "Expand menu" or "Collapse menu" and has `aria-expanded`.',
     '`useDrawer()` remembers the choice on the device and keeps the rail under 1024px; each item carries `data-key` for tours.',
   ],
-  related: ['AppLayout'],
+  related: ['AppShell'],
 };

@@ -71,4 +71,4 @@ export * from './components/DetailsPane';
 export * from './components/FileExplorer';
 export * from './components/FileDialog';
 export * from './components/NavRail';
-export * from './components/AppLayout';
+export * from './components/AppShell';

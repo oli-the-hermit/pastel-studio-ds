@@ -1,0 +1,82 @@
+/* ── AppShell: the app's window ────────────────────────────────
+   The drawer floats at the left with the page margin around it; beside it a column holds the top
+   bar and the page, and only the page scrolls. It measures itself, not the screen, so the margin
+   and gutter grow with its own width (16px, 20 from 1024, 24 from 1920). */
+.ps-app-shell {
+  container: ps-app-shell / inline-size;
+  height: 100%;
+  min-height: 0;
+  background: var(--ps-bg);
+  color: var(--ps-text-1);
+}
+/* A picture drawn behind the window shows through the page; the bars and the drawer's gutter keep the background. */
+.ps-app-shell[data-surface='transparent'] { background: none; }
+
+.ps-app-shell-frame {
+  --ps-grid-margin: var(--ps-space-16);
+  --ps-grid-gutter: var(--ps-space-16);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  height: 100%;
+}
+@container ps-app-shell (min-width: 1024px) {
+  .ps-app-shell-frame { --ps-grid-margin: var(--ps-space-20); --ps-grid-gutter: var(--ps-space-20); }
+}
+@container ps-app-shell (min-width: 1920px) {
+  .ps-app-shell-frame { --ps-grid-margin: var(--ps-space-24); --ps-grid-gutter: var(--ps-space-24); }
+}
+
+/* The page margin is the cell's padding, so the cell can keep the background in a transparent shell. */
+.ps-app-shell-nav {
+  display: flex;
+  min-height: 0;
+  padding: var(--ps-grid-margin) 0 var(--ps-grid-margin) var(--ps-grid-margin);
+  background: var(--ps-bg);
+}
+
+.ps-app-shell-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.ps-app-shell-top { flex: none; background: var(--ps-bg); }
+.ps-app-shell-body { position: relative; display: flex; flex: 1; min-height: 0; }
+.ps-app-shell-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--ps-space-4) var(--ps-grid-margin) var(--ps-grid-margin);
+}
+.ps-app-shell-bottom { flex: none; padding: 0 var(--ps-grid-margin) var(--ps-grid-margin); background: var(--ps-bg); }
+
+/* A side panel: a third column, with the page's own spacing above and below it. */
+.ps-app-shell-aside {
+  display: flex;
+  flex: none;
+  width: var(--ps-aside-width);
+  padding: var(--ps-space-4) var(--ps-grid-margin) var(--ps-grid-margin) 0;
+  animation: ps-app-shell-aside-in var(--ps-dur-3) var(--ps-ease-decel);
+}
+.ps-app-shell-aside > * { flex: 1; min-width: 0; }
+@keyframes ps-app-shell-aside-in { from { transform: translateX(var(--ps-space-24)); opacity: 0; } }
+/* Narrower, the side panel floats over the end of the page, raised. */
+@container ps-app-shell (max-width: 1023px) {
+  .ps-app-shell-aside {
+    position: absolute;
+    inset: var(--ps-space-4) var(--ps-grid-margin) var(--ps-grid-margin) auto;
+    z-index: var(--ps-z-sticky);
+    width: min(var(--ps-aside-width), 100%);
+    padding: 0;
+    border-radius: var(--ps-radius-3xl);
+    box-shadow: var(--ps-elev-overlay);
+  }
+}
+
+/* ── Pages ── */
+.ps-app-shell-page { display: none; }
+.ps-app-shell-page.is-active { display: block; animation: ps-app-shell-page-in var(--ps-dur-3) var(--ps-ease-emphasized); }
+.ps-app-shell-page--fill.is-active { display: flex; flex-direction: column; gap: var(--ps-space-16); height: 100%; min-height: 0; }
+@keyframes ps-app-shell-page-in { from { transform: translateY(var(--ps-space-6)); } }

@@ -607,8 +607,9 @@
   .docs-scaled-stage-content { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
   .docs-explorer-narrow { width: min(560px, 100%); height: 560px; padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
   .docs-nav-stage { display: flex; height: 520px; padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
-  .docs-shell-app-bar { display: flex; gap: var(--ps-space-2); padding: var(--ps-space-6) var(--ps-space-12) 0; }
-  .docs-shell-top { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-16); }
+  .docs-shell-top { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-16); padding: var(--ps-space-16) var(--ps-grid-margin); }
+  .docs-shell-stage { position: relative; height: 100%; }
+  .docs-shell-picture { position: absolute; inset: 0; background: var(--ps-accent-container); }
   .docs-shell-title { font-size: var(--ps-font-size-2xl); font-weight: var(--ps-font-weight-bold); }
   .docs-shell-top .ps-search-field { width: 260px; background: var(--ps-surface-1); }
   .docs-shell-page { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--ps-space-16); }
