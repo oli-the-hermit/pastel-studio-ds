@@ -76,6 +76,7 @@
 @import url('./components/ColorSwatchGrid/color-swatch-grid.css') layer(ps.components);
 @import url('./components/AppearancePanel/appearance-panel.css') layer(ps.components);
 @import url('./components/AccountMenu/account-menu.css') layer(ps.components);
+@import url('./components/Tabs/tabs.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

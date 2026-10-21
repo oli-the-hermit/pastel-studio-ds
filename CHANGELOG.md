@@ -226,6 +226,12 @@ is a breaking change.
   `--ps-avatar-marker-size` (12px).
 - `NavRail`'s `footer` can be a function of `{ expanded }`, so an account badge can follow the drawer. Step 0.6e of the shared shell
   for Pastel Media Pro.
+- `Tabs`, the folder look designed for Focus Space's Settings: the active tab and its panel share a color (`--ps-surface-2`, on a
+  dialog's `--ps-surface-1`) and read as one piece, the tab's bottom corners curving outward into the panel (a transparent square with
+  one rounded corner and a solid shadow in the panel's color: a shape, not a decorative shadow). With the first tab active the panel's
+  top-left corner is square. Inactive tabs are text, with a fill halfway between the dialog and the panel on hover. Tabs are 40px tall
+  with the large radius (14px) at the top; the panel has the 2xl radius. A tab list with automatic activation: one tab stop, the arrows
+  move and open (wrapping), Home and End; an optional icon per tab. Step 0.6f of the shared shell for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

@@ -77,4 +77,5 @@ export * from './components/WindowControls';
 export * from './components/ColorSwatchGrid';
 export * from './components/AppearancePanel';
 export * from './components/AccountMenu';
+export * from './components/Tabs';
 export * from './theme';

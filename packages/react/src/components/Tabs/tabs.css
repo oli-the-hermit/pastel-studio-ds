@@ -1,0 +1,60 @@
+/* ── Tabs: the folder look ─────────────────────────────────────
+   The tabs sit on the dialog's surface; the active one and the panel share a color, so they read
+   as one folder. The active tab's bottom corners curve outward into the panel: each curve is a
+   transparent square with one rounded corner, filled around that corner by a solid shadow in the
+   panel's color (a shape, not a decorative shadow). With the first tab active the panel's top-left
+   corner is square, so the tab's edge runs straight down into the panel's. */
+.ps-tabs {
+  --ps-tabs-surface: var(--ps-surface-2);
+  --ps-tabs-hover: color-mix(in oklab, var(--ps-surface-1) 50%, var(--ps-surface-2));
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.ps-tabs-list { display: flex; gap: var(--ps-space-4); }
+.ps-tabs-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  height: var(--ps-icon-button-size);
+  padding: 0 var(--ps-space-16);
+  border-radius: var(--ps-radius-lg) var(--ps-radius-lg) 0 0;
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-semibold);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-tabs-tab:hover { background: var(--ps-tabs-hover); color: var(--ps-text-1); }
+.ps-tabs-tab.is-active { background: var(--ps-tabs-surface); color: var(--ps-text-1); }
+.ps-tabs-tab.is-active::before,
+.ps-tabs-tab.is-active::after {
+  position: absolute;
+  bottom: 0;
+  width: var(--ps-radius-lg);
+  height: var(--ps-radius-lg);
+  pointer-events: none;
+  content: '';
+}
+.ps-tabs-tab.is-active::before {
+  right: 100%;
+  border-bottom-right-radius: var(--ps-radius-lg);
+  box-shadow: calc(var(--ps-radius-lg) / 2) calc(var(--ps-radius-lg) / 2) 0 calc(var(--ps-radius-lg) / 2) var(--ps-tabs-surface);
+}
+.ps-tabs-tab.is-active::after {
+  left: 100%;
+  border-bottom-left-radius: var(--ps-radius-lg);
+  box-shadow: calc(var(--ps-radius-lg) / -2) calc(var(--ps-radius-lg) / 2) 0 calc(var(--ps-radius-lg) / 2) var(--ps-tabs-surface);
+}
+/* The first tab runs straight into the panel's edge: no curve outside the folder. */
+.ps-tabs-tab.is-active:first-child::before { content: none; }
+.ps-tabs-tab:focus-visible { z-index: 1; }
+
+.ps-tabs-panel {
+  flex: 1;
+  min-height: 0;
+  padding: var(--ps-space-20);
+  border-radius: var(--ps-radius-2xl);
+  background: var(--ps-tabs-surface);
+}
+.ps-tabs-panel.is-at-start { border-top-left-radius: 0; }
