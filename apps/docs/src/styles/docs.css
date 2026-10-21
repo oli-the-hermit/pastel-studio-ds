@@ -631,6 +631,9 @@
   .docs-account-stage { display: flex; flex-direction: column; width: min(var(--ps-drawer-expanded), 100%); padding: var(--ps-space-16); border-radius: var(--ps-radius-3xl); background: var(--ps-drawer-bg); }
   .docs-account-view { color: var(--ps-text-2); }
   .docs-tabs-panel { display: flex; flex-direction: column; gap: var(--ps-space-12); color: var(--ps-text-2); }
+  /* A card with list rows, where checkboxes usually sit. */
+  .docs-check-list { display: flex; flex-direction: column; gap: var(--ps-space-8); width: min(420px, 100%); padding: var(--ps-space-16); border-radius: var(--ps-radius-3xl); background: var(--ps-surface-1); }
+  .docs-check-row { display: flex; align-items: center; gap: var(--ps-space-12); padding: var(--ps-space-12) var(--ps-space-14); border-radius: var(--ps-radius-xl); background: var(--ps-row-bg); font-size: var(--ps-font-size-md); }
   .docs-topbar-stage { border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
   .docs-topbar-stage.is-narrow { width: min(460px, 100%); }
   .docs-window-row { display: flex; align-items: center; gap: var(--ps-space-16); padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }

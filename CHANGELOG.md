@@ -232,6 +232,16 @@ is a breaking change.
   top-left corner is square. Inactive tabs are text, with a fill halfway between the dialog and the panel on hover. Tabs are 40px tall
   with the large radius (14px) at the top; the panel has the 2xl radius. A tab list with automatic activation: one tab stop, the arrows
   move and open (wrapping), Home and End; an optional icon per tab. Step 0.6f of the shared shell for Pastel Media Pro.
+- `Checkbox`, from Focus Space, in the corrected look (L9): recessed into its row, a filled square a step darker than its surface
+  (`--ps-checkbox-fill`, the page background by default) with no outline; checked, the accent with a check painted in `--ps-on-accent`.
+  New token `--ps-checkbox-mark-size` (14px).
+- `StatusChip`, from Focus Space: a live status in the top bar (dot, label, value, action). Tones `idle`, `live` (the dot pulses in the
+  accent) and `paused` (amber); the colors are custom properties on the chip (`--ps-status-dot`, `--ps-status-value`, `--ps-status-pulse`),
+  so an app adds its own tone, as Focus Space will for its break. Tokens `--ps-status-chip-height` (36px), `--ps-status-dot-size` (8px).
+- `ActionRow`, `ConfirmModal`, `FormActions` and the form layouts `ModalForm`, `FormRow` and `Subform`, from Focus Space: a dialog's
+  footer buttons, a confirm dialog's body (Cancel and a focused danger action), the form footer whose Cancel appears once something was
+  edited, the column of a dialog's fields, two fields side by side (or an emoji button and a field, `--ps-emoji-field-width` 64px) and a
+  form nested on a tinted panel. Step 0.6g of the shared shell for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

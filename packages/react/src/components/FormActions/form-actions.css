@@ -1,0 +1,6 @@
+/* ── FormActions: the footer of a form dialog ── */
+.ps-form-actions { margin-top: var(--ps-space-4); }
+.ps-form-actions-leading { margin-right: auto; }
+/* Cancel appears once something was edited: it pops in, so the change is noticed. */
+.ps-form-actions-cancel { animation: ps-form-actions-pop var(--ps-dur-2) var(--ps-ease-decel); }
+@keyframes ps-form-actions-pop { from { transform: scale(0.4); } }

@@ -94,6 +94,7 @@
   --ps-icon-button-size-xs: 28px;
   --ps-chip-height:         26px;
   --ps-checkbox-size:       20px;
+  --ps-checkbox-mark-size:  14px;      /* the check inside a checked box */
   --ps-switch-width:        46px;
   --ps-switch-height:       28px;
   --ps-switch-knob:         20px;      /* the round knob inside the switch */
@@ -146,6 +147,9 @@
   --ps-swatch-size:         36px;      /* a color swatch to pick from */
   --ps-avatar-size:         40px;      /* a profile picture or its initials */
   --ps-avatar-marker-size:  12px;      /* the dot on an avatar, e.g. the main account */
+  --ps-status-chip-height:  36px;      /* a live status pill in the top bar */
+  --ps-status-dot-size:     8px;       /* the dot that says a status is live */
+  --ps-emoji-field-width:   64px;      /* an emoji button beside a field */
   --ps-badge-size:          18px;      /* a count on an icon */
   --ps-aside-width:         340px;     /* a side panel in the app layout */
   --ps-grip-width:          8px;       /* the drag grip */

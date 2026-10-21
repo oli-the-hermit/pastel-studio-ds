@@ -1,0 +1,24 @@
+/* ── FormLayout: a dialog's fields, rows of two, and a nested form ── */
+.ps-modal-form { display: flex; flex-direction: column; gap: var(--ps-space-20); }
+
+.ps-form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ps-space-16); }
+.ps-form-row--emoji { grid-template-columns: var(--ps-emoji-field-width) minmax(0, 1fr); gap: var(--ps-space-8); }
+.ps-form-row.is-spaced { margin-top: var(--ps-space-16); }
+/* Inside a dialog's form the column's gap already sets rows apart, and the dialog's body adds no space above the form. */
+.ps-modal-form .ps-form-row.is-spaced,
+.ps-modal-form .ps-field--spaced,
+.ps-modal-body > .ps-modal-form { margin-top: 0; }
+
+/* A nested form: its fields one step above its tinted panel. */
+.ps-subform {
+  --ps-field-bg: var(--ps-surface-1);
+  --ps-field-hover: var(--ps-surface-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-10);
+  padding: var(--ps-space-14);
+  border-radius: var(--ps-radius-2xl);
+  background: var(--ps-surface-2);
+}
+.ps-subform-head { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-8); }
+.ps-subform-title { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-bold); }

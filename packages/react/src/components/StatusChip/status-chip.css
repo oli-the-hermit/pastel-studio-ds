@@ -1,0 +1,65 @@
+/* ── StatusChip: a live status in the top bar ──────────────────
+   The dot and the value take their colors from custom properties on the chip, so an app can
+   add a tone (Focus Space's break) by setting them on its own class. */
+.ps-status-chip {
+  --ps-status-dot: var(--ps-text-3);
+  --ps-status-value: var(--ps-accent-text);
+  --ps-status-pulse: none;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-4);
+  height: var(--ps-status-chip-height);
+  padding: 0 var(--ps-space-4);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-surface-1);
+}
+.ps-status-chip--live { --ps-status-dot: var(--ps-accent); --ps-status-pulse: ps-status-chip-pulse; }
+.ps-status-chip--paused { --ps-status-dot: var(--ps-warning); }
+
+.ps-status-chip-main {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  height: var(--ps-icon-button-size-xs);
+  padding: 0 var(--ps-space-10);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+}
+.ps-status-chip-main:hover { background: var(--ps-surface-2); }
+.ps-status-chip-value {
+  color: var(--ps-status-value);
+  font-weight: var(--ps-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--ps-dur-3) var(--ps-ease-standard);
+}
+.ps-status-chip-dot {
+  flex: none;
+  width: var(--ps-status-dot-size);
+  height: var(--ps-status-dot-size);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-status-dot);
+  transition: background var(--ps-dur-3) var(--ps-ease-standard);
+  animation: var(--ps-status-pulse) var(--ps-dur-pulse) ease-in-out infinite;
+}
+.ps-status-chip-action {
+  display: grid;
+  place-items: center;
+  width: var(--ps-icon-button-size-xs);
+  height: var(--ps-icon-button-size-xs);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-accent);
+  color: var(--ps-on-accent);
+  transition-property: background, color, transform;
+  transition-duration: var(--ps-dur-2), var(--ps-dur-2), var(--ps-dur-1);
+  transition-timing-function: var(--ps-ease-standard);
+}
+.ps-status-chip-action:hover { background: var(--ps-accent-hover); }
+.ps-status-chip-action:active { transform: scale(0.95); }
+
+@keyframes ps-status-chip-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.45); }
+}

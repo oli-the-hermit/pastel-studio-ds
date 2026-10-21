@@ -1,0 +1,8 @@
+/* ── ActionRow: the buttons at the foot of a dialog ── */
+.ps-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ps-space-8);
+  padding-top: var(--ps-space-4);
+}
