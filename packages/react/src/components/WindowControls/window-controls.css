@@ -1,0 +1,28 @@
+/* ── WindowControls and WindowButton: a frameless window's chrome ── */
+.ps-window-controls { display: flex; align-items: center; gap: var(--ps-space-2); }
+
+.ps-window-button {
+  display: grid;
+  place-items: center;
+  width: var(--ps-window-button-width);
+  height: var(--ps-window-button-height);
+  border-radius: var(--ps-radius-md);
+  color: var(--ps-text-2);
+  transition-property: background, color, transform;
+  transition-duration: var(--ps-dur-2), var(--ps-dur-2), var(--ps-dur-1);
+  transition-timing-function: var(--ps-ease-standard);
+}
+.ps-window-button:hover { background: var(--ps-surface-1); color: var(--ps-text-1); }
+.ps-window-button:active { transform: scale(0.95); }
+.ps-window-button--danger:hover { background: var(--ps-danger); color: var(--ps-on-danger); }
+
+/* A small window (a mini player): smaller, quieter, and a toggle can be on. */
+.ps-window-button--sm {
+  width: var(--ps-window-button-size-sm);
+  height: var(--ps-window-button-size-sm);
+  border-radius: var(--ps-radius-sm);
+  color: var(--ps-text-3);
+}
+.ps-window-button--sm:hover { background: var(--ps-surface-2); color: var(--ps-text-1); }
+.ps-window-button--sm:active { transform: none; }
+.ps-window-button--sm.is-active { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }

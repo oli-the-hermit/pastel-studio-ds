@@ -139,6 +139,10 @@
   --ps-drawer-expanded:     240px;     /* the drawer with labels beside the icons */
   --ps-nav-rail-item-width: 76px;      /* a rail item: its icon and the space around it */
   --ps-nav-rail-item-height: 48px;     /* an item in the expanded drawer */
+  --ps-topbar-height:       68px;      /* the top bar over the page */
+  --ps-window-button-width: 40px;      /* a window button in the title bar */
+  --ps-window-button-height: 36px;
+  --ps-window-button-size-sm: 26px;    /* a window button in a small window, e.g. a mini player */
   --ps-badge-size:          18px;      /* a count on an icon */
   --ps-aside-width:         340px;     /* a side panel in the app layout */
   --ps-grip-width:          8px;       /* the drag grip */

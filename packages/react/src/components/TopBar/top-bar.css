@@ -1,0 +1,25 @@
+/* ── TopBar: the bar above the page ────────────────────────────
+   Title, status, a free space that moves the window, the tools, the window's buttons. Its side
+   padding is the page margin (AppShell sets it); alone it falls back to the smallest one. */
+.ps-top-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-16);
+  height: var(--ps-topbar-height);
+  padding: 0 var(--ps-grid-margin, var(--ps-space-16));
+}
+/* The window's buttons sit nearer the corner than the page margin. */
+.ps-top-bar--framed { padding-right: var(--ps-space-10); }
+.ps-top-bar-title {
+  overflow: hidden;
+  font-size: var(--ps-font-size-xl);
+  font-weight: var(--ps-font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ps-top-bar-spacer { flex: 1; align-self: stretch; }
+.ps-top-bar-tools { display: flex; align-items: center; gap: var(--ps-space-4); }
+.ps-top-bar-window { margin-left: var(--ps-space-10); }

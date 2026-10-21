@@ -23,5 +23,5 @@ export const meta: ComponentMeta = {
     'It measures itself, not the screen, so it fits a window inside a page as well as the whole window. Give it a height (`height: 100%` of a parent that has one).',
     'Inactive pages are `display: none`, so they leave the reading order and the tab order.',
   ],
-  related: ['NavRail', 'NowPlayingBar'],
+  related: ['NavRail', 'TopBar', 'NowPlayingBar'],
 };

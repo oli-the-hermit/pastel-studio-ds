@@ -7,6 +7,9 @@ import React, { createContext, useContext, useMemo } from 'react';
  */
 export const defaultLabels = {
   close: 'Close',
+  minimize: 'Minimize',
+  maximize: 'Maximize',
+  restore: 'Restore',
   copy: 'Copy',
   back: 'Back',
   actions: 'Actions',

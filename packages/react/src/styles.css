@@ -71,6 +71,8 @@
 @import url('./components/FileDialog/file-dialog.css') layer(ps.components);
 @import url('./components/NavRail/nav-rail.css') layer(ps.components);
 @import url('./components/AppShell/app-shell.css') layer(ps.components);
+@import url('./components/TopBar/top-bar.css') layer(ps.components);
+@import url('./components/WindowControls/window-controls.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);

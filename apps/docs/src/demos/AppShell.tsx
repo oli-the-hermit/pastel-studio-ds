@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppShell, AppShellPage, Button, IconFolder, IconHome, IconMusic, IconSearch, IconSparkle, NavRail, SearchField, type AppShellProps, type NavRailItem } from '@pastel-studio/react';
+import { AppShell, AppShellPage, Button, IconButton, IconFolder, IconHelp, IconHome, IconMusic, IconSearch, IconSparkle, NavRail, TopBar, type AppShellProps, type NavRailItem } from '@pastel-studio/react';
 import { ScaledStage } from '../blocks/ScaledStage';
 import type { ComponentDemo } from './types';
 
@@ -15,10 +15,15 @@ const nav = (active = 'library', variant: 'rail' | 'expanded' = 'rail', onSelect
   <NavRail label="Main" items={items} activeKey={active} onSelect={onSelect} brand={brand} variant={variant} />
 );
 const topBar = (title: string) => (
-  <div className="docs-shell-top">
-    <h2 className="docs-shell-title">{title}</h2>
-    <SearchField placeholder="Search" value="" onChange={noop} />
-  </div>
+  <TopBar
+    title={title}
+    tools={
+      <>
+        <IconButton label="Search"><IconSearch size={19} /></IconButton>
+        <IconButton label="Help"><IconHelp size={19} /></IconButton>
+      </>
+    }
+  />
 );
 const cards = (
   <div className="docs-shell-page">

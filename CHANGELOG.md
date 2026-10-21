@@ -191,6 +191,14 @@ is a breaking change.
   1920, set on the shell with container queries (it measures itself, not the screen), so everything inside reads `--ps-grid-margin`
   and `--ps-grid-gutter`. `AppShellPage` keeps every page mounted and shows the active one, sliding it in; `fill` makes a page a column
   as tall as the shell. Step 0.6a of the shared shell for Pastel Media Pro.
+- `TopBar`: the bar above the page, from Focus Space. Slots: `title` (the page's `h1`), `status` beside it, `tools` at the end,
+  `windowControls` after them (which tightens the right padding to sit near the corner), and `dragRegionProps`, spread on the bar, the
+  title and the free space so a frameless window can be moved from the empty part (`{ 'data-tauri-drag-region': true }`; the library
+  knows no shell). Its side padding is `--ps-grid-margin` when inside an `AppShell`, 16px alone. New token `--ps-topbar-height` (68px).
+- `WindowControls` and `WindowButton`: minimize, maximize or restore, and close for a frameless window, as Focus Space draws them
+  (40 x 36, the close button red on hover; `size="sm"` at 26 x 26 and `pressed` for a mini window's pin). They draw and report; the app
+  makes the window calls. New tokens `--ps-window-button-width`, `-height` and `-size-sm`; three words, `minimize`, `maximize`,
+  `restore`. Step 0.6b of the shared shell for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for
