@@ -199,6 +199,17 @@ is a breaking change.
   (40 x 36, the close button red on hover; `size="sm"` at 26 x 26 and `pressed` for a mini window's pin). They draw and report; the app
   makes the window calls. New tokens `--ps-window-button-width`, `-height` and `-size-sm`; three words, `minimize`, `maximize`,
   `restore`. Step 0.6b of the shared shell for Pastel Media Pro.
+- The theme module (`packages/react/src/theme`), from Focus Space: `resolveTheme` (`system` follows the OS), `accentTokens`, `applyTheme`
+  (sets `data-theme`, `color-scheme` and the accent's eight `--ps-*` tokens inline on any document, so a second window gets the same
+  call), `createThemeStore({ prefix, defaultAccent })` (the last mode and accent, so every window paints right on its first frame, and
+  the recent accents; keys such as `focusspace_theme_cache`, never throws when storage is blocked) and `useThemeSync`. **The default
+  accent is the app's**: the store takes it and the library never picks one, so a new library default cannot repaint an app.
+- 32 accent presets in three groups (vibrant, calm, muted) and `npm run accents`, which fits each into sRGB, derives its eight roles for
+  both themes and fails when a pairing misses WCAG 2.2 AA (text 4.5:1, focus ring 3:1). It writes `palette.json`; `npm run check:accents`
+  (part of `check`) fails when that file is stale. The generator can add a partner family of roles that must never look like the accent
+  (Focus Space's break colors) when an app asks; the library's own palette has none. Color math and the generator live in `scripts/accents`.
+- Documentation: a Themes and accents page with a live chooser and every preset's roles in both themes. Step 0.6c of the shared shell
+  for Pastel Media Pro.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

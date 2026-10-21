@@ -27,11 +27,13 @@
     "lint:css": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:tokens": "node scripts/tokens/check.ts",
     "check:components": "node scripts/components/check.ts",
+    "accents": "node scripts/accents/generate.ts",
+    "check:accents": "node scripts/accents/generate.ts --check",
     "test": "vitest run",
     "visual:capture": "node scripts/visual/capture.ts",
     "visual:baseline": "node scripts/visual/capture.ts --out documentation/visual/baseline",
     "visual:diff": "node scripts/visual/diff.ts",
-    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run check:tokens && npm run check:components && npm run test && npm run docs:build"
+    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run check:tokens && npm run check:components && npm run check:accents && npm run test && npm run docs:build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

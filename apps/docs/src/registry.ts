@@ -7,6 +7,7 @@ import { GettingStarted } from './pages/GettingStarted';
 import { UsingComponents } from './pages/UsingComponents';
 import { Principles } from './pages/foundations/Principles';
 import { Color } from './pages/foundations/Color';
+import { Themes } from './pages/foundations/Themes';
 import { Typography } from './pages/foundations/Typography';
 import { Spacing } from './pages/foundations/Spacing';
 import { Shape } from './pages/foundations/Shape';
@@ -46,6 +47,8 @@ export const PAGES: DocPage[] = [
     summary: 'The few rules every screen in the family follows.' },
   { path: '/foundations/color', title: 'Color', section: 'Foundations', component: Color,
     summary: 'The palette, the roles each theme assigns, and how well they contrast.' },
+  { path: '/foundations/themes', title: 'Themes and accents', section: 'Foundations', component: Themes,
+    summary: 'Light, dark and 32 accent presets, applied and remembered by the theme module.' },
   { path: '/foundations/typography', title: 'Typography', section: 'Foundations', component: Typography,
     summary: 'Geist Variable, eight sizes, and the weights, line heights and tracking around them.' },
   { path: '/foundations/spacing', title: 'Spacing and sizing', section: 'Foundations', component: Spacing,
