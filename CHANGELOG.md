@@ -255,6 +255,10 @@ is a breaking change.
   the update card and its icon). A progress bar in the UpdateCard gets a track one step above the card (in Focus Space it matched the
   card and vanished). The Themes page's sample progress bar now shows 60%, not 0.6%. Step 0.6h, the last of the shared shell
   for Pastel Media Pro.
+- Three fixes from measuring the shared shell against Focus Space (Pastel Media Pro step 0.8): toasts inside `AppShell` start
+  under the top bar (`--ps-topbar-height` + 4px) instead of covering it; the account menu's name lines up with its items' icons
+  (it was padded twice, by the menu's header and its own); the expanded drawer's labels are `--ps-font-size-md`, as the type
+  scale's migration table maps Focus Space's `--text-sm` (they had taken `--ps-font-size-sm` by name).
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

@@ -60,7 +60,8 @@
   white-space: nowrap;
 }
 
-/* The menu's header: who is signed in. */
-.ps-account-menu-head { display: flex; flex-direction: column; padding: var(--ps-space-8) var(--ps-space-12) var(--ps-space-10); }
+/* The menu's header: who is signed in. The menu's header already pads it (8px, 12px at the
+   sides), so the name lines up with the items' icons; 2px more below, as in Focus Space. */
+.ps-account-menu-head { display: flex; flex-direction: column; padding-bottom: var(--ps-space-2); }
 .ps-account-menu-head-name { font-size: var(--ps-font-size-md); font-weight: var(--ps-font-weight-bold); }
 .ps-account-menu-head-handle { color: var(--ps-text-2); font-size: var(--ps-font-size-xs); }

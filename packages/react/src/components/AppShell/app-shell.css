@@ -89,6 +89,9 @@
 }
 .ps-app-shell-corner > * { pointer-events: auto; }
 
+/* Toasts in the shell's overlays start under the top bar, so they never cover its tools. */
+.ps-app-shell .ps-toast-region { --ps-toast-region-top: calc(var(--ps-topbar-height) + var(--ps-space-4)); }
+
 /* ── Pages ── */
 .ps-app-shell-page { display: none; }
 .ps-app-shell-page.is-active { display: block; animation: ps-app-shell-page-in var(--ps-dur-3) var(--ps-ease-emphasized); }

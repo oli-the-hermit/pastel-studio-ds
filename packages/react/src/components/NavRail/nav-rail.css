@@ -125,7 +125,7 @@
   height: var(--ps-nav-rail-item-height);
   padding: 0 var(--ps-space-16);
   border-radius: var(--ps-radius-pill);
-  font-size: var(--ps-font-size-sm);
+  font-size: var(--ps-font-size-md);
   transition: background var(--ps-transition), color var(--ps-transition);
 }
 /* The row is the pill now: the indicator only places the icon and the badge. */
