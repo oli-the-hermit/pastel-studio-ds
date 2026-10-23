@@ -2,7 +2,7 @@
   "name": "@pastel-studio/react",
   "version": "0.1.0",
   "description": "Pastel Studio React components, built on @pastel-studio/tokens.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "author": "San Milano",
   "repository": {
     "type": "git",

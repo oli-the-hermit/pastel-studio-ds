@@ -58,7 +58,7 @@ export function Shell() {
             </nav>
           )}
           <footer className="docs-footer">
-            Pastel Studio Design System · MIT with the Commons Clause · © 2026 San Milano
+            Pastel Studio Design System · MIT License · © 2026 San Milano
           </footer>
         </main>
       </div>

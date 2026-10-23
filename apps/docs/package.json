@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "The Pastel Studio documentation site.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -259,6 +259,8 @@ is a breaking change.
   under the top bar (`--ps-topbar-height` + 4px) instead of covering it; the account menu's name lines up with its items' icons
   (it was padded twice, by the menu's header and its own); the expanded drawer's labels are `--ps-font-size-md`, as the type
   scale's migration table maps Focus Space's `--text-sm` (they had taken `--ps-font-size-sm` by name).
+- Licensed under plain MIT (it was MIT with the Commons Clause, and its LICENSE files named Focus Space), so the
+  library is open source like the apps built on it. The documentation site is published on GitHub Pages.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without
   the Focus Space logo.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for

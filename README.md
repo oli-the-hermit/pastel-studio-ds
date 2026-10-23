@@ -5,9 +5,12 @@ icons and a documentation site. It started as the interface of
 [Focus Space](https://github.com/oli-the-hermit/Focus-Space) and is the foundation every
 app in the family is built on.
 
-> **Status: 0.1, foundations.** Tokens (light and dark), base styles, icons and the
-> documentation site with its Foundations pages are in place. Components are promoted next,
-> one by one.
+**Documentation:** https://oli-the-hermit.github.io/pastel-studio-ds/ (every token and component,
+with live examples, every state, props and the tokens each one uses).
+
+> **Status: 0.1, unreleased.** Tokens in light and dark themes with 32 accent presets, 67
+> components (from buttons and dialogs to the app shell and the media players) and the
+> documentation site. The packages are not on npm yet: apps link them from this repository.
 
 ## Packages
 
@@ -81,4 +84,4 @@ The docs build for a sub-path (for example GitHub Pages) with `DOCS_BASE=/pastel
 
 ## License
 
-MIT with the Commons Clause condition. See [LICENSE](LICENSE).
+[MIT](LICENSE).

@@ -12,9 +12,10 @@ import { Button, IconButton, IconPlus, TextButton } from '@pastel-studio/react';
 <Button variant="primary" icon={<IconPlus />}>Add task</Button>
 ```
 
-Components so far, ported from Focus Space: `Button`, `IconButton`, `TextButton`, `Popover`,
-`Menu`, `ContextMenuProvider` and `Modal`. Each has
-a page in the documentation with a live demo, every state, its props and the tokens it uses.
+67 components, from buttons, menus and dialogs to the app shell, the theme module with its 32
+accent presets, and the media players. Each has a page in the
+[documentation](https://oli-the-hermit.github.io/pastel-studio-ds/) with a live demo, every state,
+its props and the tokens it uses.
 
 `styles.css` brings the fonts, the tokens, the foundation (reset, document defaults, focus ring,
 scrollbars, reduced motion), every component's CSS and the utilities (`ps-overline`,

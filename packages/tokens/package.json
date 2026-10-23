@@ -2,7 +2,7 @@
   "name": "@pastel-studio/tokens",
   "version": "0.1.0",
   "description": "Pastel Studio design tokens: palette, light and dark themes, and scales, as plain CSS custom properties.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "author": "San Milano",
   "repository": {
     "type": "git",
