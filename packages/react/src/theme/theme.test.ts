@@ -85,6 +85,13 @@ describe('applyTheme', () => {
     expect(document.documentElement.style.getPropertyValue('--ps-accent').toUpperCase()).toBe(accentTokens('red-giant', 'light')['--ps-accent']);
   });
 
+  it('gives the dock over video the dark theme\'s focus ring, even in the light theme', () => {
+    applyTheme('light', 'red-giant');
+    const root = document.documentElement;
+    expect(root.style.getPropertyValue('--ps-focus-ring').toUpperCase()).toBe(accentTokens('red-giant', 'light')['--ps-focus-ring']);
+    expect(root.style.getPropertyValue('--ps-media-focus-ring').toUpperCase()).toBe(accentTokens('red-giant', 'dark')['--ps-focus-ring']);
+  });
+
   it('applies to another document, such as a second window', () => {
     const other = document.implementation.createHTMLDocument('mini');
     applyTheme('dark', 'peach', other);

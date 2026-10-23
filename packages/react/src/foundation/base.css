@@ -19,6 +19,8 @@ h1, h2, h3, h4 { font-weight: var(--ps-font-weight-bold); letter-spacing: var(--
 /* ── Focus ──────────────────────────────────────────────── */
 :focus { outline: none; }
 :focus-visible { outline: var(--ps-ring-width) solid var(--ps-focus-ring); outline-offset: var(--ps-ring-width); }
+/* What floats over video is dark in both themes, so its ring is the dark theme's (a light page's ring is too dark there). */
+:is(.is-on-overlay, .ps-media-controls--overlay, .ps-menu--overlay, .ps-video-player--overlay, .ps-pip-player, .ps-video-surface) { --ps-focus-ring: var(--ps-media-focus-ring); }
 
 ::selection { background: var(--ps-accent); color: var(--ps-on-accent); }
 

@@ -259,6 +259,14 @@ is a breaking change.
   under the top bar (`--ps-topbar-height` + 4px) instead of covering it; the account menu's name lines up with its items' icons
   (it was padded twice, by the menu's header and its own); the expanded drawer's labels are `--ps-font-size-md`, as the type
   scale's migration table maps Focus Space's `--text-sm` (they had taken `--ps-font-size-sm` by name).
+- The control dock over video is readable for all 32 accents, in both themes (Pastel Media Pro spike S7; contrast computed for
+  the dock over black, grey and white video). `--ps-media-overlay` is 90% opaque (was 84%) and `--ps-media-overlay-hover` 92%
+  (was 88%): at 84%, five darker accents (red-giant, nebula-purple, andromeda-violet, nebula-magenta, moonlight-blue) fell
+  short of 4.5:1 as small text, and 3:1 as an icon on a hovered control, over a full-frame white scene. The dock is dark in
+  both themes, so it has its own focus ring, `--ps-media-focus-ring` (the dark theme's ring for the accent; `applyTheme`
+  sets it): the light theme's dark ring was 1.9 to 2.9:1 on the dock for every accent. Components on the dock (`is-on-overlay`,
+  `MediaControls`, `Menu`, `VideoPlayer` and `VideoSurface` overlays, `PipPlayer`) use it. An app that sets accent tokens
+  itself, without `applyTheme`, should also set `--ps-media-focus-ring`.
 - Licensed under plain MIT (it was MIT with the Commons Clause, and its LICENSE files named Focus Space), so the
   library is open source like the apps built on it. The documentation site is published on GitHub Pages.
 - Icons: the 54 Focus Space icons (24 × 24 grid, 2px round strokes, `currentColor`), without

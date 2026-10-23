@@ -29,7 +29,8 @@ export function accentTokens(accent: AccentId, theme: ResolvedTheme): Record<str
 /**
  * Applies a theme and an accent to a document (the main window, a mini player's window, an
  * island). It sets `data-theme` and `color-scheme` on the root and the accent's tokens inline
- * over the stylesheet's, so one call repaints the whole page.
+ * over the stylesheet's, so one call repaints the whole page. The control dock over video is dark
+ * in both themes, so its focus ring is always the dark theme's ring for the accent.
  */
 export function applyTheme(mode: ThemeMode, accent: AccentId, doc: Document = document): ResolvedTheme {
   const resolved = resolveTheme(mode, doc.defaultView ?? window);
@@ -37,5 +38,6 @@ export function applyTheme(mode: ThemeMode, accent: AccentId, doc: Document = do
   root.dataset.theme = resolved;
   root.style.colorScheme = resolved;
   for (const [name, value] of Object.entries(accentTokens(accent, resolved))) root.style.setProperty(name, value);
+  root.style.setProperty('--ps-media-focus-ring', accentTokens(accent, 'dark')['--ps-focus-ring']);
   return resolved;
 }
