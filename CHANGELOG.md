@@ -259,6 +259,9 @@ is a breaking change.
   under the top bar (`--ps-topbar-height` + 4px) instead of covering it; the account menu's name lines up with its items' icons
   (it was padded twice, by the menu's header and its own); the expanded drawer's labels are `--ps-font-size-md`, as the type
   scale's migration table maps Focus Space's `--text-sm` (they had taken `--ps-font-size-sm` by name).
+- The documentation as a desktop app (`apps/docs-desktop`, Tauri): the docs build with its live demos in a borderless window
+  that opens maximized, for presenting the library. Window buttons appear near the top-right corner, the top edge drags the
+  window, F11 and Esc toggle full screen. `npm run desktop:build -w @pastel-studio/docs-desktop` makes the installer.
 - The control dock over video is readable for all 32 accents, in both themes (Pastel Media Pro spike S7; contrast computed for
   the dock over black, grey and white video). `--ps-media-overlay` is 90% opaque (was 84%) and `--ps-media-overlay-hover` 92%
   (was 88%): at 84%, five darker accents (red-giant, nebula-purple, andromeda-violet, nebula-magenta, moonlight-blue) fell

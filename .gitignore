@@ -7,6 +7,9 @@ node_modules/
 # Build outputs
 dist/
 build/
+# The docs desktop app (Tauri): Rust build output and generated schemas
+target/
+apps/docs-desktop/src-tauri/gen/
 *.tsbuildinfo
 .eslintcache
 .stylelintcache

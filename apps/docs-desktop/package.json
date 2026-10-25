@@ -1,0 +1,16 @@
+{
+  "name": "@pastel-studio/docs-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "The documentation site as a desktop app, in a borderless window, for presenting the library.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "desktop": "tauri dev",
+    "desktop:build": "tauri build",
+    "icons": "tauri icon icon.svg -o src-tauri/icons"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.5"
+  }
+}

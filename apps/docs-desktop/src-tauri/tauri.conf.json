@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Pastel Studio Docs",
+  "version": "0.1.0",
+  "identifier": "com.pastelstudio.docs",
+  "build": {
+    "frontendDist": "../../docs/dist",
+    "devUrl": "http://localhost:5310",
+    "beforeDevCommand": "npm --prefix ../.. run docs",
+    "beforeBuildCommand": "npm --prefix ../.. run docs:build"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "San Milano",
+    "copyright": "© 2026 San Milano",
+    "category": "DeveloperTool",
+    "shortDescription": "The Pastel Studio design system's documentation, with live demos",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "windows": {
+      "webviewInstallMode": { "type": "embedBootstrapper" },
+      "nsis": { "installMode": "currentUser", "installerIcon": "icons/icon.ico" }
+    }
+  }
+}

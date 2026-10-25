@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', 'documentation/**']
+    ignores: ['**/dist/**', '**/node_modules/**', 'documentation/**', '**/src-tauri/**']
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
