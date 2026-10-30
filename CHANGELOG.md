@@ -280,3 +280,13 @@ is a breaking change.
 - The library's source compiles under an app's `noUnusedLocals` and `noUnusedParameters` (the apps link the source, so
   their compiler checks it): four unused `React` imports removed, and `npm run typecheck` now also runs
   `packages/react/tsconfig.consumer.json` so it stays that way. Found while linking Pastel Studio Pro.
+- `MediaTile` and `MediaGrid`, for Pastel Studio Pro's file browser (and the ComfyUI frontend's media grid, §8d of its
+  handoff). `MediaTile` is a square thumbnail with its name and a meta line under it (never over it), the file type's icon
+  until the thumbnail arrives, a favorite, duration and source mark on the media dock, a check for multiple selection,
+  a dashed ring for a Shift range preview, quick actions on hover and focus, and a folder variant. `MediaGrid` draws only
+  the rows on screen (its own few lines of geometry in `lib/gridLayout.ts`: the library stays free of dependencies), so
+  10,000 tiles scroll like 10; tiles stretch to fill each row, the shell's gutter apart. It has `FileView`'s selection
+  contract (`onSelect(key, mode)`, `onCommand`, `onContextMenu(event, item | null)`) and keyboard, by row and column,
+  plus Page Up / Page Down; Shift + Delete is left to the app. `itemProps` adds drag and drop to a cell, `header`
+  scrolls above the tiles and `onEndReached` loads the next page. New tokens `--ps-media-tile-min-s/m/l/xl` (150, 200,
+  280, 380px) and `--ps-media-tile-caption` (44px); new words `favorite` and `mediaEmpty`.

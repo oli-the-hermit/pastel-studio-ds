@@ -87,4 +87,6 @@ export * from './components/FormActions';
 export * from './components/Tour';
 export * from './components/CrashScreen';
 export * from './components/UpdateCard';
+export * from './components/MediaTile';
+export * from './components/MediaGrid';
 export * from './theme';

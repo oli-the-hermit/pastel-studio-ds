@@ -263,6 +263,8 @@ export const defaultLabels = {
   places: 'Places',
   expandMenu: 'Expand menu',
   collapseMenu: 'Collapse menu',
+  favorite: 'Favorite',
+  mediaEmpty: 'Nothing to show here.',
 };
 
 export type Labels = typeof defaultLabels;
