@@ -265,6 +265,9 @@ export const defaultLabels = {
   collapseMenu: 'Collapse menu',
   favorite: 'Favorite',
   mediaEmpty: 'Nothing to show here.',
+  zoomIn: 'Zoom in',
+  zoomOut: 'Zoom out',
+  zoomFit: 'Fit to window',
 };
 
 export type Labels = typeof defaultLabels;

@@ -16,6 +16,8 @@ export type { MediaController, MediaState } from './lib/media';
 export { buildMediaSettings, speedChoices } from './lib/mediaSettings';
 export type { Choice, ChoiceSetting, MediaSettingsConfig, ToggleSetting } from './lib/mediaSettings';
 export { isBlockingOverlayOpen, useBlockingOverlay } from './lib/overlays';
+export { useZoomPan } from './lib/useZoomPan';
+export type { ZoomPan, ZoomPanOptions, ZoomPanState } from './lib/useZoomPan';
 export type { Surface } from './lib/surface';
 export * from './icons';
 
@@ -89,4 +91,5 @@ export * from './components/CrashScreen';
 export * from './components/UpdateCard';
 export * from './components/MediaTile';
 export * from './components/MediaGrid';
+export * from './components/MediaViewer';
 export * from './theme';

@@ -138,6 +138,8 @@
   --ps-media-tile-min-l:    280px;
   --ps-media-tile-min-xl:   380px;
   --ps-media-tile-caption:  44px;      /* the name and meta lines under a media tile */
+  --ps-media-viewer-inset:  clamp(16px, 3vw, 48px); /* the margin around the media viewer: it grows with the window */
+  --ps-media-viewer-bar:    56px;      /* the media viewer's bar: the name and its tools */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */

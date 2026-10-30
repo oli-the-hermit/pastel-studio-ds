@@ -290,3 +290,12 @@ is a breaking change.
   plus Page Up / Page Down; Shift + Delete is left to the app. `itemProps` adds drag and drop to a cell, `header`
   scrolls above the tiles and `onEndReached` loads the next page. New tokens `--ps-media-tile-min-s/m/l/xl` (150, 200,
   280, 380px) and `--ps-media-tile-caption` (44px); new words `favorite` and `mediaEmpty`.
+- `MediaViewer` and `useZoomPan`: one image or video over the app, as large as the window allows (the ComfyUI handoff's
+  "ImageViewer", and Pastel Studio Pro's replacement for a fixed 16:9 modal). A margin that grows with the window
+  (`--ps-media-viewer-inset`, 16 to 48px) around a card with a bar (name, "3 of 12", the app's actions, zoom, details,
+  full screen, close), the stage and the details panel; the media is fitted to the stage with no shape of the viewer's
+  own, and the panel floats over the stage when the viewer is narrower than 880px. Images zoom toward the pointer with
+  the wheel, pan by dragging and go between fitted and actual size on a double-click; the readout shows the real pixel
+  scale. ← / → for previous and next (Shift + arrows are left to the media), + − 0, I, F and Escape. `useZoomPan` is the
+  zoom on its own, for any content fitted to a stage. New tokens `--ps-media-viewer-inset` and `--ps-media-viewer-bar`;
+  new words `zoomIn`, `zoomOut` and `zoomFit`.
