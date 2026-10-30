@@ -299,3 +299,10 @@ is a breaking change.
   scale. ← / → for previous and next (Shift + arrows are left to the media), + − 0, I, F and Escape. `useZoomPan` is the
   zoom on its own, for any content fitted to a stage. New tokens `--ps-media-viewer-inset` and `--ps-media-viewer-bar`;
   new words `zoomIn`, `zoomOut` and `zoomFit`.
+- `ListPicker` and `ListPickerPanel`: a searchable list to check items off, anchored to its button, for tags and
+  collections on one item or a whole selection (Pastel Studio Pro's tag and collection pickers; on Focus Space's list of
+  ports). A search field over native check boxes, recent picks first, "Create" for a new name, arrows between the
+  rows; Enter in the search toggles the only match or creates what was typed when nothing matches. Each check applies at
+  once. The panel alone goes in a side panel or a page. New tokens `--ps-list-picker-width` (300px) and
+  `--ps-list-picker-height` (360px); new words `createNamed` and `allItems`.
+- `Checkbox`: `mixed`, a dash in the accent for "some but not all" (the DOM's indeterminate state, read out as mixed).

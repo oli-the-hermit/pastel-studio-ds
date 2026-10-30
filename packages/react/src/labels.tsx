@@ -268,6 +268,8 @@ export const defaultLabels = {
   zoomIn: 'Zoom in',
   zoomOut: 'Zoom out',
   zoomFit: 'Fit to window',
+  createNamed: 'Create "{name}"',
+  allItems: 'All',
 };
 
 export type Labels = typeof defaultLabels;

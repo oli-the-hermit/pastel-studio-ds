@@ -587,6 +587,8 @@
 
   /* Overlays shown standing still in a gallery (blocks/StaticOverlay.tsx). */
   .docs-static-overlay .ps-popover { position: static; animation: none; }
+  .docs-static-overlay:has(.ps-list-picker) { width: 100%; }
+  .docs-static-overlay .ps-list-picker { width: 100%; }
   .docs-gallery-item:has(.docs-modal-stage) { grid-column: 1 / -1; }
   /* A transform makes the frame the containing block of the modal's fixed scrim. */
   .docs-modal-stage { --docs-stage-height: 300px; position: relative; width: 100%; height: var(--docs-stage-height); overflow: hidden; border-radius: var(--ps-radius-lg); transform: translateZ(0); }

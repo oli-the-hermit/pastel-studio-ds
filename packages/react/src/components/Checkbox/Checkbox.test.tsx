@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { Checkbox } from './Checkbox';
@@ -33,5 +33,15 @@ describe('Checkbox', () => {
     render(<Checkbox ref={ref} checked={false} onChange={() => {}} aria-disabled="true" title="Follows its sessions" />);
     expect(ref.current?.getAttribute('aria-disabled')).toBe('true');
     expect(ref.current?.title).toBe('Follows its sessions');
+  });
+  it('shows a mixed state as the DOM property and checks all when clicked', () => {
+    const onChange = vi.fn();
+    const { rerender } = render(<Checkbox aria-label="Beach" checked={false} mixed onChange={onChange} />);
+    const box = screen.getByRole('checkbox', { name: 'Beach' }) as HTMLInputElement;
+    expect(box.indeterminate).toBe(true);
+    fireEvent.click(box);
+    expect(onChange).toHaveBeenCalledWith(true);
+    rerender(<Checkbox aria-label="Beach" checked onChange={onChange} />);
+    expect(box.indeterminate).toBe(false);
   });
 });

@@ -89,6 +89,7 @@
 @import url('./components/MediaTile/media-tile.css') layer(ps.components);
 @import url('./components/MediaGrid/media-grid.css') layer(ps.components);
 @import url('./components/MediaViewer/media-viewer.css') layer(ps.components);
+@import url('./components/ListPicker/list-picker.css') layer(ps.components);
 
 /* Utilities (last: they beat components) */
 @import url('./foundation/utilities.css') layer(ps.utilities);
