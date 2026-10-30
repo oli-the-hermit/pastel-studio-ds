@@ -998,3 +998,10 @@ export const IconFilter: React.FC<IconProps> = (p) => (
     <path d="M3 5h18l-7 8.5V20l-4-2v-4.5z" />
   </StrokeIcon>
 );
+
+export const IconTag: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3h6.4a1.5 1.5 0 0 1 1.06.44l8.6 8.6a1.5 1.5 0 0 1 0 2.12l-6.4 6.4a1.5 1.5 0 0 1-2.12 0l-8.6-8.6A1.5 1.5 0 0 1 3 10.9z" />
+    <circle cx="8" cy="8" r="1.5" />
+  </StrokeIcon>
+);

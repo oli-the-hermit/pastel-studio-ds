@@ -306,3 +306,4 @@ is a breaking change.
   once. The panel alone goes in a side panel or a page. New tokens `--ps-list-picker-width` (300px) and
   `--ps-list-picker-height` (360px); new words `createNamed` and `allItems`.
 - `Checkbox`: `mixed`, a dash in the accent for "some but not all" (the DOM's indeterminate state, read out as mixed).
+- `IconTag`, a price tag, for labels and tags (Pastel Studio Pro's Labels page and tag pickers).
