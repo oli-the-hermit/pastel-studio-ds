@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { cx } from '../../lib/cx';
 import type { Track } from '../../lib/types';
 import { AlbumDetails } from '../AlbumDetails';

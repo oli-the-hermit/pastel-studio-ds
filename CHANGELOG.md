@@ -277,3 +277,6 @@ is a breaking change.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for
   principles, color (roles, contrast, palette), typography, spacing and sizing, shape,
   elevation and layers, motion and iconography. Dark, light and a side-by-side compare mode.
+- The library's source compiles under an app's `noUnusedLocals` and `noUnusedParameters` (the apps link the source, so
+  their compiler checks it): four unused `React` imports removed, and `npm run typecheck` now also runs
+  `packages/react/tsconfig.consumer.json` so it stays that way. Found while linking Pastel Studio Pro.

@@ -1,0 +1,6 @@
+{
+  "$comment": "The library's source as a strict app compiles it (the apps link the source, not a build): unused names are errors there. Tests are left out.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noUnusedLocals": true, "noUnusedParameters": true },
+  "exclude": ["src/**/*.test.tsx", "src/**/*.test.ts"]
+}

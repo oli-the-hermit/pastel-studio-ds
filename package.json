@@ -22,7 +22,7 @@
   "scripts": {
     "docs": "npm run dev -w @pastel-studio/docs",
     "docs:build": "npm run build -w @pastel-studio/docs",
-    "typecheck": "tsc -p packages/react --noEmit && tsc -p apps/docs --noEmit",
+    "typecheck": "tsc -p packages/react --noEmit && tsc -p packages/react/tsconfig.consumer.json --noEmit && tsc -p apps/docs --noEmit",
     "lint": "eslint .",
     "lint:css": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:tokens": "node scripts/tokens/check.ts",
