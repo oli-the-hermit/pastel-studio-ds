@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { IconArrowUp, IconBack, IconBookmark, IconFolderPlus, IconForward, IconViewDetails, IconViewIcons, IconViewTiles } from '../../icons';
 import { LabelsProvider, useLabels, type Labels } from '../../labels';
 import { cx } from '../../lib/cx';

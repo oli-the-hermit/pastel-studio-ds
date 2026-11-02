@@ -133,9 +133,18 @@
   --ps-file-dialog-width:   1040px;    /* the app's own open and save dialog */
   --ps-file-dialog-height:  680px;
   --ps-file-dialog-places:  220px;     /* the places beside its files */
+  --ps-media-tile-min-s:    150px;     /* the narrowest media tile at each grid size */
+  --ps-media-tile-min-m:    200px;
+  --ps-media-tile-min-l:    280px;
+  --ps-media-tile-min-xl:   380px;
+  --ps-media-tile-caption:  44px;      /* the name and meta lines under a media tile */
+  --ps-media-viewer-inset:  clamp(16px, 3vw, 48px); /* the margin around the media viewer: it grows with the window */
+  --ps-media-viewer-bar:    56px;      /* the media viewer's bar: the name and its tools */
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */
+  --ps-list-picker-width:   300px;     /* a searchable list to check items off: tags, collections */
+  --ps-list-picker-height:  360px;     /* its list, before it scrolls */
   --ps-drawer-rail:         88px;      /* the navigation drawer as a rail of icons */
   --ps-drawer-expanded:     240px;     /* the drawer with labels beside the icons */
   --ps-nav-rail-item-width: 76px;      /* a rail item: its icon and the space around it */

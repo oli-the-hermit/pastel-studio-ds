@@ -587,6 +587,8 @@
 
   /* Overlays shown standing still in a gallery (blocks/StaticOverlay.tsx). */
   .docs-static-overlay .ps-popover { position: static; animation: none; }
+  .docs-static-overlay:has(.ps-list-picker) { width: 100%; }
+  .docs-static-overlay .ps-list-picker { width: 100%; }
   .docs-gallery-item:has(.docs-modal-stage) { grid-column: 1 / -1; }
   /* A transform makes the frame the containing block of the modal's fixed scrim. */
   .docs-modal-stage { --docs-stage-height: 300px; position: relative; width: 100%; height: var(--docs-stage-height); overflow: hidden; border-radius: var(--ps-radius-lg); transform: translateZ(0); }
@@ -594,6 +596,10 @@
   .docs-modal-stage .ps-modal { animation: none; }
   /* The dialog measures itself against the window; here its window is the frame. */
   .docs-modal-stage .ps-modal { max-height: calc(var(--docs-stage-height) - 2 * var(--ps-space-24)); }
+  .docs-modal-stage .ps-media-viewer-backdrop,
+  .docs-modal-stage .ps-media-viewer { animation: none; }
+  .docs-viewer-facts { display: grid; grid-template-columns: auto 1fr; gap: var(--ps-space-8) var(--ps-space-16); font-size: var(--ps-font-size-sm); }
+  .docs-viewer-facts dt { color: var(--ps-text-3); }
   .docs-demo-card { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-16); width: min(320px, 100%); padding: var(--ps-space-8) var(--ps-space-8) var(--ps-space-8) var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); font-weight: var(--ps-font-weight-semibold); }
   .docs-demo-form { display: flex; flex-direction: column; gap: var(--ps-space-16); }
   .docs-demo-form .docs-input { width: 100%; }
@@ -619,6 +625,9 @@
   .docs-file-frame { display: flex; flex-direction: column; min-width: 0; }
   .docs-file-frame > .ps-file-view { flex: 1; }
   .docs-demo-form .docs-file-frame { height: 420px; }
+  .docs-file-frame > .ps-media-grid { flex: 1; }
+  .docs-media-frame { width: 100%; height: 300px; }
+  .docs-media-tile { width: 180px; }
   .docs-file-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--ps-space-8) var(--ps-space-12); width: 100%; list-style: none; }
   .docs-scaled-stage { width: 100%; min-width: 0; overflow: hidden; border-radius: var(--ps-radius-lg); background: var(--ps-bg); padding: var(--ps-space-12); }
   .docs-scaled-stage-box { position: relative; }

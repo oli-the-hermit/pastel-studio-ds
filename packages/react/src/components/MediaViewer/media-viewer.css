@@ -1,0 +1,131 @@
+/* ── MediaViewer: one item, as large as the window allows ───────
+   Over the scrim, a margin that grows with the window (--ps-media-viewer-inset) around a card:
+   the bar and the stage, and the details panel beside them. The media is fitted to the stage
+   with no aspect ratio of the viewer's own; when the viewer is narrower than 880px (a window
+   under about 940px) the panel floats over the stage. */
+.ps-media-viewer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ps-z-modal);
+  display: grid;
+  padding: var(--ps-media-viewer-inset);
+  background: var(--ps-scrim);
+  container-type: inline-size;
+  animation: ps-media-viewer-scrim-in var(--ps-dur-2) var(--ps-ease-standard);
+}
+
+.ps-media-viewer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-media-viewer-in var(--ps-dur-3) var(--ps-ease-emphasized);
+}
+.ps-media-viewer:focus { outline: none; }
+.ps-media-viewer.is-panel-open { grid-template-columns: minmax(0, 1fr) var(--ps-aside-width); }
+.ps-media-viewer.is-fullscreen { border-radius: 0; }
+
+.ps-media-viewer-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+.ps-media-viewer-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-4);
+  height: var(--ps-media-viewer-bar);
+  padding: 0 var(--ps-space-12) 0 var(--ps-space-20);
+}
+.ps-media-viewer-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-semibold);
+}
+.ps-media-viewer-position {
+  flex: none;
+  margin-left: var(--ps-space-8);
+  color: var(--ps-text-3);
+  font-size: var(--ps-font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.ps-media-viewer-spacer { flex: 1; }
+.ps-media-viewer-zoom { display: flex; align-items: center; gap: var(--ps-space-2); }
+.ps-media-viewer-percent {
+  min-width: calc(var(--ps-icon-button-size-sm) * 1.75);
+  height: var(--ps-icon-button-size-sm);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-media-viewer-percent:hover { background: var(--ps-surface-2); color: var(--ps-text-1); }
+
+.ps-media-viewer-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ps-media-backdrop);
+  touch-action: none;
+}
+.ps-media-viewer-stage.is-zoomable { cursor: zoom-in; }
+.ps-media-viewer-stage.is-zoomed { cursor: grab; }
+.ps-media-viewer-stage.is-dragging { cursor: grabbing; }
+
+.ps-media-viewer-canvas {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: transform var(--ps-dur-2) var(--ps-ease-standard);
+}
+.ps-media-viewer-stage.is-dragging .ps-media-viewer-canvas { transition: none; }
+/* The media fills the stage and keeps its proportions: as large as it can be, never cropped. */
+.ps-media-viewer-canvas > * { width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.ps-media-viewer-canvas > img,
+.ps-media-viewer-canvas > video { display: block; object-fit: contain; user-select: none; }
+
+/* Previous and next on the stage's edges, on the media dock, while the pointer is over it. */
+.ps-media-viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-media-viewer-nav.is-previous { left: var(--ps-space-16); }
+.ps-media-viewer-nav.is-next { right: var(--ps-space-16); }
+.ps-media-viewer-stage:hover .ps-media-viewer-nav,
+.ps-media-viewer-nav:focus-visible { opacity: 1; }
+
+.ps-media-viewer-panel {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--ps-space-16);
+  background: var(--ps-surface-1);
+}
+
+@container (width < 880px) {
+  .ps-media-viewer.is-panel-open { grid-template-columns: minmax(0, 1fr); }
+  .ps-media-viewer-panel {
+    position: absolute;
+    top: var(--ps-media-viewer-bar);
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    width: min(var(--ps-aside-width), 90%);
+    box-shadow: var(--ps-elev-overlay);
+  }
+}
+
+@keyframes ps-media-viewer-scrim-in { from { background: transparent; } }
+@keyframes ps-media-viewer-in { from { transform: scale(0.98); } }

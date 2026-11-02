@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { formatTime } from '../../lib/format';

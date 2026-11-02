@@ -277,3 +277,37 @@ is a breaking change.
 - Documentation site (`apps/docs`): Overview, Getting started, and Foundations pages for
   principles, color (roles, contrast, palette), typography, spacing and sizing, shape,
   elevation and layers, motion and iconography. Dark, light and a side-by-side compare mode.
+- The library's source compiles under an app's `noUnusedLocals` and `noUnusedParameters` (the apps link the source, so
+  their compiler checks it): four unused `React` imports removed, and `npm run typecheck` now also runs
+  `packages/react/tsconfig.consumer.json` so it stays that way. Found while linking Pastel Studio Pro.
+- `MediaTile` and `MediaGrid`, for Pastel Studio Pro's file browser (and the ComfyUI frontend's media grid, §8d of its
+  handoff). `MediaTile` is a square thumbnail with its name and a meta line under it (never over it), the file type's icon
+  until the thumbnail arrives, a favorite, duration and source mark on the media dock, a check for multiple selection,
+  a dashed ring for a Shift range preview, quick actions on hover and focus, and a folder variant. `MediaGrid` draws only
+  the rows on screen (its own few lines of geometry in `lib/gridLayout.ts`: the library stays free of dependencies), so
+  10,000 tiles scroll like 10; tiles stretch to fill each row, the shell's gutter apart. It has `FileView`'s selection
+  contract (`onSelect(key, mode)`, `onCommand`, `onContextMenu(event, item | null)`) and keyboard, by row and column,
+  plus Page Up / Page Down; Shift + Delete is left to the app. `itemProps` adds drag and drop to a cell, `header`
+  scrolls above the tiles and `onEndReached` loads the next page. New tokens `--ps-media-tile-min-s/m/l/xl` (150, 200,
+  280, 380px) and `--ps-media-tile-caption` (44px); new words `favorite` and `mediaEmpty`.
+- `MediaViewer` and `useZoomPan`: one image or video over the app, as large as the window allows (the ComfyUI handoff's
+  "ImageViewer", and Pastel Studio Pro's replacement for a fixed 16:9 modal). A margin that grows with the window
+  (`--ps-media-viewer-inset`, 16 to 48px) around a card with a bar (name, "3 of 12", the app's actions, zoom, details,
+  full screen, close), the stage and the details panel; the media is fitted to the stage with no shape of the viewer's
+  own, and the panel floats over the stage when the viewer is narrower than 880px. Images zoom toward the pointer with
+  the wheel, pan by dragging and go between fitted and actual size on a double-click; the readout shows the real pixel
+  scale. ← / → for previous and next (Shift + arrows are left to the media), + − 0, I, F and Escape. `useZoomPan` is the
+  zoom on its own, for any content fitted to a stage. New tokens `--ps-media-viewer-inset` and `--ps-media-viewer-bar`;
+  new words `zoomIn`, `zoomOut` and `zoomFit`.
+- `ListPicker` and `ListPickerPanel`: a searchable list to check items off, anchored to its button, for tags and
+  collections on one item or a whole selection (Pastel Studio Pro's tag and collection pickers; on Focus Space's list of
+  ports). A search field over native check boxes, recent picks first, "Create" for a new name, arrows between the
+  rows; Enter in the search toggles the only match or creates what was typed when nothing matches. Each check applies at
+  once. The panel alone goes in a side panel or a page. New tokens `--ps-list-picker-width` (300px) and
+  `--ps-list-picker-height` (360px); new words `createNamed` and `allItems`.
+- `Checkbox`: `mixed`, a dash in the accent for "some but not all" (the DOM's indeterminate state, read out as mixed).
+- `MediaGrid`: `openOnClick` (a plain click opens, as in a photo gallery; Ctrl, Shift, the check and the arrows still
+  select), `tileWidth` (any narrowest-tile width, for a size slider) and `captions="overlay"` (square rows). `MediaTile`:
+  `caption="overlay"`, the name and meta over the thumbnail on the media dock on hover and focus. Clicks on a tile's own
+  buttons no longer select it. From Pastel Studio Pro's first test of its rebuilt browser.
+- `IconTag`, a price tag, for labels and tags (Pastel Studio Pro's Labels page and tag pickers).

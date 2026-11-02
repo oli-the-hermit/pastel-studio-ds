@@ -1,0 +1,50 @@
+/* ── ListPicker: a searchable list to check items off ─────────────
+   Made for the popover's surface (3): the search field and the check boxes sit a step down. In a
+   panel on another surface, set --ps-field-bg and --ps-checkbox-fill on its class. */
+.ps-list-picker {
+  --ps-field-bg: var(--ps-surface-2);
+  --ps-checkbox-fill: var(--ps-surface-2);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: var(--ps-list-picker-width);
+  max-width: 100%;
+}
+.ps-list-picker-search { flex: none; padding: var(--ps-space-8) var(--ps-space-8) var(--ps-space-4); }
+.ps-list-picker-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: var(--ps-list-picker-height);
+  overflow-y: auto;
+  padding: var(--ps-space-4) var(--ps-space-6) var(--ps-space-6);
+}
+.ps-list-picker-heading {
+  padding: var(--ps-space-8) var(--ps-space-10) var(--ps-space-4);
+  color: var(--ps-text-3);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-semibold);
+}
+.ps-list-picker-row,
+.ps-list-picker-create {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-10);
+  min-height: var(--ps-row-height);
+  padding: 0 var(--ps-space-10);
+  border-radius: var(--ps-radius-md);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-sm);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-list-picker-row:hover,
+.ps-list-picker-row:has(:focus-visible),
+.ps-list-picker-create:hover { background: var(--ps-surface-4); }
+.ps-list-picker-leading { display: grid; flex: none; place-items: center; }
+.ps-list-picker-label { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ps-list-picker-meta { flex: none; color: var(--ps-text-3); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; }
+.ps-list-picker-create { color: var(--ps-accent-text); }
+.ps-list-picker-empty { padding: var(--ps-space-12) var(--ps-space-10); color: var(--ps-text-3); font-size: var(--ps-font-size-sm); }

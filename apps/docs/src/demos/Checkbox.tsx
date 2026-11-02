@@ -30,6 +30,7 @@ export const demo: ComponentDemo = {
   states: {
     Unchecked: <div className="docs-check-list">{row(<Checkbox checked={false} onChange={noop} />, 'A task to do')}</div>,
     Checked: <div className="docs-check-list">{row(<Checkbox checked onChange={noop} />, 'A task done')}</div>,
+    Mixed: <div className="docs-check-list">{row(<Checkbox checked={false} mixed onChange={noop} />, 'On 3 of 7 selected photos')}</div>,
     'Read-only': <div className="docs-check-list">{row(<Checkbox checked={false} onChange={noop} aria-disabled="true" title="Done when its sessions are" />, 'Follows its sessions')}</div>,
     Disabled: <div className="docs-check-list">{row(<Checkbox checked={false} onChange={noop} disabled />, 'Not available')}</div>,
   },

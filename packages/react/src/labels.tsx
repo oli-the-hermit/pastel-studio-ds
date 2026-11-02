@@ -263,6 +263,13 @@ export const defaultLabels = {
   places: 'Places',
   expandMenu: 'Expand menu',
   collapseMenu: 'Collapse menu',
+  favorite: 'Favorite',
+  mediaEmpty: 'Nothing to show here.',
+  zoomIn: 'Zoom in',
+  zoomOut: 'Zoom out',
+  zoomFit: 'Fit to window',
+  createNamed: 'Create "{name}"',
+  allItems: 'All',
 };
 
 export type Labels = typeof defaultLabels;
