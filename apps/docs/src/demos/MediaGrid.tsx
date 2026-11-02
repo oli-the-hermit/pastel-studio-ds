@@ -46,7 +46,15 @@ const sizes: { value: Size; label: string }[] = [
   { value: 'xl', label: 'XL' },
 ];
 
-function Grid({ items, size = 'm', header, empty }: { items: Photo[]; size?: Size; header?: React.ReactNode; empty?: React.ReactNode }) {
+function Grid({ items, size = 'm', header, empty, overlay = false, openOnClick = false, tileWidth }: {
+  items: Photo[];
+  size?: Size;
+  header?: React.ReactNode;
+  empty?: React.ReactNode;
+  overlay?: boolean;
+  openOnClick?: boolean;
+  tileWidth?: number;
+}) {
   const { selection, select, selectAll, clear } = useSelection(items);
   return (
     <div className="docs-file-frame docs-media-frame docs-gallery-span">
@@ -55,6 +63,9 @@ function Grid({ items, size = 'm', header, empty }: { items: Photo[]; size?: Siz
         items={items}
         getKey={(p) => p.id}
         size={size}
+        tileWidth={tileWidth}
+        captions={overlay ? 'overlay' : 'below'}
+        openOnClick={openOnClick}
         header={header}
         empty={empty}
         selection={selection}
@@ -62,7 +73,9 @@ function Grid({ items, size = 'm', header, empty }: { items: Photo[]; size?: Siz
         onSelectAll={selectAll}
         onClearSelection={clear}
         onOpen={() => {}}
-        renderTile={(p, state) => <MediaTile name={p.name} src={p.src} meta={p.meta} favorite={p.favorite} selected={state.selected} selecting={state.selecting} />}
+        renderTile={(p, state) => (
+          <MediaTile name={p.name} src={p.src} meta={p.meta} favorite={p.favorite} selected={state.selected} selecting={state.selecting} caption={overlay ? 'overlay' : 'below'} />
+        )}
       />
     </div>
   );
@@ -114,8 +127,11 @@ export const demo: ComponentDemo = {
       <div className="docs-gallery-span docs-demo-stack">
         <Grid items={few} size="s" />
         <Grid items={few} size="xl" />
+        <Grid items={few} tileWidth={600} />
       </div>
     ),
+    'Open on click': <Grid items={few} size="s" openOnClick />,
+    'Overlay captions': <Grid items={few} size="s" overlay />,
   },
   dos: [
     'Give the grid a height (a flex child of a full-height page) so it scrolls by itself.',

@@ -36,6 +36,12 @@ describe('MediaTile', () => {
     expect(container.querySelector('.ps-file-icon.is-folder')).toBeTruthy();
   });
 
+  it('puts the caption over the thumbnail with caption="overlay"', () => {
+    const { container } = render(<MediaTile name="a.png" caption="overlay" meta="10 × 10" />);
+    expect(container.firstElementChild!.classList.contains('ps-media-tile--overlay-caption')).toBe(true);
+    expect(screen.getByText('a.png')).toBeTruthy();
+  });
+
   it('shows the duration, the source and the actions it is given', () => {
     render(<MediaTile name="a.mp4" duration="1:02" source={<span>site</span>} actions={<button type="button">Like</button>} />);
     expect(screen.getByText('1:02').className).toBe('ps-media-tile-duration');

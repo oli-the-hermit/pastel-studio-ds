@@ -123,4 +123,30 @@
 .ps-media-tile.is-dimmed .ps-media-tile-name,
 .ps-media-tile.is-dimmed .ps-media-tile-placeholder { color: var(--ps-text-3); }
 
+/* The caption over the thumbnail's lower edge, on the media dock, on hover and focus. */
+.ps-media-tile--overlay-caption { position: relative; }
+.ps-media-tile--overlay-caption .ps-media-tile-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  padding: var(--ps-space-8) var(--ps-space-12);
+  border-radius: 0 0 var(--ps-radius-xl) var(--ps-radius-xl);
+  background: var(--ps-media-overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-media-tile--overlay-caption .ps-media-tile-name,
+.ps-media-tile--overlay-caption.is-selected .ps-media-tile-name,
+.ps-media-tile--overlay-caption.is-dimmed .ps-media-tile-name { color: var(--ps-media-on-overlay); }
+.ps-media-tile--overlay-caption .ps-media-tile-meta { color: var(--ps-media-on-overlay-2); }
+.ps-media-tile--overlay-caption:hover .ps-media-tile-caption,
+:focus-visible > .ps-media-tile--overlay-caption .ps-media-tile-caption { opacity: 1; }
+/* The corner marks under the caption step aside for it. */
+.ps-media-tile--overlay-caption:is(:hover, :focus-within) :is(.ps-media-tile-duration, .ps-media-tile-source) { opacity: 0; }
+/* A folder has no picture to keep clear: its name stays. */
+.ps-media-tile--overlay-caption.ps-media-tile--folder .ps-media-tile-caption { opacity: 1; }
+
 @keyframes ps-media-tile-pulse { 50% { background: var(--ps-surface-3); } }

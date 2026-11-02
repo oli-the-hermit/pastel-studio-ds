@@ -71,6 +71,7 @@ export const demo: ComponentDemo = {
   },
   variants: {
     Folder: <MediaTile className="docs-media-tile" name="Screenshots" kind="folder" meta="2,431 items" />,
+    'Overlay caption': <MediaTile className="docs-media-tile" name="Hover or focus me.png" src={covers.tidal} meta="2400 × 2400 · 1.8 MB" caption="overlay" tabIndex={0} />,
   },
   dos: [
     'Put tiles in a MediaGrid: it owns the focus, the selection and the keyboard.',

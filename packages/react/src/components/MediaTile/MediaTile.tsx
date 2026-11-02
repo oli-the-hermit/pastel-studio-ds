@@ -29,6 +29,12 @@ export interface MediaTileProps extends Omit<React.HTMLAttributes<HTMLDivElement
   dimmed?: boolean;
   /** Quick actions on the thumbnail, shown on hover and focus. Keep them in the item's menu too. */
   actions?: React.ReactNode;
+  /**
+   * Where the name and meta go: `below` the thumbnail (a file explorer's tiles), or over its lower
+   * edge on hover and focus, `overlay` (a photo gallery's), so the tile is all picture at rest.
+   * In a MediaGrid, give it the same `captions`.
+   */
+  caption?: 'below' | 'overlay';
   labels?: LabelOverrides<'favorite'>;
 }
 
@@ -40,7 +46,7 @@ export interface MediaTileProps extends Omit<React.HTMLAttributes<HTMLDivElement
  */
 export const MediaTile = forwardRef<HTMLDivElement, MediaTileProps>(({
   name, src, kind = 'file', meta, duration, favorite = false, source, selected = false, selecting = false, preview, loading = false,
-  dimmed = false, actions, labels: ownLabels, className, ...rest
+  dimmed = false, actions, caption = 'below', labels: ownLabels, className, ...rest
 }, ref) => {
   const labels = useLabels(ownLabels);
   const [failed, setFailed] = useState<string | null>(null);
@@ -51,6 +57,7 @@ export const MediaTile = forwardRef<HTMLDivElement, MediaTileProps>(({
       className={cx(
         'ps-media-tile',
         kind === 'folder' && 'ps-media-tile--folder',
+        caption === 'overlay' && 'ps-media-tile--overlay-caption',
         selected && 'is-selected',
         selecting && 'is-selecting',
         preview && `is-preview-${preview}`,

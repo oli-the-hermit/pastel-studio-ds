@@ -12,7 +12,9 @@ export const meta: ComponentMeta = {
     { name: 'Empty', description: 'No items: `empty`, or "Nothing to show here." by default.' },
   ],
   variants: [
-    { name: 'Sizes', description: '`size` sets the narrowest tile: `s` 150px, `m` 200px (default), `l` 280px, `xl` 380px.' },
+    { name: 'Sizes', description: '`size` sets the narrowest tile: `s` 150px, `m` 200px (default), `l` 280px, `xl` 380px. `tileWidth` takes any width instead, for a size slider.' },
+    { name: 'Open on click', description: '`openOnClick`: a plain click opens the item, as in a photo gallery; Ctrl + click, Shift + click, the check and the arrows still select.' },
+    { name: 'Overlay captions', description: '`captions="overlay"` with MediaTiles that show their name over the thumbnail: the rows are square, with no caption under them.' },
   ],
   keyboard: [
     { keys: '← → ↑ ↓', action: 'Move between tiles by column and row, selecting the one reached' },

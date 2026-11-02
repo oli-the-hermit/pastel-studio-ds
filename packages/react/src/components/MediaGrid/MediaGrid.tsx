@@ -25,8 +25,13 @@ export interface MediaGridProps<T> extends Omit<React.HTMLAttributes<HTMLDivElem
   onSelect: (key: string, mode: SelectMode) => void;
   onSelectAll?: () => void;
   onClearSelection?: () => void;
-  /** Double-click or Enter. */
+  /** Double-click or Enter; a plain click too with `openOnClick`. */
   onOpen: (item: T) => void;
+  /**
+   * A plain click opens the item instead of selecting it, as in a photo gallery. Ctrl + click,
+   * Shift + click, the tile's check and the arrows still select.
+   */
+  openOnClick?: boolean;
   /** Delete, F2, Ctrl + C / X / V, Backspace and Alt + arrows, for the app to carry out. */
   onCommand?: (command: FileCommand) => void;
   /** A right-click on a tile, or on the empty space (`null`). */
@@ -39,6 +44,13 @@ export interface MediaGridProps<T> extends Omit<React.HTMLAttributes<HTMLDivElem
   onEndReached?: () => void;
   /** The narrowest tile: s 150px, m 200px, l 280px, xl 380px; tiles stretch to fill each row. */
   size?: 's' | 'm' | 'l' | 'xl';
+  /** The narrowest tile in pixels, in place of `size`: for a slider that sizes tiles freely. */
+  tileWidth?: number;
+  /**
+   * `overlay` for tiles that show their name over the thumbnail (MediaTile `caption="overlay"`):
+   * the rows are as tall as the squares, with no caption under them.
+   */
+  captions?: 'below' | 'overlay';
   /** Above the tiles, scrolling with them: folders, a banner. */
   header?: React.ReactNode;
   /** In place of the tiles when there are none. */
@@ -70,8 +82,9 @@ const sameBox = (a: Box, b: Box) =>
   a.width === b.width && a.viewport === b.viewport && a.offset === b.offset && a.min === b.min && a.gap === b.gap && a.caption === b.caption;
 
 function MediaGridInner<T>({
-  items, getKey, renderTile, selection, onSelect, onSelectAll, onClearSelection, onOpen, onCommand, onContextMenu, onFocusItem,
-  itemProps, onEndReached, size = 'm', header, empty, label, overscan = 3, labels: ownLabels, className, onScroll, ...rest
+  items, getKey, renderTile, selection, onSelect, onSelectAll, onClearSelection, onOpen, openOnClick = false, onCommand, onContextMenu,
+  onFocusItem, itemProps, onEndReached, size = 'm', tileWidth, captions = 'below', header, empty, label, overscan = 3, labels: ownLabels,
+  className, style: ownStyle, onScroll, ...rest
 }: MediaGridProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
   const labels = useLabels(ownLabels);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -103,12 +116,12 @@ function MediaGridInner<T>({
       width: list.clientWidth,
       viewport: root.clientHeight,
       offset: list.offsetTop,
-      min: px('--ps-media-grid-min', FALLBACK.min[size]),
+      min: tileWidth ?? px('--ps-media-grid-min', FALLBACK.min[size]),
       gap: px('--ps-media-grid-gap', FALLBACK.gap),
-      caption: px('--ps-media-tile-caption', FALLBACK.caption),
+      caption: captions === 'overlay' ? 0 : px('--ps-media-tile-caption', FALLBACK.caption),
     };
     setBox((prev) => (sameBox(prev, next) ? prev : next));
-  }, [size]);
+  }, [size, tileWidth, captions]);
 
   useLayoutEffect(() => {
     measure();
@@ -116,7 +129,7 @@ function MediaGridInner<T>({
     const observer = new ResizeObserver(measure);
     for (const node of [rootRef.current, listRef.current, rootRef.current?.firstElementChild]) if (node) observer.observe(node);
     return () => observer.disconnect();
-  }, [measure, size, hasHeader]);
+  }, [measure, hasHeader]);
 
   useEffect(() => setFocusIndex((i) => Math.min(i, Math.max(0, n - 1))), [n]);
 
@@ -218,7 +231,8 @@ function MediaGridInner<T>({
   return (
     <div
       ref={setRoot}
-      className={cx('ps-media-grid', `ps-media-grid--${size}`, className)}
+      className={cx('ps-media-grid', `ps-media-grid--${size}`, captions === 'overlay' && 'ps-media-grid--overlay-captions', className)}
+      style={tileWidth ? ({ ...ownStyle, '--ps-media-grid-min': `${tileWidth}px` } as React.CSSProperties) : ownStyle}
       onScroll={(e) => {
         onScroll?.(e);
         // A grid drawn before its size was known measures again as soon as it moves.
@@ -278,13 +292,19 @@ function MediaGridInner<T>({
               }}
               onClick={(e) => {
                 extra.onClick?.(e);
+                const target = e.target as HTMLElement;
+                // A tile's own controls (its quick actions) answer their clicks themselves.
+                if (target.closest('button, a, input') && e.currentTarget.contains(target.closest('button, a, input'))) return;
                 setFocusIndex(i);
-                const onCheck = (e.target as HTMLElement).closest('[data-media-check]') !== null;
-                onSelect(key, e.shiftKey ? 'range' : onCheck || e.ctrlKey || e.metaKey ? 'toggle' : 'replace');
+                const onCheck = target.closest('[data-media-check]') !== null;
+                const plain = !e.shiftKey && !onCheck && !e.ctrlKey && !e.metaKey;
+                if (plain && openOnClick) return onOpen(item);
+                onSelect(key, e.shiftKey ? 'range' : plain ? 'replace' : 'toggle');
               }}
               onDoubleClick={(e) => {
                 extra.onDoubleClick?.(e);
-                if ((e.target as HTMLElement).closest('[data-media-check]')) return;
+                // With openOnClick the first click has opened it already.
+                if (openOnClick || (e.target as HTMLElement).closest('[data-media-check], button, a, input')) return;
                 onOpen(item);
               }}
               onContextMenu={(e) => {

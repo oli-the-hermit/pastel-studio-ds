@@ -100,6 +100,34 @@ describe('MediaGrid', () => {
     expect(container.querySelectorAll('.ps-media-grid-cell')).toHaveLength(6);
   });
 
+  it('opens on a plain click with openOnClick, while Ctrl, Shift and the check still select', () => {
+    const { onSelect, onOpen, container } = setup({ openOnClick: true });
+    fireEvent.click(option('photo-2'));
+    fireEvent.click(option('photo-3'), { ctrlKey: true });
+    fireEvent.click(option('photo-4'), { shiftKey: true });
+    fireEvent.click(container.querySelectorAll('[data-media-check]')[5]);
+    fireEvent.doubleClick(option('photo-1'));
+    expect(onOpen.mock.calls.map(([item]) => item.id)).toEqual(['m2']);
+    expect(onSelect.mock.calls).toEqual([['m3', 'toggle'], ['m4', 'range'], ['m5', 'toggle']]);
+  });
+
+  it('leaves clicks on a tile\'s own buttons to them', () => {
+    const { onSelect, onOpen } = setup({
+      openOnClick: true,
+      renderTile: (item) => <MediaTile name={item.name} actions={<button type="button">Like {item.name}</button>} />,
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Like photo-0.png' }));
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('takes a free tile width and square rows for overlay captions', () => {
+    const ref = createRef<HTMLDivElement>();
+    setup({ ref, tileWidth: 520, captions: 'overlay' });
+    expect(ref.current?.style.getPropertyValue('--ps-media-grid-min')).toBe('520px');
+    expect(ref.current?.classList.contains('ps-media-grid--overlay-captions')).toBe(true);
+  });
+
   it('shows the empty state without items', () => {
     setup({ items: [], labels: { mediaEmpty: 'Nada por aquí.' } });
     expect(screen.getByText('Nada por aquí.')).toBeTruthy();

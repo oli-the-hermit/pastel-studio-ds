@@ -16,6 +16,7 @@ export const meta: ComponentMeta = {
   ],
   variants: [
     { name: 'Folder', description: '`kind="folder"`: a folder in place of the thumbnail and no check; the meta line can count its items.' },
+    { name: 'Overlay caption', description: '`caption="overlay"`: the name and meta over the thumbnail\'s lower edge on the media dock, shown on hover and focus, so the tile is all picture at rest (a folder keeps its name showing).' },
   ],
   keyboard: [],
   labels: ['favorite'],
