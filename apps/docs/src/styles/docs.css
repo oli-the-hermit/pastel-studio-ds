@@ -62,7 +62,12 @@
     font-weight: var(--ps-font-weight-semibold);
   }
 
-  .docs-theme-controls { display: flex; align-items: center; gap: var(--ps-space-8); margin-left: auto; }
+  /* The free space between the brand and the controls; in the desktop app it moves the window. */
+  .docs-topbar-spacer { flex: 1; align-self: stretch; }
+  .docs-topbar.is-framed { padding-right: var(--ps-space-10); user-select: none; }
+  .docs-window-controls { margin-left: var(--ps-space-4); }
+
+  .docs-theme-controls { display: flex; align-items: center; gap: var(--ps-space-8); }
   .docs-segmented {
     display: flex;
     gap: var(--ps-space-2);
