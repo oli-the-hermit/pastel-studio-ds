@@ -14,7 +14,7 @@ export const css = (v: Value | undefined): string | undefined => (v === undefine
 /** How an element sizes along one axis: a fixed size, fill the free space, or fit its content. */
 export type Size = { mode: 'fixed'; value: number } | { mode: 'fill' } | { mode: 'fit' };
 
-export type NodeType = 'frame' | 'stack' | 'text' | 'rect' | 'image' | 'icon' | 'component';
+export type NodeType = 'frame' | 'stack' | 'text' | 'rect' | 'image' | 'icon' | 'component' | 'instance';
 
 export interface StackLayout {
   direction: 'row' | 'column';
@@ -72,27 +72,84 @@ export interface CanvasNode {
   icon?: string;
   /** Components: the design-system export and its props. */
   component?: { name: string; props: Record<string, unknown> };
+  /** Instances: the block, its variant (a frame of the block's page), and what this copy changes. */
+  instance?: { block: string; variant?: string; overrides: Record<string, Override> };
+  /**
+   * Inside a block: the name its instances' overrides use for this element. Variants share it, so
+   * an override (a changed label, say) follows the instance from one variant to another.
+   */
+  slot?: string;
+  /** Top-level frames: the same layout at other widths, each with its own changes. */
+  breakpoints?: Breakpoint[];
+  /** Built for display only (inside an instance placed in a breakpoint): not selectable. */
+  inert?: boolean;
   children?: CanvasNode[];
+}
+
+/** What an instance or a breakpoint changes on one element: whole fields, replacing the original's. */
+export type Override = Partial<Pick<CanvasNode, 'name' | 'text' | 'hidden' | 'asset' | 'icon' | 'style' | 'stack' | 'width' | 'height' | 'x' | 'y' | 'absolute' | 'component' | 'instance'>>;
+export const OVERRIDE_KEYS = ['name', 'text', 'hidden', 'asset', 'icon', 'style', 'stack', 'width', 'height', 'x', 'y', 'absolute', 'component', 'instance'] as const;
+
+export interface Breakpoint {
+  id: string;
+  name: string;
+  width: number;
+  height?: number;
+  /** Changes for this width, by element id. */
+  overrides: Record<string, Override>;
 }
 
 export interface Page {
   id: string;
   name: string;
-  /** The top-level frames (artboards), placed on the canvas. */
+  /** The top-level frames (artboards), placed on the canvas. On a block's page, its variants. */
   frames: CanvasNode[];
+  /** A block's page: its variants, edited like any page but saved under blocks/. */
+  kind?: 'block';
+  /** A block from the shared library rather than the project's own. */
+  shared?: boolean;
+}
+
+export interface ThemeOverrides {
+  /** An accent preset id from the design system ("sky-blue"); none keeps the default. */
+  accent?: string;
+  /** Token values per theme: { "--ps-surface-2": "#2b2f36" }. */
+  dark?: Record<string, string>;
+  light?: Record<string, string>;
 }
 
 export interface ProjectFile {
   version: 1;
   name: string;
   pages: { id: string; name: string }[];
+  /** Proposed changes to the design system's tokens, shown on every frame. */
+  theme?: ThemeOverrides;
 }
 
-/** Images and the way they're organized. Blocks join this file in phase 2. */
+export interface Folder {
+  id: string;
+  name: string;
+  parent?: string;
+  /** What the folder holds: images (the default) or blocks. */
+  kind?: 'image' | 'block';
+}
+
+/** A reusable block: its variants live in blocks/<id>.json, a page of their own. */
+export interface BlockRef {
+  id: string;
+  name: string;
+  folder?: string;
+  tags: string[];
+  description?: string;
+  added: string;
+}
+
+/** Images, blocks and the way they're organized: one per project, and one shared by all of them. */
 export interface LibraryFile {
   version: 1;
-  folders: { id: string; name: string; parent?: string }[];
+  folders: Folder[];
   assets: Asset[];
+  blocks?: BlockRef[];
 }
 
 export interface Asset {

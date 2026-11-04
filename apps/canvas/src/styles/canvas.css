@@ -383,4 +383,45 @@
     cursor: pointer;
   }
   .cv-project:hover { background: var(--ps-surface-3); }
+
+  /* ── Blocks, breakpoints, preview, theme ───────────────── */
+  .cv-instance { min-width: 0; }
+  .cv-scope {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ps-space-8);
+    margin: 0 var(--ps-space-12) var(--ps-space-8);
+    padding: var(--ps-space-8) var(--ps-space-10);
+    border-radius: var(--ps-radius-sm);
+    background: var(--ps-accent-container);
+    color: var(--ps-on-accent-container);
+    font-size: var(--ps-font-size-xs);
+  }
+  .cv-block-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ps-space-8);
+    margin-left: var(--ps-space-8);
+    padding: var(--ps-space-4) var(--ps-space-4) var(--ps-space-4) var(--ps-space-12);
+    border-radius: var(--ps-radius-pill);
+    background: var(--ps-accent-container);
+    color: var(--ps-on-accent-container);
+    font-size: var(--ps-font-size-sm);
+  }
+  .cv-block-thumb { position: relative; overflow: hidden; pointer-events: none; }
+
+  .cv-preview { display: flex; flex-direction: column; height: 100%; overflow: hidden; border-radius: var(--ps-radius-2xl); background: var(--ps-surface-1); }
+  .cv-preview-bar { display: flex; align-items: center; gap: var(--ps-space-12); padding: var(--ps-space-8) var(--ps-space-12); }
+  .cv-preview-bar .cv-buttons { flex: 0 1 auto; min-width: 0; overflow-x: auto; }
+  .cv-preview-bar .cv-buttons-option { flex: none; padding-inline: var(--ps-space-10); }
+  .cv-preview-bar > .cv-muted { margin-right: auto; }
+  .cv-preview-stage { flex: 1; min-height: 0; overflow: auto; padding: var(--ps-space-24); }
+  .cv-preview-frame { position: relative; margin: 0 auto; }
+
+  .cv-theme-token { display: grid; grid-template-columns: 30px minmax(0, 1fr) 92px auto; align-items: center; gap: var(--ps-space-6); }
+  .cv-theme-token input[type='color'] { width: 30px; height: 26px; padding: 0; border: 0; border-radius: var(--ps-radius-xs); background: transparent; }
+  .cv-theme-name { overflow: hidden; font-size: var(--ps-font-size-xs); color: var(--ps-text-2); text-overflow: ellipsis; white-space: nowrap; }
+  .cv-theme-token[data-changed] .cv-theme-name { color: var(--ps-accent-text); font-weight: var(--ps-font-weight-semibold); }
+  .cv-theme-value { height: var(--ps-button-height-xs); padding: 0 var(--ps-space-6); font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: var(--ps-font-size-xs); }
 }

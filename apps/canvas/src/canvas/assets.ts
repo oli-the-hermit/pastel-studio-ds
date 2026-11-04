@@ -32,14 +32,16 @@ export function forgetAssets() {
 
 /** The object URL of a library asset, once it has loaded. */
 export function useAssetUrl(id: string | undefined): string | undefined {
-  const asset = useEditor((s) => s.library.assets.find((a) => a.id === id));
+  const own = useEditor((s) => s.library.assets.find((a) => a.id === id));
+  const shared = useEditor((s) => (own ? undefined : s.shared.assets.find((a) => a.id === id)));
+  const asset = own ?? shared;
   const [url, setUrl] = useState<string>();
   useEffect(() => {
-    const dir = getState().dir;
+    const dir = own ? getState().dir : getState().sharedDir;
     if (!asset || !dir) return setUrl(undefined);
     let live = true;
     assetUrl(dir, asset.file).then((u) => live && setUrl(u), () => live && setUrl(undefined));
     return () => { live = false; };
-  }, [asset]);
+  }, [asset, own]);
   return url;
 }

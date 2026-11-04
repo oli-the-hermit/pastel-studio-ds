@@ -1,6 +1,6 @@
 // Adding image files to the project: copied into assets/ under a new id, measured, and listed in the library.
 import { primeAsset } from '../canvas/assets';
-import { editLibrary, getState } from '../model/store';
+import { editLibrary, getState, type LibrarySource } from '../model/store';
 import { uid, type Asset } from '../model/types';
 import { fsApi, join } from './fs';
 
@@ -32,8 +32,8 @@ async function measure(file: File): Promise<{ width?: number; height?: number }>
   return Promise.race([read, timeout]);
 }
 
-export async function importImages(files: File[], folder?: string): Promise<Asset[]> {
-  const dir = getState().dir;
+export async function importImages(files: File[], folder?: string, source: LibrarySource = 'project'): Promise<Asset[]> {
+  const dir = source === 'shared' ? getState().sharedDir : getState().dir;
   if (!dir) return [];
   const added: Asset[] = [];
   for (const f of files.filter(isImageFile)) {
@@ -45,6 +45,6 @@ export async function importImages(files: File[], folder?: string): Promise<Asse
     primeAsset(dir, file, bytes);
     added.push({ id, kind: 'image', name: f.name, file, folder, tags: [], ...(await measure(f)), added: new Date().toISOString() });
   }
-  if (added.length) editLibrary((lib) => { lib.assets.push(...added); });
+  if (added.length) editLibrary((lib) => { lib.assets.push(...added); }, source);
   return added;
 }

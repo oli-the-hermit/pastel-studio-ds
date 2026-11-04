@@ -1,11 +1,12 @@
 // A node as real DOM: stacks are flexboxes, components are the design system's own. Every element
 // carries data-node-id, which is how the canvas finds what was clicked and where it sits.
-import React, { Component, useEffect, useRef, type CSSProperties, type ErrorInfo, type ReactNode } from 'react';
+import React, { Component, createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ErrorInfo, type ReactNode } from 'react';
 import * as PS from '@pastel-studio/react';
 import { catalogEntry, isCallback } from '../data/components';
 import { COVERS, FIXTURES } from '../data/fixtures';
 import { updateNode } from '../model/actions';
 import { setEditing, useEditor } from '../model/store';
+import { instanceTree } from '../model/virtual';
 import { css, type CanvasNode, type Size, type StackLayout } from '../model/types';
 import { useAssetUrl } from './assets';
 
@@ -71,7 +72,7 @@ export function nodeStyle(node: CanvasNode, parent: CanvasNode | undefined): CSS
     display: node.hidden ? 'none' : undefined,
   };
   if (s.borderWidth) style.border = `${s.borderWidth}px ${s.borderStyle ?? 'solid'} ${css(s.borderColor) ?? 'var(--ps-surface-4)'}`;
-  if (node.stack && (node.type === 'frame' || node.type === 'stack')) {
+  if (node.stack && (node.type === 'frame' || node.type === 'stack' || node.type === 'instance')) {
     const st = node.stack;
     Object.assign(style, {
       display: node.hidden ? 'none' : 'flex',
@@ -111,12 +112,46 @@ class Boundary extends Component<{ name: string; children: ReactNode }, { error?
   }
 }
 
+/** True inside the preview: components there are live, keeping what you do to them. */
+export const LiveContext = createContext(false);
+
+/**
+ * The callbacks a live component answers, and the prop each one sets: a switch's onChange sets
+ * `checked`, a dialog's onClose sets `isOpen` to false. The first pair the component has wins.
+ */
+const LIVE_PAIRS: [string, string, ((v: unknown, was: unknown) => unknown)?][] = [
+  ['onChange', 'checked'], ['onChange', 'value'],
+  ['onSelect', 'activeKey'], ['onSelect', 'selectedId'], ['onSelect', 'value'],
+  ['onClose', 'isOpen', () => false], ['onClose', 'open', () => false],
+  ['onLikedChange', 'liked'], ['onToggle', 'liked', (_v, was) => !was],
+  ['onExpandedChange', 'expanded'], ['onViewChange', 'view'],
+];
+
+function useLiveProps(name: string, base: Record<string, unknown>): Record<string, unknown> {
+  const live = useContext(LiveContext);
+  const [changed, setChanged] = useState<Record<string, unknown>>({});
+  if (!live) return base;
+  const declared = new Set((catalogEntry(name)?.props ?? []).map((p) => p.name));
+  const props = { ...base, ...changed };
+  const wired = new Set<string>();
+  for (const [cb, prop, map] of LIVE_PAIRS) {
+    if (wired.has(cb) || !declared.has(cb) || !declared.has(prop)) continue;
+    wired.add(cb);
+    props[cb] = (v: unknown) => setChanged((c) => ({ ...c, [prop]: map ? map(v, { ...base, ...c }[prop]) : v }));
+  }
+  return props;
+}
+
 function ComponentNode({ node }: { node: CanvasNode }) {
   const spec = node.component!;
   const Comp = registry[spec.name];
+  const base = useMemo(() => {
+    const props = materialize(spec.props) as Record<string, unknown>;
+    for (const p of catalogEntry(spec.name)?.props ?? []) if (isCallback(p) && props[p.name] === undefined) props[p.name] = noop;
+    return props;
+  }, [spec]);
+  const props = useLiveProps(spec.name, base);
   if (!Comp) return <div className="cv-broken">No component {spec.name}</div>;
-  const props = materialize(spec.props) as Record<string, unknown>;
-  for (const p of catalogEntry(spec.name)?.props ?? []) if (isCallback(p) && props[p.name] === undefined) props[p.name] = noop;
   return (
     <Boundary name={spec.name}>
       <Comp {...props} />
@@ -175,7 +210,8 @@ function TextNode({ node, common }: { node: CanvasNode; common: { 'data-node-id'
 
 export const RenderNode = React.memo(function RenderNode({ node, parent }: { node: CanvasNode; parent?: CanvasNode }) {
   const style = nodeStyle(node, parent);
-  const common = { 'data-node-id': node.id, style } as const;
+  // Elements built for display only (deep inside nested instances) can't be picked: they carry no id.
+  const common = { 'data-node-id': node.inert ? undefined : node.id, style } as { 'data-node-id': string; style: CSSProperties };
   switch (node.type) {
     case 'frame':
     case 'stack':
@@ -197,5 +233,27 @@ export const RenderNode = React.memo(function RenderNode({ node, parent }: { nod
     }
     case 'component':
       return <div {...common} className="cv-component"><ComponentNode node={node} /></div>;
+    case 'instance':
+      return <InstanceNode node={node} common={common} />;
   }
 });
+
+/** A block's instance: its variant, built with the instance's overrides, following every change to the block. */
+function InstanceNode({ node, common }: { node: CanvasNode; common: { 'data-node-id': string; style: CSSProperties } }) {
+  const block = useEditor((s) => (node.instance ? s.pages[node.instance.block] : undefined));
+  const pages = useEditor((s) => s.pages);
+  const tree = useMemo(() => (node.children ? node : instanceTree(node, pages)), [node, pages]);
+  if (!block) return <div {...common} className="cv-broken">This block is missing from the library.</div>;
+  const style = node.children ? common.style : nodeStyle(tree, undefined);
+  return (
+    <div {...common} style={{ ...style, ...positionOf(common.style) }} className="cv-instance">
+      {tree.children?.map((c) => <RenderNode key={c.id} node={c} parent={tree} />)}
+    </div>
+  );
+}
+
+/** The place and size the parent's layout gave the instance; the variant only brings its look. */
+function positionOf(s: CSSProperties): CSSProperties {
+  const { position, left, top, width, height, flex, flexShrink, alignSelf, minWidth, minHeight, display } = s;
+  return Object.fromEntries(Object.entries({ position, left, top, width, height, flex, flexShrink, alignSelf, minWidth, minHeight, display }).filter(([, v]) => v !== undefined));
+}

@@ -2,10 +2,11 @@
 // F2), hide, lock, and reorder by dragging: on the upper or lower edge of a row to go before or after
 // it, on the middle of a frame or stack to go inside.
 import React, { useState } from 'react';
-import { IconButton, IconChevronDown, IconEye, IconLock, IconPlus, IconTrash, cx } from '@pastel-studio/react';
+import { IconButton, IconChevronDown, IconExpand, IconEye, IconLock, IconPlus, IconTrash, cx } from '@pastel-studio/react';
 import * as PS from '@pastel-studio/react';
 import { updateNode } from '../model/actions';
-import { addPage, currentPage, edit, getState, removePage, renamePage, select, setHover, setPage, useEditor } from '../model/store';
+import { addPage, closeBlock, currentPage, edit, getState, removePage, renamePage, select, setHover, setPage, useEditor } from '../model/store';
+import { breakpointId } from '../model/virtual';
 import { find, isContainer, isInside, move } from '../model/tree';
 import type { CanvasNode } from '../model/types';
 
@@ -13,7 +14,7 @@ const registry = PS as unknown as Record<string, React.ComponentType<{ size?: nu
 
 function typeIcon(n: CanvasNode): string {
   if (n.type === 'stack') return n.stack?.direction === 'row' ? 'IconViewTiles' : 'IconViewList';
-  return { frame: 'IconMonitor', text: 'IconFont', rect: 'IconLayers', image: 'IconFileImage', icon: 'IconStar', component: 'IconApp' }[n.type] ?? 'IconFile';
+  return ({ frame: 'IconMonitor', text: 'IconFont', rect: 'IconLayers', image: 'IconFileImage', icon: 'IconStar', component: 'IconApp', instance: 'IconCopy' } as Record<string, string>)[n.type] ?? 'IconFile';
 }
 
 const LAYER_MIME = 'application/x-pastel-layer';
@@ -150,16 +151,51 @@ function Row({ node, depth, collapsed, toggle }: { node: CanvasNode; depth: numb
   );
 }
 
+/** A breakpoint of the frame above: selecting it shows its width; its elements are picked on the canvas. */
+function BreakpointRow({ id, name, width }: { id: string; name: string; width: number }) {
+  const selected = useEditor((s) => s.selection.includes(id));
+  return (
+    <div
+      className={cx('cv-layer', selected && 'is-active')}
+      style={{ paddingLeft: 'calc(var(--ps-space-4) + var(--ps-tree-indent))' }}
+      role="treeitem"
+      aria-selected={selected}
+      tabIndex={0}
+      onClick={() => select([id])}
+      onPointerEnter={() => setHover(id)}
+      onPointerLeave={() => setHover(undefined)}
+    >
+      <span className="cv-disclosure" />
+      <IconExpand size={14} />
+      <span className="cv-layer-name">{name}</span>
+      <span className="cv-count">{width}</span>
+    </div>
+  );
+}
+
 export function Layers() {
   const page = useEditor((s) => currentPage(s));
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setCollapsed((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   return (
     <div className="cv-layers">
-      <Pages />
-      <div className="cv-panel-head"><span className="ps-overline">Layers</span></div>
+      {page?.kind === 'block' ? (
+        <section className="cv-pages">
+          <div className="cv-panel-head">
+            <span className="ps-overline">Block · {page.name}</span>
+            <PS.TextButton size="xs" onClick={closeBlock}>Done</PS.TextButton>
+          </div>
+          <p className="cv-muted cv-pad">Each frame is a variant. Every instance follows what you change here.</p>
+        </section>
+      ) : <Pages />}
+      <div className="cv-panel-head"><span className="ps-overline">{page?.kind === 'block' ? 'Variants' : 'Layers'}</span></div>
       <div className="cv-scroll" role="tree" aria-label="Layers">
-        {page?.frames.map((f) => <Row key={f.id} node={f} depth={0} collapsed={collapsed} toggle={toggle} />)}
+        {page?.frames.map((f) => (
+          <React.Fragment key={f.id}>
+            <Row node={f} depth={0} collapsed={collapsed} toggle={toggle} />
+            {(f.breakpoints ?? []).map((b) => <BreakpointRow key={b.id} id={breakpointId(f.id, b.id)} name={b.name} width={b.width} />)}
+          </React.Fragment>
+        ))}
         {!page?.frames.length && <p className="cv-muted cv-pad">Add a frame from the library to start.</p>}
       </div>
     </div>

@@ -1,26 +1,23 @@
-// The asset library: the design system's components, icons and tokens, and the project's images.
-// Every kind is searchable, can be starred, and remembers what was used last; images also sit in
-// folders and carry tags. Click an item to add it where the selection is, or drag it onto a frame.
-import React, { useMemo, useRef, useState } from 'react';
+// The asset library: the design system's components, icons and tokens, and the person's own blocks
+// and images (Organized.tsx). Every kind is searchable, can be starred, and remembers what was used
+// last. Click an item to add it where the selection is, or drag it onto a frame.
+import React, { useMemo, useState } from 'react';
 import * as PS from '@pastel-studio/react';
-import { IconButton, IconFolder, IconFolderPlus, IconPlus, IconStar, IconTrash, SearchField, SegmentedControl, cx } from '@pastel-studio/react';
+import { IconStar, SearchField, SegmentedControl, cx } from '@pastel-studio/react';
 import { CATALOG, catalogEntry, defaultProps } from '../data/components';
 import { COLOR_GROUPS, FONT_SIZES, RADII, SPACE, shortName } from '../data/tokens';
 import { insertNodes, updateNode } from '../model/actions';
-import { currentPage, editLibrary, getState, useEditor } from '../model/store';
+import { currentPage, getState, useEditor } from '../model/store';
 import { nodesFor, setDragPayload, type ElementKind, type Payload } from '../model/payload';
-import { find, walk } from '../model/tree';
-import { uid, type Asset, type Page } from '../model/types';
+import { find } from '../model/tree';
 import { materialize } from '../canvas/RenderNode';
-import { useAssetUrl } from '../canvas/assets';
-import { fsApi, join } from '../storage/fs';
-import { importImages, isImageFile } from '../storage/images';
 import { noteUsed, toggleStar, usePref } from './prefs';
+import { OrganizedView } from './Organized';
 
 const registry = PS as unknown as Record<string, React.ComponentType<Record<string, unknown>> | undefined>;
 const ICONS = Object.keys(PS).filter((k) => /^Icon[A-Z]/.test(k)).sort();
 
-const keyOf = (p: Payload) => (p.kind === 'component' || p.kind === 'icon' ? `${p.kind}:${p.name}` : p.kind === 'asset' ? `asset:${p.id}` : `element:${p.element}`);
+const keyOf = (p: Payload) => (p.kind === 'component' || p.kind === 'icon' ? `${p.kind}:${p.name}` : p.kind === 'asset' || p.kind === 'block' ? `${p.kind}:${p.id}` : `element:${p.element}`);
 
 function add(p: Payload) {
   noteUsed(keyOf(p));
@@ -199,195 +196,7 @@ function TokensView({ query }: { query: string }) {
   );
 }
 
-// ── Images ──────────────────────────────────────────────────────────────────
-
-type Scope = 'all' | 'starred' | 'unfiled' | string;
-
-function ImageThumb({ asset }: { asset: Asset }) {
-  const url = useAssetUrl(asset.id);
-  return url ? <img src={url} alt="" draggable={false} /> : <PS.IconFileImage size={22} />;
-}
-
-function usageCount(assetId: string, pages: Record<string, Page>): number {
-  let n = 0;
-  for (const page of Object.values(pages)) walk(page.frames, (node) => { if (node.asset === assetId) n++; });
-  return n;
-}
-
-function FolderRow({ id, name, depth, scope, setScope, count }: { id: Scope; name: string; depth: number; scope: Scope; setScope: (s: Scope) => void; count: number }) {
-  const [renaming, setRenaming] = useState(false);
-  const isFolder = !['all', 'starred', 'unfiled'].includes(id);
-  return (
-    <div
-      className={cx('cv-folder', scope === id && 'is-active')}
-      style={{ paddingLeft: `calc(var(--ps-space-8) + ${depth} * var(--ps-tree-indent))` }}
-      role="button"
-      tabIndex={0}
-      onClick={() => setScope(id)}
-      onKeyDown={(e) => { if (e.key === 'Enter') setScope(id); if (e.key === 'F2' && isFolder) setRenaming(true); }}
-      onDoubleClick={() => isFolder && setRenaming(true)}
-      onDragOver={(e) => { if (isFolder || id === 'unfiled') { e.preventDefault(); e.currentTarget.classList.add('is-drop'); } }}
-      onDragLeave={(e) => e.currentTarget.classList.remove('is-drop')}
-      onDrop={(e) => {
-        e.currentTarget.classList.remove('is-drop');
-        const assetId = e.dataTransfer.getData('application/x-pastel-asset');
-        if (assetId) editLibrary((lib) => { const a = lib.assets.find((x) => x.id === assetId); if (a) a.folder = isFolder ? id : undefined; });
-      }}
-    >
-      {id === 'starred' ? <IconStar size={15} /> : <IconFolder size={15} />}
-      {renaming ? (
-        <input
-          className="ps-input cv-inline-input"
-          autoFocus
-          defaultValue={name}
-          onClick={(e) => e.stopPropagation()}
-          onBlur={(e) => { const v = e.target.value.trim(); if (v) editLibrary((lib) => { const f = lib.folders.find((x) => x.id === id); if (f) f.name = v; }); setRenaming(false); }}
-          onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); if (e.key === 'Escape') setRenaming(false); }}
-        />
-      ) : <span className="cv-folder-name">{name}</span>}
-      <span className="cv-count">{count}</span>
-    </div>
-  );
-}
-
-function AssetDetails({ asset }: { asset: Asset }) {
-  const folders = useEditor((s) => s.library.folders);
-  const [tag, setTag] = useState('');
-  const pages = useEditor((s) => s.pages);
-  const used = useMemo(() => usageCount(asset.id, pages), [asset.id, pages]);
-  const change = (fn: (a: Asset) => void) => editLibrary((lib) => { const a = lib.assets.find((x) => x.id === asset.id); if (a) fn(a); });
-  const remove = async () => {
-    const dir = getState().dir;
-    if (!dir || used) return;
-    await fsApi.remove(join(dir, asset.file)).catch(() => {});
-    editLibrary((lib) => { lib.assets = lib.assets.filter((a) => a.id !== asset.id); });
-  };
-  return (
-    <div className="cv-asset-details">
-      <input className="ps-input" aria-label="Name" defaultValue={asset.name} key={asset.id} onBlur={(e) => change((a) => { a.name = e.target.value.trim() || a.name; })} />
-      <p className="cv-muted">{asset.width && asset.height ? `${asset.width} × ${asset.height} · ` : ''}{used ? `used ${used} time${used === 1 ? '' : 's'}` : 'not used yet'}</p>
-      <label className="cv-field-label" htmlFor={`folder-${asset.id}`}>Folder</label>
-      <select id={`folder-${asset.id}`} className="ps-input" value={asset.folder ?? ''} onChange={(e) => change((a) => { a.folder = e.target.value || undefined; })}>
-        <option value="">Unfiled</option>
-        {folders.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-      </select>
-      <span className="cv-field-label">Tags</span>
-      <div className="cv-tags">
-        {asset.tags.map((t) => (
-          <button key={t} type="button" className="cv-tag" title="Remove tag" onClick={() => change((a) => { a.tags = a.tags.filter((x) => x !== t); })}>{t} ✕</button>
-        ))}
-        <input
-          className="ps-input cv-tag-input"
-          placeholder="Add a tag"
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-          onKeyDown={(e) => {
-            const v = tag.trim().toLowerCase();
-            if (e.key === 'Enter' && v) { change((a) => { if (!a.tags.includes(v)) a.tags.push(v); }); setTag(''); }
-          }}
-        />
-      </div>
-      <div className="cv-row">
-        <PS.Button size="sm" onClick={() => add({ kind: 'asset', id: asset.id })} icon={<IconPlus size={16} />}>Add to frame</PS.Button>
-        <IconButton size="sm" tone="danger" label={used ? 'In use: remove it from the frames first' : 'Delete image'} disabled={!!used} onClick={() => void remove()}>
-          <IconTrash size={16} />
-        </IconButton>
-      </div>
-    </div>
-  );
-}
-
-function ImagesView({ query }: { query: string }) {
-  const library = useEditor((s) => s.library);
-  const [stars] = usePref<string[]>('stars', []);
-  const [scope, setScope] = usePref<Scope>('images:scope', 'all');
-  const [tags, setTags] = useState<string[]>([]);
-  const [picked, setPicked] = useState<string>();
-  const file = useRef<HTMLInputElement>(null);
-  const folderId = !['all', 'starred', 'unfiled'].includes(scope) ? scope : undefined;
-
-  const descendants = (id: string): string[] => [id, ...library.folders.filter((f) => f.parent === id).flatMap((f) => descendants(f.id))];
-  const inScope = (a: Asset) =>
-    scope === 'all' ? true : scope === 'starred' ? stars.includes(`asset:${a.id}`) : scope === 'unfiled' ? !a.folder : !!a.folder && descendants(scope).includes(a.folder);
-  const list = library.assets.filter((a) => inScope(a) && tags.every((t) => a.tags.includes(t)) && matches(query, a.name, ...a.tags));
-  const allTags = [...new Set(library.assets.flatMap((a) => a.tags))].sort();
-  const asset = library.assets.find((a) => a.id === picked);
-
-  const folderRows = (parent: string | undefined, depth: number): React.ReactNode[] =>
-    library.folders.filter((f) => f.parent === parent).sort((a, b) => a.name.localeCompare(b.name)).flatMap((f) => [
-      <FolderRow key={f.id} id={f.id} name={f.name} depth={depth} scope={scope} setScope={setScope} count={library.assets.filter((a) => a.folder && descendants(f.id).includes(a.folder)).length} />,
-      ...folderRows(f.id, depth + 1),
-    ]);
-
-  const newFolder = () => {
-    const id = uid();
-    editLibrary((lib) => { lib.folders.push({ id, name: 'New folder', parent: folderId }); });
-    setScope(id);
-  };
-  const deleteFolder = () => {
-    if (!folderId) return;
-    const parent = library.folders.find((f) => f.id === folderId)?.parent;
-    editLibrary((lib) => {
-      lib.folders = lib.folders.filter((f) => f.id !== folderId).map((f) => (f.parent === folderId ? { ...f, parent } : f));
-      lib.assets.forEach((a) => { if (a.folder === folderId) a.folder = parent; });
-    });
-    setScope(parent ?? 'all');
-  };
-
-  return (
-    <div
-      className="cv-images"
-      onDragOver={(e) => { if (e.dataTransfer.types.includes('Files')) e.preventDefault(); }}
-      onDrop={(e) => { if (e.dataTransfer.files.length) { e.preventDefault(); void importImages([...e.dataTransfer.files].filter(isImageFile), folderId); } }}
-    >
-      <div className="cv-row cv-pad">
-        <PS.Button size="sm" icon={<IconPlus size={16} />} onClick={() => file.current?.click()}>Import images</PS.Button>
-        <IconButton size="sm" label="New folder" onClick={newFolder}><IconFolderPlus size={16} /></IconButton>
-        {folderId && <IconButton size="sm" label="Delete folder (its images move up a level)" onClick={deleteFolder}><IconTrash size={16} /></IconButton>}
-        <input ref={file} type="file" accept="image/*" multiple hidden onChange={(e) => { void importImages([...(e.target.files ?? [])], folderId); e.target.value = ''; }} />
-      </div>
-      <div className="cv-folders">
-        <FolderRow id="all" name="All images" depth={0} scope={scope} setScope={setScope} count={library.assets.length} />
-        <FolderRow id="starred" name="Starred" depth={0} scope={scope} setScope={setScope} count={library.assets.filter((a) => stars.includes(`asset:${a.id}`)).length} />
-        <FolderRow id="unfiled" name="Unfiled" depth={0} scope={scope} setScope={setScope} count={library.assets.filter((a) => !a.folder).length} />
-        {folderRows(undefined, 0)}
-      </div>
-      {allTags.length > 0 && (
-        <div className="cv-tags cv-pad">
-          {allTags.map((t) => (
-            <button key={t} type="button" className={cx('cv-tag', tags.includes(t) && 'is-active')} aria-pressed={tags.includes(t)} onClick={() => setTags(tags.includes(t) ? tags.filter((x) => x !== t) : [...tags, t])}>{t}</button>
-          ))}
-        </div>
-      )}
-      {list.length ? (
-        <div className="cv-lib-grid cv-lib-grid--images">
-          {list.map((a) => (
-            <div
-              key={a.id}
-              className={cx('cv-lib-item', picked === a.id && 'is-active')}
-              role="button"
-              tabIndex={0}
-              title={a.name}
-              draggable
-              onDragStart={(e) => { setDragPayload(e, { kind: 'asset', id: a.id }); e.dataTransfer.setData('application/x-pastel-asset', a.id); e.dataTransfer.effectAllowed = 'copyMove'; }}
-              onClick={() => setPicked(a.id)}
-              onDoubleClick={() => add({ kind: 'asset', id: a.id })}
-            >
-              <div className="cv-lib-thumb cv-lib-thumb--image"><ImageThumb asset={a} /></div>
-              <span className="cv-lib-name">{a.name}</span>
-              <button type="button" className={cx('cv-star', stars.includes(`asset:${a.id}`) && 'is-active')} aria-label="Star" onClick={(e) => { e.stopPropagation(); toggleStar(`asset:${a.id}`); }}><IconStar size={13} /></button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="cv-muted cv-pad">{library.assets.length ? 'No image here matches.' : 'Import images, or drop them here or on a frame.'}</p>
-      )}
-      {asset && <AssetDetails asset={asset} />}
-    </div>
-  );
-}
-
-type Kind = 'components' | 'icons' | 'tokens' | 'images';
+type Kind = 'components' | 'blocks' | 'icons' | 'tokens' | 'images';
 
 export function Library() {
   const [kind, setKind] = usePref<Kind>('library:kind', 'components');
@@ -399,7 +208,7 @@ export function Library() {
           ariaLabel="Library"
           value={kind}
           onChange={setKind}
-          options={[{ value: 'components', label: 'Parts' }, { value: 'icons', label: 'Icons' }, { value: 'tokens', label: 'Tokens' }, { value: 'images', label: 'Images' }]}
+          options={[{ value: 'components', label: 'Parts' }, { value: 'blocks', label: 'Blocks' }, { value: 'icons', label: 'Icons' }, { value: 'tokens', label: 'Tokens' }, { value: 'images', label: 'Images' }]}
         />
         <SearchField value={query} onChange={setQuery} placeholder={`Search ${kind === 'components' ? 'components' : kind}`} />
       </div>
@@ -407,7 +216,8 @@ export function Library() {
         {kind === 'components' && <ComponentsView query={query} />}
         {kind === 'icons' && <IconsView query={query} />}
         {kind === 'tokens' && <TokensView query={query} />}
-        {kind === 'images' && <ImagesView query={query} />}
+        {kind === 'blocks' && <OrganizedView kind="block" query={query} />}
+        {kind === 'images' && <OrganizedView kind="image" query={query} />}
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export function zoomTo(zoom: number) {
 export function zoomToFit(page: Page | undefined, ids?: string[]) {
   if (!page || !viewport) return;
   const view = getState().view;
-  const rects = (ids ?? page.frames.map((f) => f.id)).map((id) => worldRect(id, view)).filter((r): r is Rect => !!r);
+  const rects = (ids ?? page.frames.flatMap((f) => [f.id, ...(f.breakpoints ?? []).map((b) => `${f.id}@${b.id}`)])).map((id) => worldRect(id, view)).filter((r): r is Rect => !!r);
   if (!rects.length) return;
   const x0 = Math.min(...rects.map((r) => r.x));
   const y0 = Math.min(...rects.map((r) => r.y));

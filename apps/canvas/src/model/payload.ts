@@ -2,7 +2,7 @@
 import { catalogEntry, defaultProps } from '../data/components';
 import { getState } from './store';
 import { newComponent, newFrame, newHeading, newIcon, newImage, newRect, newStack, newText } from './factory';
-import type { CanvasNode } from './types';
+import { uid, type CanvasNode } from './types';
 
 export type ElementKind = 'frame' | 'column' | 'row' | 'text' | 'heading' | 'rect' | 'image';
 
@@ -10,7 +10,8 @@ export type Payload =
   | { kind: 'element'; element: ElementKind }
   | { kind: 'component'; name: string }
   | { kind: 'icon'; name: string }
-  | { kind: 'asset'; id: string };
+  | { kind: 'asset'; id: string }
+  | { kind: 'block'; id: string };
 
 export const PAYLOAD_MIME = 'application/x-pastel-canvas';
 
@@ -31,8 +32,16 @@ export function nodesFor(p: Payload): CanvasNode[] {
       return [newComponent(catalogEntry(p.name)?.exportName ?? p.name, defaultProps(p.name))];
     case 'icon':
       return [newIcon(p.name)];
+    case 'block': {
+      const s = getState();
+      const page = s.pages[p.id];
+      const variant = page?.frames[0];
+      if (!page || !variant) return [];
+      return [{ id: uid(), type: 'instance', name: page.name, width: variant.width, height: variant.height, style: {}, instance: { block: p.id, overrides: {} } }];
+    }
     case 'asset': {
-      const a = getState().library.assets.find((x) => x.id === p.id);
+      const s = getState();
+      const a = [...s.library.assets, ...s.shared.assets].find((x) => x.id === p.id);
       if (!a) return [];
       const scale = a.width && a.width > 480 ? 480 / a.width : 1;
       return [newImage(a.id, a.name.replace(/\.[^.]+$/, ''), Math.round((a.width ?? 240) * scale), Math.round((a.height ?? 160) * scale))];

@@ -1,7 +1,8 @@
 // Keyboard shortcuts. Ignored while typing in a field or in a text element on the canvas.
 import { useEffect } from 'react';
 import { copySelection, cutSelection, deleteSelection, duplicateSelection, groupSelection, nudgeSelection, paste, reorderSelection, selectParent, ungroupSelection } from './model/actions';
-import { currentPage, flush, getState, redo, select, setEditing, undo } from './model/store';
+import { currentPage, flush, getState, redo, select, setEditing, setPreview, undo } from './model/store';
+import { makeBlock } from './model/blocks';
 import { find } from './model/tree';
 import { zoomBy, zoomTo, zoomToFit } from './canvas/geometry';
 
@@ -23,6 +24,8 @@ export function useShortcuts() {
       if (mod && key === 'x') return run(cutSelection);
       if (mod && key === 'v') return run(() => void paste());
       if (mod && key === 'g') return run(e.shiftKey ? ungroupSelection : groupSelection);
+      if (mod && e.altKey && key === 'k') return run(() => void makeBlock());
+      if (key === 'p' && e.shiftKey && !mod) return run(() => setPreview(!getState().preview));
       if (mod && key === 'a') return run(() => {
         const page = currentPage();
         const id = getState().selection[0];
@@ -37,7 +40,11 @@ export function useShortcuts() {
       if (e.shiftKey && e.code === 'Digit1') return run(() => zoomToFit(currentPage()));
       if (e.shiftKey && e.code === 'Digit2') return run(() => zoomToFit(currentPage(), getState().selection.map((id) => find(currentPage()!, id)?.path[0]?.id ?? id)));
       if (key === 'delete' || key === 'backspace') return run(deleteSelection);
-      if (key === 'escape') return run(() => { setEditing(undefined); selectParent(); });
+      if (key === 'escape') return run(() => {
+        if (getState().preview) return setPreview(false);
+        setEditing(undefined);
+        selectParent();
+      });
       if (key === 'enter') return run(() => {
         const page = currentPage();
         const id = getState().selection[0];

@@ -1,11 +1,13 @@
 // The editor: the top bar (the window's title bar on the desktop), the layers and library on the left,
 // the canvas, and the inspector on the right.
-import { IconBack, IconButton, IconChevronLeft, IconExpand, IconForward, IconMinus, IconPlus, Tabs, TopBar } from '@pastel-studio/react';
+import { Button, IconBack, IconButton, IconChevronLeft, IconExpand, IconForward, IconMinus, IconPalette, IconPlay, IconPlus, Tabs, TopBar } from '@pastel-studio/react';
 import { DesktopWindowControls, DRAG_REGION, isDesktop, useFullscreenKeys } from '@pastel-studio/desktop';
 import { Canvas } from './canvas/Canvas';
 import { forgetAssets } from './canvas/assets';
 import { zoomBy, zoomTo, zoomToFit } from './canvas/geometry';
-import { closeProject, currentPage, redo, undo, useEditor } from './model/store';
+import { closeBlock, closeProject, currentPage, redo, setPreview, setRightPanel, undo, useEditor } from './model/store';
+import { Preview } from './canvas/Preview';
+import { ThemePanel, ThemeStyle } from './panels/Theme';
 import { Inspector } from './panels/Inspector';
 import { Layers } from './panels/Layers';
 import { Library } from './panels/Library';
@@ -36,8 +38,22 @@ function Zoom() {
   );
 }
 
+/** While a block is open: which one, and the way back. */
+function BlockBanner() {
+  const block = useEditor((s) => { const p = currentPage(s); return p?.kind === 'block' ? p : undefined; });
+  if (!block) return null;
+  return (
+    <span className="cv-block-banner">
+      Editing block <strong>{block.name}</strong>{block.shared ? ' (shared library)' : ''}
+      <Button size="xs" variant="primary" onClick={closeBlock}>Done</Button>
+    </span>
+  );
+}
+
 function Editor() {
   const name = useEditor((s) => s.project?.name);
+  const preview = useEditor((s) => !!s.preview);
+  const right = useEditor((s) => s.rightPanel);
   const [tab, setTab] = usePref<string>('left-tab', 'library');
   return (
     <div className="cv-app">
@@ -50,9 +66,11 @@ function Editor() {
             {name}
           </span>
         }
-        status={<SaveState />}
+        status={<><SaveState /><BlockBanner /></>}
         tools={
           <>
+            <IconButton size="sm" label="Theme: propose token changes" pressed={right === 'theme'} onClick={() => setRightPanel(right === 'theme' ? 'inspect' : 'theme')}><IconPalette size={16} /></IconButton>
+            <IconButton size="sm" label="Preview (Shift+P)" pressed={preview} onClick={() => setPreview(!preview)}><IconPlay size={16} /></IconButton>
             <IconButton size="sm" label="Undo (Ctrl+Z)" onClick={undo}><IconBack size={16} /></IconButton>
             <IconButton size="sm" label="Redo (Ctrl+Shift+Z)" onClick={redo}><IconForward size={16} /></IconButton>
             <Zoom />
@@ -66,11 +84,12 @@ function Editor() {
         </Tabs>
       </aside>
       <main className="cv-main">
-        <Canvas />
+        {preview ? <Preview /> : <Canvas />}
       </main>
       <aside className="cv-right">
-        <Inspector />
+        {right === 'theme' ? <ThemePanel /> : <Inspector />}
       </aside>
+      <ThemeStyle />
     </div>
   );
 }

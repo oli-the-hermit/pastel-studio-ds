@@ -2,13 +2,16 @@
 // selected element that has the setting; the first selected one shows the current values.
 import React, { useMemo } from 'react';
 import * as PS from '@pastel-studio/react';
-import { IconButton, IconCopy, IconTrash, Switch } from '@pastel-studio/react';
+import { IconBookmark, IconButton, IconCopy, IconPlus, IconTrash, Switch } from '@pastel-studio/react';
 import { catalogEntry, enumValues, HIDDEN_PROPS, isCallback, type PropDoc } from '../data/components';
 import { FONT_SIZES, FONT_WEIGHTS, LEADINGS, RADII, SPACE } from '../data/tokens';
 import { deleteSelection, duplicateSelection, updateNode } from '../model/actions';
 import { FRAME_PRESETS } from '../model/factory';
 import { currentPage, getState, useEditor } from '../model/store';
-import { find } from '../model/tree';
+import { addVariant, blockUsage, detachInstance, editInstanceBlock, makeBlock } from '../model/blocks';
+import { edit } from '../model/store';
+import { uid } from '../model/types';
+import { hasOverride, lookup, resetOverride } from '../model/virtual';
 import { isToken, type CanvasNode, type Size, type StackLayout, type Style } from '../model/types';
 import { Buttons, Choice, ColorField, JsonField, NumberInput, Row, TextInput, TokenField } from './controls';
 
@@ -149,10 +152,60 @@ function PropsSection({ node }: { node: CanvasNode }) {
   );
 }
 
+function InstanceSection({ node }: { node: CanvasNode }) {
+  const block = useEditor((s) => s.pages[node.instance!.block]);
+  const used = useEditor((s) => blockUsage(node.instance!.block, s.pages));
+  const overrides = Object.keys(node.instance!.overrides).length;
+  if (!block) return <Section title="Block"><p className="cv-error">This block is missing from the library.</p></Section>;
+  return (
+    <Section title="Block" aside={<PS.TextButton size="xs" onClick={() => editInstanceBlock(node.id)}>Edit block</PS.TextButton>}>
+      <p className="cv-muted cv-insp-summary">{block.name} · used {used} time{used === 1 ? '' : 's'}{block.shared ? ' · shared library' : ''}</p>
+      {block.frames.length > 1 && (
+        <Row label="Variant">
+          <Choice label="Variant" value={node.instance!.variant ?? block.frames[0].id} options={block.frames.map((f) => ({ value: f.id, label: f.name }))} onChange={(v) => change('variant', (x) => { if (x.instance) x.instance.variant = v === block.frames[0].id ? undefined : v; })} />
+        </Row>
+      )}
+      <div className="cv-row">
+        {overrides > 0 && <PS.Button size="sm" onClick={() => change('overrides', (x) => { if (x.instance) x.instance.overrides = {}; })}>Reset {overrides} override{overrides === 1 ? '' : 's'}</PS.Button>}
+        <PS.Button size="sm" onClick={() => detachInstance(node.id)}>Detach</PS.Button>
+      </div>
+      <p className="cv-hint">Double-click inside the instance to change its text, images or props for this copy only.</p>
+    </Section>
+  );
+}
+
+const BP_PRESETS = [{ name: 'Tablet', width: 834 }, { name: 'Phone', width: 390 }];
+
+function BreakpointsSection({ node }: { node: CanvasNode }) {
+  const list = node.breakpoints ?? [];
+  const add = (name: string, width: number) => change('breakpoints', (x) => {
+    (x.breakpoints ??= []).push({ id: uid(), name, width, overrides: {} });
+  });
+  return (
+    <Section title="Breakpoints" aside={<PS.TextButton size="xs" onClick={() => add(`Width ${list.length + 1}`, 600)}>Custom</PS.TextButton>}>
+      {list.map((b) => (
+        <Row key={b.id} label={b.name}>
+          <div className="cv-pair">
+            <NumberInput label="W" value={b.width} min={240} onChange={(v) => change(`bp.${b.id}`, (x) => { const t = x.breakpoints?.find((y) => y.id === b.id); if (t) t.width = v; })} />
+            <span className="cv-hint">{Object.keys(b.overrides).length} changed</span>
+          </div>
+        </Row>
+      ))}
+      <div className="cv-row">
+        {BP_PRESETS.filter((p) => !list.some((b) => b.name === p.name)).map((p) => (
+          <PS.Button key={p.name} size="sm" icon={<IconPlus size={14} />} onClick={() => add(p.name, p.width)}>{p.name} · {p.width}</PS.Button>
+        ))}
+      </div>
+      {!list.length && <p className="cv-hint">The same layout at another width, beside this frame. Whatever you change there is kept for that width.</p>}
+    </Section>
+  );
+}
+
 export function Inspector() {
   const page = useEditor((s) => currentPage(s));
+  const pages = useEditor((s) => s.pages);
   const selected = useEditor((s) => s.selection[0]);
-  const node = useMemo(() => (page && selected ? find(page, selected) : undefined), [page, selected]);
+  const node = useMemo(() => (page && selected ? lookup(page, selected, pages) : undefined), [page, pages, selected]);
   const count = useEditor((s) => s.selection.length);
   const assets = useEditor((s) => s.library.assets);
 
@@ -176,7 +229,11 @@ export function Inspector() {
   const n = node.node;
   const s = n.style;
   const theme = (node.path[0] ?? n).theme ?? 'dark';
-  const positioned = !node.parent || !node.parent.stack || !!n.absolute;
+  const bpFrame = node.virtual === 'breakpoint-frame';
+  const positioned = !bpFrame && (!node.parent || !node.parent.stack || !!n.absolute);
+  const where = node.virtual === 'breakpoint' ? `the ${node.path[0]?.name ?? 'breakpoint'} breakpoint` : node.virtual === 'instance' ? 'this instance' : undefined;
+  const overridden = !!where && !!page && hasOverride(page, n.id);
+  const blockPage = page?.kind === 'block';
   const m = measure(n.id);
   const container = n.type === 'frame' || n.type === 'stack';
 
@@ -184,12 +241,36 @@ export function Inspector() {
     <div className="cv-inspector cv-scroll">
       <div className="cv-insp-head">
         <input className="ps-input cv-input cv-name" aria-label="Name" value={n.name} onChange={(e) => change('name', (x) => { x.name = e.target.value; })} />
-        <IconButton size="sm" label="Duplicate (Ctrl+D)" onClick={duplicateSelection}><IconCopy size={16} /></IconButton>
-        <IconButton size="sm" tone="danger" label="Delete (Del)" onClick={deleteSelection}><IconTrash size={16} /></IconButton>
+        {!node.virtual && node.parent && <IconButton size="sm" label="Make a block (Ctrl+Alt+K)" onClick={() => makeBlock()}><IconBookmark size={16} /></IconButton>}
+        {!node.virtual && <IconButton size="sm" label="Duplicate (Ctrl+D)" onClick={duplicateSelection}><IconCopy size={16} /></IconButton>}
+        <IconButton size="sm" tone="danger" label={bpFrame ? 'Remove this breakpoint' : node.virtual ? 'Hide here (Del)' : 'Delete (Del)'} onClick={deleteSelection}><IconTrash size={16} /></IconButton>
       </div>
       {count > 1 && <p className="cv-muted cv-pad">{count} selected: changes apply to all of them.</p>}
+      {where && (
+        <div className="cv-scope">
+          <span>Changes here apply only to {where}.</span>
+          {overridden && <PS.TextButton size="xs" onClick={() => edit((d) => resetOverride(d, n.id))}>Reset</PS.TextButton>}
+        </div>
+      )}
 
-      {n.type === 'frame' && !node.parent && (
+      {n.type === 'instance' && n.instance && !node.virtual && <InstanceSection node={n} />}
+
+      {bpFrame && (
+        <Section title="Breakpoint">
+          <Row label="Name"><TextInput label="Breakpoint name" value={n.name} onChange={(v) => change('name', (x) => { x.name = v; })} /></Row>
+          <p className="cv-muted">Its elements follow the main frame. What you change at this width is kept for this width only.</p>
+        </Section>
+      )}
+
+      {n.type === 'frame' && !node.parent && !bpFrame && blockPage && (
+        <Section title="Variant" aside={<PS.TextButton size="xs" onClick={addVariant}>Add variant</PS.TextButton>}>
+          <p className="cv-muted">This frame is a variant of the block. Instances can show any variant, and their overrides follow them from one to another.</p>
+        </Section>
+      )}
+
+      {n.type === 'frame' && !node.parent && !bpFrame && !blockPage && <BreakpointsSection node={n} />}
+
+      {n.type === 'frame' && !node.parent && !bpFrame && (
         <Section title="Frame">
           <Row label="Size">
             <select className="ps-input cv-input" aria-label="Frame size" value="" onChange={(e) => {

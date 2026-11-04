@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { insertNodes, updateNode } from '../model/actions';
 import { currentPage, edit, endMerge, getState, select, setEditing, setHover, setView, useEditor } from '../model/store';
 import { find, isContainer, isInside, move } from '../model/tree';
+import { breakpointFrames, lookup, mutate } from '../model/virtual';
 import { nodesFor, PAYLOAD_MIME, type Payload } from '../model/payload';
 import type { CanvasNode, Page } from '../model/types';
 import { importImages, isImageFile } from '../storage/images';
@@ -47,14 +48,15 @@ function pathAt(target: EventTarget | null, world: HTMLElement): string[] {
 
 /** Which node a click picks: the frame's direct child at first, deeper once you're working inside. */
 function pick(page: Page, path: string[], deep: boolean): string | undefined {
-  const usable = path.filter((id) => !find(page, id)?.node.locked);
+  const pages = getState().pages;
+  const usable = path.filter((id) => { const hit = lookup(page, id, pages); return hit && !hit.node.locked; });
   if (!usable.length) return undefined;
   if (deep) return usable[usable.length - 1];
   const sel = getState().selection;
-  if (sel.length === 1 && usable.includes(sel[0]) && (sel[0] === usable[usable.length - 1] || find(page, sel[0])?.parent)) return sel[0];
+  if (sel.length === 1 && usable.includes(sel[0]) && (sel[0] === usable[usable.length - 1] || lookup(page, sel[0], pages)?.parent)) return sel[0];
   let depth = 1;
   if (sel.length) {
-    const parent = find(page, sel[0])?.parent?.id;
+    const parent = lookup(page, sel[0], pages)?.parent?.id;
     const i = parent ? usable.indexOf(parent) : -1;
     if (i >= 0) depth = i + 1;
   }
@@ -127,9 +129,12 @@ export function Canvas() {
     if (!p) return setOverlay({ selected: [], frames: [] });
     const selected = s.selection.map((id) => ({ id, rect: screenRect(id) })).filter((x): x is { id: string; rect: Rect } => !!x.rect);
     const hoverRect = s.hover && !s.selection.includes(s.hover) ? screenRect(s.hover) : undefined;
-    const frames = p.frames.filter((f) => !f.hidden).map((f) => {
+    const frames = p.frames.filter((f) => !f.hidden).flatMap((f) => [
+      { id: f.id, name: f.name },
+      ...breakpointFrames(f).map((b) => ({ id: b.id, name: `${f.name} · ${b.name}` })),
+    ]).map((f) => {
       const r = worldRect(f.id, s.view);
-      return { id: f.id, name: f.name, size: r ? `${Math.round(r.w)} × ${Math.round(r.h)}` : '', rect: screenRect(f.id)! };
+      return { ...f, size: r ? `${Math.round(r.w)} × ${Math.round(r.h)}` : '', rect: screenRect(f.id)! };
     }).filter((f) => f.rect);
     setOverlay({ selected, hover: hoverRect, frames });
   }, []);
@@ -206,7 +211,7 @@ export function Canvas() {
 
       if (handle) {
         const id = getState().selection[0];
-        const hit = id ? find(p, id) : undefined;
+        const hit = id ? lookup(p, id, getState().pages) : undefined;
         const box = id ? worldRect(id) : undefined;
         if (!hit || !box) return;
         const positioned = !hit.parent || !hit.parent.stack || !!hit.node.absolute;
@@ -231,10 +236,13 @@ export function Canvas() {
       const ids = sel.includes(id) ? sel : [id];
       if (!sel.includes(id)) select([id]);
 
-      const nodes = ids.map((i) => find(p, i)).filter((h): h is NonNullable<typeof h> => !!h);
-      const positioned = nodes.every((h) => !h.parent || !h.parent.stack || h.node.absolute);
+      const pages = getState().pages;
+      const nodes = ids.map((i) => lookup(p, i, pages)).filter((h): h is NonNullable<typeof h> => !!h);
+      const positioned = nodes.length > 0 && nodes.every((h) => !h.parent || !h.parent.stack || h.node.absolute);
       const sameParent = nodes.every((h) => h.parent?.id === nodes[0].parent?.id);
-      if (positioned && sameParent) {
+      // A breakpoint's frame sits where its frame puts it, and it can't be dragged on its own.
+      const fixedFrame = nodes.some((h) => h.virtual === 'breakpoint-frame');
+      if (positioned && sameParent && !fixedFrame) {
         const parent = nodes[0].parent;
         const parentBox = parent ? worldRect(parent.id) : undefined;
         const parentOrigin = parentBox ? { x: parentBox.x, y: parentBox.y } : { x: 0, y: 0 };
@@ -242,7 +250,7 @@ export function Canvas() {
         const box = { x: Math.min(...boxes.map((b) => b.x)), y: Math.min(...boxes.map((b) => b.y)), w: 0, h: 0 };
         box.w = Math.max(...boxes.map((b) => b.x + b.w)) - box.x;
         box.h = Math.max(...boxes.map((b) => b.y + b.h)) - box.y;
-        const siblings = (parent ? parent.children ?? [] : p.frames).filter((n) => !ids.includes(n.id) && !n.hidden);
+        const siblings = (parent ? parent.children ?? [] : [...p.frames, ...p.frames.flatMap(breakpointFrames)]).filter((n) => !ids.includes(n.id) && !n.hidden);
         const others = siblings.map((n) => worldRect(n.id)).filter((r): r is Rect => !!r);
         if (parentBox) others.push(parentBox);
         const { xs, ys } = edges(others);
@@ -250,7 +258,7 @@ export function Canvas() {
           kind: 'move', ids, start: toWorld(e.clientX, e.clientY), box, parentOrigin, xs, ys, moved: false,
           origins: new Map(nodes.map((h) => [h.node.id, { x: h.node.x ?? 0, y: h.node.y ?? 0 }])),
         };
-      } else if (ids.length === 1) {
+      } else if (ids.length === 1 && !nodes[0]?.virtual) {
         gesture.current = { kind: 'reorder', id, sx: e.clientX, sy: e.clientY, moved: false };
       } else {
         gesture.current = { kind: 'press' };
@@ -280,10 +288,7 @@ export function Canvas() {
         dy = Math.round(dy + s.dy);
         setGuides({ x: s.gx, y: s.gy });
         edit((draft) => {
-          for (const [id, o] of g.origins) {
-            const node = find(draft, id)?.node;
-            if (node) { node.x = o.x + dx; node.y = o.y + dy; }
-          }
+          for (const [id, o] of g.origins) mutate(draft, id, (node) => { node.x = o.x + dx; node.y = o.y + dy; }, getState().pages);
         }, `move:${g.ids.join()}`);
       } else if (g.kind === 'reorder') {
         if (!g.moved && Math.hypot(e.clientX - g.sx, e.clientY - g.sy) < 4) return;
@@ -340,13 +345,14 @@ export function Canvas() {
       const path = pathAt(e.target, world);
       const sel = getState().selection[0];
       if (!sel) return;
-      const node = find(p, sel)?.node;
+      const pages = getState().pages;
+      const node = lookup(p, sel, pages)?.node;
       if (node?.type === 'text' && path.includes(sel)) return setEditing(sel);
       const i = path.indexOf(sel);
       if (i >= 0 && i < path.length - 1) {
         const next = path[i + 1];
         select([next]);
-        if (find(p, next)?.node.type === 'text') setEditing(next);
+        if (lookup(p, next, pages)?.node.type === 'text') setEditing(next);
       }
     };
 
@@ -397,7 +403,7 @@ export function Canvas() {
   };
 
   const single = overlay.selected.length === 1 ? overlay.selected[0] : undefined;
-  const singleNode = single && page ? find(page, single.id)?.node : undefined;
+  const singleNode = single && page ? lookup(page, single.id, getState().pages)?.node : undefined;
 
   return (
     <div
@@ -409,7 +415,12 @@ export function Canvas() {
       onDrop={(e) => void onDrop(e)}
     >
       <div ref={worldRef} className="cv-world" style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }} data-editing={editing ? true : undefined}>
-        {page?.frames.map((f) => <RenderNode key={f.id} node={f} />)}
+        {page?.frames.map((f) => (
+          <React.Fragment key={f.id}>
+            <RenderNode node={f} />
+            {breakpointFrames(f).map((b) => <RenderNode key={b.id} node={b} />)}
+          </React.Fragment>
+        ))}
       </div>
 
       <div className="cv-overlay" aria-hidden="true">
