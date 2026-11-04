@@ -10,7 +10,7 @@
     "beforeBuildCommand": "npm --prefix ../.. run docs:build"
   },
   "app": {
-    "withGlobalTauri": true,
+    "withGlobalTauri": false,
     "windows": [],
     "security": { "csp": null }
   },

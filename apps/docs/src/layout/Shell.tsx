@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { cx } from '@pastel-studio/react';
+import { DesktopWindowControls, DRAG_REGION, isDesktop, useFullscreenKeys } from '@pastel-studio/desktop';
 import { PAGES, SECTIONS } from '../registry';
 import { ThemeControls } from './ThemeControls';
+
+// In the desktop app the top bar is the window's title bar: its free space moves the window.
+const desktop = isDesktop();
+const drag = desktop ? DRAG_REGION : undefined;
 
 export function Shell() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useFullscreenKeys();
 
   const index = PAGES.findIndex((p) => p.path === pathname);
   const prev = index > 0 ? PAGES[index - 1] : undefined;
@@ -15,14 +21,16 @@ export function Shell() {
   return (
     <div className="docs-shell">
       <a className="docs-skip" href="#main">Skip to content</a>
-      <header className="docs-topbar">
+      <header className={cx('docs-topbar', desktop && 'is-framed')} {...drag}>
         <Link to="/" className="docs-brand">
           <span className="docs-brand-mark" aria-hidden="true" />
           <span className="docs-brand-name">Pastel Studio</span>
           <span className="docs-brand-sub">Design System</span>
         </Link>
         <span className="docs-version">0.1</span>
+        <div className="docs-topbar-spacer" {...drag} />
         <ThemeControls />
+        {desktop && <DesktopWindowControls className="docs-window-controls" />}
       </header>
       <div className="docs-body">
         <nav className="docs-nav" aria-label="Documentation">

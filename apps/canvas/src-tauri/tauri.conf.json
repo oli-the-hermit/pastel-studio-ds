@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Pastel Studio Canvas",
+  "version": "0.1.0",
+  "identifier": "com.pastelstudio.canvas",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5320",
+    "beforeDevCommand": "npm --prefix ../.. run canvas",
+    "beforeBuildCommand": "npm --prefix ../.. run canvas:build"
+  },
+  "app": {
+    "windows": [],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "San Milano",
+    "copyright": "© 2026 San Milano",
+    "category": "DeveloperTool",
+    "shortDescription": "Mockups built from the Pastel Studio design system's own components",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "windows": {
+      "webviewInstallMode": { "type": "embedBootstrapper" },
+      "nsis": { "installMode": "currentUser", "installerIcon": "icons/icon.ico" }
+    }
+  }
+}

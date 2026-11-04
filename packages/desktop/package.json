@@ -1,0 +1,26 @@
+{
+  "name": "@pastel-studio/desktop",
+  "version": "0.1.0",
+  "description": "The Pastel Studio frameless desktop window (Tauri): its buttons, title bar drag and full screen, shared by every app in the family.",
+  "license": "MIT",
+  "author": "San Milano",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oli-the-hermit/pastel-studio-ds.git",
+    "directory": "packages/desktop"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@pastel-studio/react": "0.1.0",
+    "@tauri-apps/api": "^2.11.1"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0"
+  }
+}
