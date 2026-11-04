@@ -5,5 +5,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["src", "vite.config.ts", "fs-plugin.ts"]
+  "include": ["src"]
 }

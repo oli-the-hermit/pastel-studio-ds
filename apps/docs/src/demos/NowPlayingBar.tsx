@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NowPlayingBar } from '@pastel-studio/react';
-import { album } from '../fixtures/music';
+import { album } from '@pastel-studio/catalog/fixtures';
 import { useSimulatedPlayback } from '../sim/useSimulatedPlayback';
 import type { ComponentDemo } from './types';
 

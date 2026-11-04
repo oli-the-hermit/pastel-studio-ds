@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FileView, StatusBar, IconButton, IconViewDetails, IconViewIcons, IconViewList, IconViewTiles, useFileBrowser, useLabels, type FileCommand, type FileViewMode, type FsEntry } from '@pastel-studio/react';
-import { albums, computer } from '../fixtures/files';
+import { albums, computer } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlbumHeader, IconPlaylistAdd } from '@pastel-studio/react';
-import { album } from '../fixtures/music';
+import { album } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

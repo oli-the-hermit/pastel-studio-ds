@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconPlaylistAdd, INITIAL_MEDIA_STATE, MusicPlayer, type MediaController, type RepeatMode } from '@pastel-studio/react';
-import { album } from '../fixtures/music';
+import { album } from '@pastel-studio/catalog/fixtures';
 import { useSimulatedPlayback } from '../sim/useSimulatedPlayback';
 import type { ComponentDemo } from './types';
 

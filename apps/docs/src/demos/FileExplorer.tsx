@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FileExplorer, findPath, type FileOperations, type FsEntry } from '@pastel-studio/react';
 import { ScaledStage } from '../blocks/ScaledStage';
-import { computer } from '../fixtures/files';
+import { computer } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 // The examples' computer with Albums pinned to Quick access.

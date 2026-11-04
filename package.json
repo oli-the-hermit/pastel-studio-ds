@@ -22,10 +22,7 @@
   "scripts": {
     "docs": "npm run dev -w @pastel-studio/docs",
     "docs:build": "npm run build -w @pastel-studio/docs",
-    "canvas": "npm run dev -w @pastel-studio/canvas",
-    "canvas:build": "npm run build -w @pastel-studio/canvas",
-    "canvas:desktop": "npm run desktop -w @pastel-studio/canvas",
-    "typecheck": "tsc -p packages/react --noEmit && tsc -p packages/react/tsconfig.consumer.json --noEmit && tsc -p packages/desktop --noEmit && tsc -p apps/docs --noEmit && tsc -p apps/canvas --noEmit",
+    "typecheck": "tsc -p packages/react --noEmit && tsc -p packages/react/tsconfig.consumer.json --noEmit && tsc -p packages/desktop --noEmit && tsc -p packages/catalog --noEmit && tsc -p apps/docs --noEmit",
     "lint": "eslint .",
     "lint:css": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:tokens": "node scripts/tokens/check.ts",

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, Chip, CoverArt, IconPlus, ListPicker, ListPickerPanel, type ListPickerState } from '@pastel-studio/react';
 import { StaticPopover } from '../blocks/StaticOverlay';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

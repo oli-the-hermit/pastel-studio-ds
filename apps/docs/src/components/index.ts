@@ -1,10 +1,7 @@
-import { COMPONENT_GROUPS, type ComponentMeta } from '@pastel-studio/react';
+import { COMPONENT_GROUPS } from '@pastel-studio/react';
+import { metaByName } from '@pastel-studio/catalog';
 import { components as data } from 'virtual:ps-components';
 import type { ComponentData, ComponentDoc } from './types';
-
-// Each component's meta.ts, as an ordinary module: editing one updates the page in place.
-const metas = import.meta.glob<{ meta: ComponentMeta }>('../../../../packages/react/src/components/*/meta.ts', { eager: true });
-const metaByName = new Map(Object.values(metas).map(({ meta }) => [meta.name, meta]));
 
 /** A component's address in the docs. */
 export const componentPath = (slug: string) => `/components/${slug}`;

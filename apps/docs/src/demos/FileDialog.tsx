@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, FileDialog, type FileDialogProps, type FileFilter, type FsEntry } from '@pastel-studio/react';
 import { ModalStage } from '../blocks/StaticOverlay';
-import { albums, computer, music } from '../fixtures/files';
+import { albums, computer, music } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

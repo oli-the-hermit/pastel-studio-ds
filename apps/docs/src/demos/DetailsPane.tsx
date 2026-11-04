@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, DetailsPane } from '@pastel-studio/react';
-import { albums, computer, music } from '../fixtures/files';
+import { albums, computer, music } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const byId = (id: string) => albums.children!.find((e) => e.id === id)!;

@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { MediaGrid, MediaTile, SegmentedControl, StatusBar, type SelectMode } from '@pastel-studio/react';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 interface Photo { id: string; name: string; src: string; meta: string; favorite: boolean }
