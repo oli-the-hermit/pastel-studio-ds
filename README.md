@@ -19,7 +19,7 @@ with live examples, every state, props and the tokens each one uses).
 | [`@pastel-studio/tokens`](packages/tokens) | Plain CSS custom properties: the reference palette, the dark and light themes, and the type, space, shape, size and motion scales. Works without React. |
 | [`@pastel-studio/react`](packages/react) | React components, the icon set, and the foundation styles (reset, document defaults, focus, utilities). Depends on the tokens. |
 | [`@pastel-studio/desktop`](packages/desktop) | The frameless desktop window (Tauri): WindowControls wired to the window, the title bar's drag region and F11 full screen. Shared by every desktop app in the family. |
-| [`apps/canvas`](apps/canvas) | Pastel Studio Canvas, a mockup editor whose elements are the library's own components and tokens: frames and stacks, a library of components, icons, tokens and images (folders, tags, stars), layers and an inspector. Projects are folders of JSON. `npm run canvas` in a browser, `npm run canvas:desktop` as a desktop app. |
+| [`@pastel-studio/catalog`](packages/catalog) | The design system as data, for tools that show or use it: every token and component with its props and metadata (two Vite plugins), and sample content for examples. The docs and Pastel Studio Pochade read it. |
 | [`apps/docs`](apps/docs) | The documentation site (not published as a package). Every token, value and contrast ratio on it is read from the token files at build time. |
 
 ## Using it in an app

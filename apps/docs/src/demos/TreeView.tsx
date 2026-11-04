@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconDownload, IconMusic, TreeView, type TreeNode } from '@pastel-studio/react';
-import { tree } from '../fixtures/folders';
+import { tree } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

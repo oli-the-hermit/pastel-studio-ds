@@ -1,6 +1,6 @@
 import React from 'react';
 import { CoverArt, Equalizer, IconPause, IconPlay, IconSwap, PlayerControl } from '@pastel-studio/react';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import { useSimulatedPlayback } from '../sim/useSimulatedPlayback';
 import type { ComponentDemo } from './types';
 

@@ -1,13 +1,13 @@
-// Serves the components to the docs as data: import { components } from 'virtual:ps-components'.
+// Serves the components as data (to the docs and Pochade): import { components } from 'virtual:ps-components'.
 // Props come from each component's TypeScript types and "tokens used" from its stylesheet, so
-// a component page can never drift from the code. (Each meta.ts joins in src/components/index.ts,
+// a component page can never drift from the code. (Each meta.ts joins through metaByName in ../meta.ts,
 // as an ordinary module.) Editing a component reloads the docs.
 import fs from 'node:fs';
 import path from 'node:path';
 import { withCustomConfig, type PropItem } from 'react-docgen-typescript';
 import type { Plugin } from 'vite';
-import { componentNames, COMPONENTS_DIR, kebab, REACT_SRC, stylesheetTokens } from '../../scripts/components/parse.ts';
-import type { ComponentData, ExportDoc, PropDoc } from './src/components/types.ts';
+import { componentNames, COMPONENTS_DIR, kebab, REACT_SRC, stylesheetTokens } from '../../../../scripts/components/parse.ts';
+import type { ComponentData, ExportDoc, PropDoc } from '../types.ts';
 
 const ID = 'virtual:ps-components';
 const RESOLVED = `\0${ID}`;

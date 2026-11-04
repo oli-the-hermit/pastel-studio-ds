@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlbumDetails } from '@pastel-studio/react';
-import { album } from '../fixtures/music';
+import { album } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const wide = (node: React.ReactNode) => <div className="docs-gallery-span">{node}</div>;

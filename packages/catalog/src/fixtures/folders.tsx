@@ -1,4 +1,3 @@
-import React from 'react';
 import { IconDrive, IconFolder, type Crumb, type TreeNode } from '@pastel-studio/react';
 
 const folder = <IconFolder size={16} />;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AddressBar } from '@pastel-studio/react';
-import { childrenOf, findPath, pathTo } from '../fixtures/folders';
+import { childrenOf, findPath, pathTo } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};

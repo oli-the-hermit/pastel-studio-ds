@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { buildMediaSettings, INITIAL_MEDIA_STATE, MediaControls, MenuList, speedChoices, useLabels, VideoSurface, type MediaController } from '@pastel-studio/react';
 import { StaticPopover } from '../blocks/StaticOverlay';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import { useSimulatedPlayback } from '../sim/useSimulatedPlayback';
 import type { ComponentDemo } from './types';
 

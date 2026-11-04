@@ -1,7 +1,6 @@
 // Unit tests for the whole repository: npm test
 import { defineConfig } from 'vitest/config';
-import { componentsPlugin } from './apps/docs/components-plugin.ts';
-import { tokensPlugin } from './apps/docs/tokens-plugin.ts';
+import { componentsPlugin, tokensPlugin } from '@pastel-studio/catalog/vite';
 
 export default defineConfig({
   // The docs read the tokens and the components as data, so their tests need the same plugins.

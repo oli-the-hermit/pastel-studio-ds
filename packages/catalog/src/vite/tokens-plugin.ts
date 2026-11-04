@@ -1,11 +1,11 @@
-// Serves the token stylesheets to the docs as data: import { tokens } from 'virtual:ps-tokens'.
+// Serves the token stylesheets as data (to the docs and Pochade): import { tokens } from 'virtual:ps-tokens'.
 // Everything comes from packages/tokens/src, so the Foundations pages can never drift from
 // the CSS. Editing a token file reloads the docs.
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
-import { contrastRatio, parseTokenGroups, resolveThemes, THEME_NAMES, TOKENS_DIR } from '../../scripts/tokens/parse.ts';
-import type { ContrastPair, PaletteColor, RoleToken, TokensData } from './src/tokens/types.ts';
+import { contrastRatio, parseTokenGroups, resolveThemes, THEME_NAMES, TOKENS_DIR } from '../../../../scripts/tokens/parse.ts';
+import type { ContrastPair, PaletteColor, RoleToken, TokensData } from '../types.ts';
 
 const ID = 'virtual:ps-tokens';
 const RESOLVED = `\0${ID}`;

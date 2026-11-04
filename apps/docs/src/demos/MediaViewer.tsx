@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, IconButton, IconHeart, INITIAL_MEDIA_STATE, MediaViewer, PanelHeader, VideoPlayer, type MediaController } from '@pastel-studio/react';
 import { ModalStage } from '../blocks/StaticOverlay';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import { SimulatedVideo } from '../sim/SimulatedVideo';
 import type { ComponentDemo } from './types';
 

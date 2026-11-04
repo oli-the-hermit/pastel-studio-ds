@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconButton, IconCopy, IconHeart, IconTrash, MediaTile } from '@pastel-studio/react';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const site = <img src={covers.paper} alt="" />;

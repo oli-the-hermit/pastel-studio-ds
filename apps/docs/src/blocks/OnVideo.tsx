@@ -1,6 +1,6 @@
 import React from 'react';
 import { cx } from '@pastel-studio/react';
-import { covers } from '../fixtures/covers';
+import { covers } from '@pastel-studio/catalog/fixtures';
 
 /** A still "video" with the see-through control dock over it, for examples of `surface="overlay"`. */
 export function OnVideo({ wide, children }: { wide?: boolean; children: React.ReactNode }) {
