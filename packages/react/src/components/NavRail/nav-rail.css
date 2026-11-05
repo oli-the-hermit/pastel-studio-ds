@@ -13,8 +13,8 @@
   background: var(--ps-drawer-bg);
 }
 
-/* As a rail the head stacks, so the mark and the toggle both fit its width. */
-.ps-nav-rail-head { display: flex; flex-direction: column; align-items: center; gap: var(--ps-space-12); }
+/* The mark, then the app's name when expanded. */
+.ps-nav-rail-head { display: flex; align-items: center; gap: var(--ps-space-8); }
 .ps-nav-rail-brand {
   display: grid;
   flex: none;
@@ -26,7 +26,17 @@
   color: var(--ps-on-accent);
   transition: background var(--ps-transition);
 }
-.ps-nav-rail-brand-name { white-space: nowrap; user-select: none; }
+/* The mark as the expand and collapse button: it lifts a little on hover. */
+.ps-nav-rail-brand.is-toggle:hover { background: var(--ps-accent-hover); }
+.ps-nav-rail-brand-name {
+  overflow: hidden;
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+}
 
 /* The expand and collapse button: quiet in the rail, an accent icon when expanded. */
 .ps-nav-rail-toggle {
@@ -106,16 +116,89 @@
 
 .ps-nav-rail-footer { display: flex; flex-direction: column; align-items: center; gap: var(--ps-space-8); }
 
+/* ── Sections: places under the pages ── */
+.ps-nav-rail--sections { gap: var(--ps-space-16); }
+.ps-nav-rail--sections .ps-nav-rail-items { margin-block: 0; }
+.ps-nav-rail-sections {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ps-space-12);
+  min-height: 0;
+  padding-top: var(--ps-space-12);
+  border-top: var(--ps-hairline) solid var(--ps-surface-3);
+}
+/* As a rail, a section is one button that opens a menu of its places; it reads as current when one of them is. */
+.ps-nav-rail-item.is-current .ps-nav-rail-indicator { background: var(--ps-drawer-hover); color: var(--ps-text-1); }
+.ps-nav-rail-section { display: flex; flex-direction: column; gap: var(--ps-space-2); }
+/* The whole heading folds the section; an action is laid over its end, just before the chevron. */
+.ps-nav-rail-section-head { position: relative; display: flex; align-items: center; }
+.ps-nav-rail-section-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--ps-space-10);
+  min-width: 0;
+  min-height: var(--ps-button-height-sm);
+  padding: 0 var(--ps-space-12) 0 var(--ps-space-16);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-3);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-semibold);
+  letter-spacing: var(--ps-tracking-wide);
+  text-transform: uppercase;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-nav-rail-section-toggle:hover { background: var(--ps-drawer-hover); color: var(--ps-text-1); }
+/* The rail's icon for the section, at the places' icon size, over their icons. */
+.ps-nav-rail-section-icon { display: grid; flex: none; place-items: center; }
+.ps-nav-rail-section-icon > svg { width: var(--ps-space-16); height: var(--ps-space-16); }
+.ps-nav-rail-section-label { flex: 1; min-width: 0; overflow: hidden; text-align: start; text-overflow: ellipsis; white-space: nowrap; }
+.ps-nav-rail-section-chevron { flex: none; transition: transform var(--ps-transition); }
+/* An action takes the room at the end of the name, so the chevron stays at the edge. */
+.ps-nav-rail-section-head.is-actionable .ps-nav-rail-section-label { margin-inline-end: var(--ps-button-height-sm); }
+.ps-nav-rail-section-toggle[aria-expanded='false'] .ps-nav-rail-section-chevron { transform: rotate(-90deg); }
+.ps-nav-rail-section-action {
+  position: absolute;
+  inset-inline-end: calc(var(--ps-space-12) + var(--ps-space-14) + var(--ps-space-4));
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--ps-button-height-sm);
+  height: var(--ps-button-height-sm);
+  border-radius: var(--ps-radius-round);
+  color: var(--ps-text-2);
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-nav-rail-section-action:hover { background: var(--ps-drawer-hover); color: var(--ps-text-1); }
+.ps-nav-rail-places { display: flex; flex-direction: column; gap: var(--ps-space-2); }
+.ps-nav-rail-place {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-10);
+  min-height: var(--ps-row-height);
+  padding: 0 var(--ps-space-12) 0 var(--ps-space-16);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  text-align: start;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-nav-rail-place:hover { background: var(--ps-drawer-hover); color: var(--ps-text-1); }
+.ps-nav-rail-place.is-active { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+.ps-nav-rail-place-icon { display: grid; flex: none; place-items: center; }
+.ps-nav-rail-place-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ps-nav-rail-place-meta { flex: none; color: var(--ps-text-3); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; }
+.ps-nav-rail-places-empty { padding: var(--ps-space-4) var(--ps-space-16); color: var(--ps-text-3); font-size: var(--ps-font-size-xs); }
+
 /* ── Expanded: labels beside the icons ── */
 .ps-nav-rail--expanded { align-items: stretch; width: var(--ps-drawer-expanded); padding-inline: var(--ps-space-16); }
-/* The head lines up like a card's: overline and mark at the edges, a card's padding from the sides. */
-.ps-nav-rail--expanded .ps-nav-rail-head {
-  flex-direction: row;
-  justify-content: space-between;
-  padding-inline: calc(var(--ps-space-24) - var(--ps-space-16));
-}
-/* Expanded, the toggle is an accent icon, like the player's volume button. */
+/* The mark sits over the items' icons, its name where their labels start. */
+.ps-nav-rail--expanded .ps-nav-rail-head { padding-inline: var(--ps-space-8); }
+/* Expanded, a side-panel toggle is an accent icon, like the player's volume button. */
 .ps-nav-rail--expanded .ps-nav-rail-toggle { color: var(--ps-accent-text); }
+.ps-nav-rail--expanded .ps-nav-rail-sections { align-items: stretch; overflow-y: auto; }
 .ps-nav-rail--expanded .ps-nav-rail-items { gap: var(--ps-space-10); }
 .ps-nav-rail--expanded .ps-nav-rail-item {
   position: relative;
