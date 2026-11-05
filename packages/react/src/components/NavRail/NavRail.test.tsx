@@ -1,8 +1,8 @@
 import React from 'react';
-import { act, render, renderHook, screen } from '@testing-library/react';
+import { act, render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { NavRail, type NavRailItem } from './NavRail';
+import { NavRail, type NavRailItem, type NavRailSection } from './NavRail';
 import { useDrawer } from './useDrawer';
 
 const items: NavRailItem[] = [
@@ -45,6 +45,37 @@ describe('NavRail', () => {
     expect(screen.getByRole('button', { name: 'Contraer' }).getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByText('Focus Space')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Home' }).getAttribute('title')).toBeNull();
+  });
+
+  const newCollection = vi.fn();
+  const sections: NavRailSection[] = [
+    { key: 'quick', label: 'Quick access', icon: <svg />, places: [{ key: 'pictures', label: 'Pictures', icon: <svg />, active: true }, { key: 'trips', label: 'Trips', icon: <svg /> }] },
+    { key: 'collections', label: 'Collections', icon: <svg />, places: [], empty: 'No collections yet', action: { label: 'New collection', icon: <svg />, onClick: newCollection } },
+  ];
+
+  it('expanded, folds each section under its heading and opens its places', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(<NavRail label="Main" items={items} activeKey="home" onSelect={onSelect} sections={sections} variant="expanded" />);
+    const quick = screen.getByRole('group', { name: 'Quick access' });
+    expect(within(quick).getByRole('button', { name: 'Pictures' }).getAttribute('aria-current')).toBe('page');
+    await user.click(within(quick).getByRole('button', { name: 'Trips' }));
+    expect(onSelect).toHaveBeenCalledWith('trips');
+    await user.click(within(quick).getByRole('button', { name: 'Quick access' }));
+    expect(within(quick).queryByRole('button', { name: 'Trips' })).toBeNull();
+    const collections = screen.getByRole('group', { name: 'Collections' });
+    expect(within(collections).getByText('No collections yet')).toBeTruthy();
+    await user.click(within(collections).getByRole('button', { name: 'New collection' }));
+    expect(newCollection).toHaveBeenCalled();
+  });
+
+  it('as a rail, makes each section one button with a menu of its places', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(<NavRail label="Main" items={items} activeKey="home" onSelect={onSelect} sections={sections} />);
+    await user.click(screen.getByRole('button', { name: 'Quick access' }));
+    await user.click(await screen.findByText('Trips'));
+    expect(onSelect).toHaveBeenCalledWith('trips');
   });
 });
 

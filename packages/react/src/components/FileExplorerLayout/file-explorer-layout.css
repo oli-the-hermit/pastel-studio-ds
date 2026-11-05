@@ -1,0 +1,73 @@
+/* ── FileExplorerLayout: a file manager's layout ─────────────────
+   On the page: navigation, address and search. Below: tree | content | details, three tonal
+   cards with the shell's gap between them. Narrower, the details pane goes first, then the tree. */
+.ps-file-explorer-layout {
+  container: ps-file-explorer-layout / inline-size;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--ps-space-12);
+  height: 100%;
+  min-height: 0;
+  color: var(--ps-text-1);
+}
+/* The fields on the page sit on the background, so they take the card's color. */
+.ps-file-explorer-layout-top {
+  --ps-field-bg: var(--ps-surface-1);
+  --ps-field-hover: var(--ps-surface-2);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  min-width: 0;
+}
+.ps-file-explorer-layout-nav { flex: none; flex-wrap: nowrap; gap: var(--ps-space-2); }
+.ps-file-explorer-layout-address { display: flex; flex: 1; min-width: 0; }
+.ps-file-explorer-layout-search { flex: 0 1 300px; min-width: 0; margin-inline-start: auto; }
+
+.ps-file-explorer-layout-body {
+  display: grid;
+  grid-template-columns: var(--ps-tree-width) minmax(0, 1fr);
+  gap: var(--ps-space-12);
+  min-height: 0;
+}
+.ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body { grid-template-columns: var(--ps-tree-width) minmax(0, 1fr) var(--ps-details-pane-width); }
+.ps-file-explorer-layout.is-treeless .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
+.ps-file-explorer-layout.is-treeless.is-details-open .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr) var(--ps-details-pane-width); }
+.ps-file-explorer-layout-tree,
+.ps-file-explorer-layout-main,
+.ps-file-explorer-layout-details {
+  min-height: 0;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-1);
+}
+.ps-file-explorer-layout-tree { overflow-y: auto; padding: var(--ps-space-12) var(--ps-space-8); }
+.ps-file-explorer-layout-main { container: ps-file-explorer-layout-main / inline-size; display: flex; flex-direction: column; gap: var(--ps-space-8); min-width: 0; padding: var(--ps-space-12) var(--ps-space-12) var(--ps-space-6); }
+.ps-file-explorer-layout-commands { flex: none; flex-wrap: nowrap; min-width: 0; padding: 0 var(--ps-space-4) var(--ps-space-4); }
+/* The commands keep one line: their labelled buttons fold to icons when the row runs out of room,
+   then the dividers go and the buttons close up. */
+.ps-file-explorer-layout-commands[data-folded] .ps-button.is-collapsible { min-width: var(--ps-button-height-sm); padding: 0; }
+.ps-file-explorer-layout-commands[data-folded] .ps-button.is-collapsible .ps-button-label,
+.ps-file-explorer-layout-commands[data-folded] .ps-button.is-collapsible .ps-button-trailing { display: none; }
+.ps-file-explorer-layout-commands[data-folded='tight'] { gap: var(--ps-space-2); }
+.ps-file-explorer-layout-commands[data-folded='tight'] .ps-toolbar-divider { display: none; }
+.ps-file-explorer-layout-view { display: grid; flex: 1; grid-template: minmax(0, 1fr) / minmax(0, 1fr); min-height: 0; }
+.ps-file-explorer-layout-status { flex: none; padding: 0 var(--ps-space-6) 0 var(--ps-space-12); }
+.ps-file-explorer-layout-details { overflow-y: auto; padding: var(--ps-space-16); }
+
+@container ps-file-explorer-layout (max-width: 1080px) {
+  .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body,
+  .ps-file-explorer-layout-body { grid-template-columns: var(--ps-tree-width) minmax(0, 1fr); }
+  .ps-file-explorer-layout.is-treeless .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
+  .ps-file-explorer-layout-details { display: none; }
+}
+@container ps-file-explorer-layout (max-width: 720px) {
+  .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body,
+  .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
+  .ps-file-explorer-layout-tree { display: none; }
+  .ps-file-explorer-layout-top { flex-wrap: wrap; }
+  .ps-file-explorer-layout-address { flex-basis: 100%; order: 3; }
+  .ps-file-explorer-layout-search { flex: 1 1 160px; }
+}
+@container ps-file-explorer-layout-main (max-width: 520px) {
+  .ps-file-explorer-layout-commands { gap: var(--ps-space-2); }
+  .ps-file-explorer-layout-commands .ps-toolbar-divider { display: none; }
+}

@@ -6,15 +6,18 @@ import { isContainer, type FsEntry } from './fs';
 
 // The navigation tree that FileExplorer and FileDialog share: places, shortcuts, then the folders.
 
-/** A folder subtree as tree nodes, folders and drives only. */
+/**
+ * A folder subtree as tree nodes, folders and drives only. A folder whose children aren't loaded
+ * yet (undefined) can still be expanded: TreeView's onExpand is the app's cue to load it.
+ */
 function folderNodes(e: FsEntry): TreeNode {
-  const kids = (e.children ?? []).filter((c) => isContainer(c) && !c.hidden);
+  const kids = e.children?.filter((c) => isContainer(c) && !c.hidden);
   return {
     id: e.id,
     label: e.name,
     icon: e.kind === 'drive' ? <IconDrive size={16} /> : <IconFolder size={16} />,
-    children: kids.map(folderNodes),
-    hasChildren: kids.length > 0,
+    children: kids?.map(folderNodes),
+    hasChildren: kids ? kids.length > 0 : true,
   };
 }
 

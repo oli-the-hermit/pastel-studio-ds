@@ -18,7 +18,8 @@ import { IconButton } from '../IconButton';
 import { Menu, tidyMenuItems, type MenuItem } from '../Menu';
 import { SearchField } from '../SearchField';
 import { StatusBar } from '../StatusBar';
-import { Toolbar, ToolbarDivider, ToolbarGroup, ToolbarSpacer } from '../Toolbar';
+import { FileExplorerLayout } from '../FileExplorerLayout';
+import { ToolbarDivider, ToolbarGroup, ToolbarSpacer } from '../Toolbar';
 import { TreeView } from '../TreeView';
 
 /** What the app lets people do. Each command shows only when its operation is given. */
@@ -160,29 +161,34 @@ const Explorer = forwardRef<HTMLDivElement, Omit<FileExplorerProps, 'labels'>>((
   const CurrentView = VIEWS.find((v) => v.key === fb.view)!.Icon;
 
   return (
-    <div ref={ref} className={cx('ps-file-explorer', detailsOpen && 'is-details-open', className)} {...rest}>
-      <div className="ps-file-explorer-top">
-        <Toolbar label={labels.navigation} className="ps-file-explorer-nav">
-          <IconButton label={command('back', 'Alt+←')} size="sm" disabled={!fb.canBack} onClick={fb.back}><IconBack size={17} /></IconButton>
-          <IconButton label={command('forward', 'Alt+→')} size="sm" disabled={!fb.canForward} onClick={fb.forward}><IconForward size={17} /></IconButton>
-          <IconButton label={command('up', 'Alt+↑')} size="sm" disabled={!fb.canUp} onClick={fb.up}><IconArrowUp size={17} /></IconButton>
-          <IconButton label={labels.refresh} size="sm" onClick={() => fb.navigate(fb.current.id)}><IconRefresh size={16} /></IconButton>
-        </Toolbar>
-        <AddressBar
-          path={fb.path.map((p) => ({ id: p.id, label: p.name }))}
-          onNavigate={fb.navigate}
-          childrenOf={(id) => (findPath(root, id)?.at(-1)?.children ?? []).filter((c) => isContainer(c) && !c.hidden).map((c) => ({ id: c.id, label: c.name }))}
-          onSubmitPath={(text) => {
-            const want = text.split(/[\\/]/).filter(Boolean).pop()?.toLowerCase();
-            const hit = all.find((e) => isContainer(e) && e.name.toLowerCase() === want);
-            if (hit) fb.navigate(hit.id);
-          }}
-        />
-        <SearchField className="ps-file-explorer-search" value={fb.query} onChange={fb.setQuery} placeholder={labels.searchIn.replace('{name}', fb.current.name)} />
-      </div>
-
-      <div className="ps-file-explorer-body">
-        <nav className="ps-file-explorer-tree" aria-label={labels.navigationPane}>
+    <>
+      <FileExplorerLayout
+        ref={ref}
+        className={cx('ps-file-explorer', className)}
+        {...rest}
+        contentLabel={fb.current.name}
+        navigation={
+          <>
+            <IconButton label={command('back', 'Alt+←')} size="sm" disabled={!fb.canBack} onClick={fb.back}><IconBack size={17} /></IconButton>
+            <IconButton label={command('forward', 'Alt+→')} size="sm" disabled={!fb.canForward} onClick={fb.forward}><IconForward size={17} /></IconButton>
+            <IconButton label={command('up', 'Alt+↑')} size="sm" disabled={!fb.canUp} onClick={fb.up}><IconArrowUp size={17} /></IconButton>
+            <IconButton label={labels.refresh} size="sm" onClick={() => fb.navigate(fb.current.id)}><IconRefresh size={16} /></IconButton>
+          </>
+        }
+        address={
+          <AddressBar
+            path={fb.path.map((p) => ({ id: p.id, label: p.name }))}
+            onNavigate={fb.navigate}
+            childrenOf={(id) => (findPath(root, id)?.at(-1)?.children ?? []).filter((c) => isContainer(c) && !c.hidden).map((c) => ({ id: c.id, label: c.name }))}
+            onSubmitPath={(text) => {
+              const want = text.split(/[\\/]/).filter(Boolean).pop()?.toLowerCase();
+              const hit = all.find((e) => isContainer(e) && e.name.toLowerCase() === want);
+              if (hit) fb.navigate(hit.id);
+            }}
+          />
+        }
+        search={<SearchField value={fb.query} onChange={fb.setQuery} placeholder={labels.searchIn.replace('{name}', fb.current.name)} />}
+        tree={
           <TreeView
             label={labels.folders}
             nodes={tree}
@@ -190,10 +196,9 @@ const Explorer = forwardRef<HTMLDivElement, Omit<FileExplorerProps, 'labels'>>((
             onSelect={(id) => !isGroupRow(id) && fb.navigate(entryIdOf(id))}
             defaultExpanded={['__quick', root.id, ...fb.path.map((p) => p.id)]}
           />
-        </nav>
-
-        <section className="ps-file-explorer-main" aria-label={fb.current.name}>
-          <Toolbar label={labels.commands} className="ps-file-explorer-commands">
+        }
+        commands={
+          <>
             {newItems.length > 0 && <>{menuButton(labels.newItem, <IconPlus size={16} />, newItems, 'tonal')}<ToolbarDivider /></>}
             {hasCommands && <><ToolbarGroup>
               {ops.cut && <IconButton label={command('cut', 'Ctrl+X')} size="sm" disabled={!ids.length} onClick={() => run('cut')}><IconCut size={16} /></IconButton>}
@@ -208,34 +213,10 @@ const Explorer = forwardRef<HTMLDivElement, Omit<FileExplorerProps, 'labels'>>((
             {menuButton(labels.view, <CurrentView size={16} />, viewItems)}
             <ToolbarSpacer />
             <IconButton label={labels.detailsPane} size="sm" pressed={detailsOpen} onClick={() => setDetailsOpen((o) => !o)}><IconPanelRight size={17} /></IconButton>
-          </Toolbar>
-
-          <FileView
-            className="ps-file-explorer-view"
-            label={labels.filesIn.replace('{name}', fb.current.name)}
-            items={fb.items}
-            view={fb.view}
-            selection={fb.selection}
-            onSelect={fb.select}
-            onSelectAll={fb.selectAll}
-            onClearSelection={fb.clearSelection}
-            onOpen={fb.open}
-            sort={fb.sort}
-            onSortChange={fb.toggleSort}
-            locationOf={fb.query ? fb.locationOf : undefined}
-            emptyText={fb.query ? labels.noResultsFor.replace('{query}', fb.query) : undefined}
-            renamingId={renaming}
-            onRenameCommit={(id, name) => {
-              ops.rename?.(id, name);
-              setRenaming(undefined);
-            }}
-            onRenameCancel={() => setRenaming(undefined)}
-            onCommand={run}
-            onContextMenu={(e, entry) => context.openMenu(e, itemMenu(entry))}
-          />
-
+          </>
+        }
+        status={
           <StatusBar
-            className="ps-file-explorer-status"
             end={VIEWS.filter((v) => v.key === 'details' || v.key === 'tiles').map(({ key, word, Icon }) => (
               <IconButton key={key} label={labels[word]} size="sm" pressed={fb.view === key} onClick={() => fb.setView(key)}><Icon size={15} /></IconButton>
             ))}
@@ -245,11 +226,10 @@ const Explorer = forwardRef<HTMLDivElement, Omit<FileExplorerProps, 'labels'>>((
               <span>{labels.selectedCount.replace('{count}', String(fb.selected.length))}{totalSelected ? ` · ${formatBytes(totalSelected)}` : ''}</span>
             )}
           </StatusBar>
-        </section>
-
-        {detailsOpen && (
+        }
+        detailsOpen={detailsOpen}
+        details={
           <DetailsPane
-            className="ps-file-explorer-details"
             entries={fb.selected}
             folder={fb.current}
             location={one ? fb.locationOf(one) : undefined}
@@ -260,10 +240,33 @@ const Explorer = forwardRef<HTMLDivElement, Omit<FileExplorerProps, 'labels'>>((
               </>
             )}
           />
-        )}
-      </div>
+        }
+      >
+        <FileView
+          label={labels.filesIn.replace('{name}', fb.current.name)}
+          items={fb.items}
+          view={fb.view}
+          selection={fb.selection}
+          onSelect={fb.select}
+          onSelectAll={fb.selectAll}
+          onClearSelection={fb.clearSelection}
+          onOpen={fb.open}
+          sort={fb.sort}
+          onSortChange={fb.toggleSort}
+          locationOf={fb.query ? fb.locationOf : undefined}
+          emptyText={fb.query ? labels.noResultsFor.replace('{query}', fb.query) : undefined}
+          renamingId={renaming}
+          onRenameCommit={(id, name) => {
+            ops.rename?.(id, name);
+            setRenaming(undefined);
+          }}
+          onRenameCancel={() => setRenaming(undefined)}
+          onCommand={run}
+          onContextMenu={(e, entry) => context.openMenu(e, itemMenu(entry))}
+        />
+      </FileExplorerLayout>
       {context.element}
-    </div>
+    </>
   );
 });
 Explorer.displayName = 'Explorer';

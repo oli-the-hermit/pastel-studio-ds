@@ -311,3 +311,21 @@ is a breaking change.
   `caption="overlay"`, the name and meta over the thumbnail on the media dock on hover and focus. Clicks on a tile's own
   buttons no longer select it. From Pastel Studio Pro's first test of its rebuilt browser.
 - `IconTag`, a price tag, for labels and tags (Pastel Studio Pro's Labels page and tag pickers).
+- `FileExplorerLayout`: the file explorer's layout without its state, for an explorer whose data the app owns (Pastel
+  Studio Pro's library). Slots: `navigation`, `address` and `search` on the page; `tree`; `commands`, the view and
+  `status` in the content card; `details` with `detailsOpen`. Without a tree or an address it closes up. The commands
+  keep one line: when they don't fit, collapsible buttons fold to their icons, then the dividers go and the buttons close up
+  (measured, not at a fixed width), and they come back when there is room. `FileExplorer` is now built on it: the same cards and responsive steps, with its classes
+  renamed `ps-file-explorer-layout-*`. `buildNavTree`, `entryIdOf` and `isGroupRow` are exported, and a folder whose
+  `children` are not loaded yet (undefined) can be expanded in the tree, for folders read as they open.
+- `NavRail`: the mark is the expand and collapse button again (as in Pastel Espresso), and when expanded the app's name
+  follows it, lined up with the labels below, instead of an overline with a separate toggle (the user's choice for
+  Pastel Studio Pro). Without a mark, a side-panel button still toggles. New `sections`: foldable lists of places under
+  the pages, such as Quick access, Collections and Drives, each with an optional action (New collection) and an
+  `empty` line. As a rail, each section is one button whose menu lists its places. A place can be `active`, show a
+  `meta` count and a `title`; places carry `data-key`, so an app can add context menus and drop targets.
+  Expanded, a section's heading shows its rail icon first and the fold's chevron at the end, as on every collapsible part.
+  `openSections` and `onOpenSectionsChange` keep the folds. Pastel Media Pro's drawer, which uses `onToggle`, changes the
+  same way.
+- `ListRow`, from Pastel Espresso: a row in a list of destinations, such as a Help page. An icon in an accent tile, a
+  title (its name) over a description (its description), and a chevron, or an external-link mark with `external`.
