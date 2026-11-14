@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   The swatch book: the palette as printed colour chips
+   The swatch book: the palette as printed color chips
  ═══════════════════════════════════════════════════════════ */
 @layer docs {
   /* ── Copy buttons ── */
@@ -32,7 +32,7 @@
   .docs-copy-toasts { --ps-toast-region-top: calc(var(--docs-topbar-height) + var(--ps-space-12)); }
   .docs-copy-toast-value { font-family: var(--docs-mono); }
 
-  /* ── Intro: a few chips fanned out, like a colour deck ── */
+  /* ── Intro: a few chips fanned out, like a color deck ── */
   .docs-swatch-intro {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);

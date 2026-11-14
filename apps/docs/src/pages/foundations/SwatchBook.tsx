@@ -9,7 +9,7 @@ import { useDocsTheme } from '../../theme';
 import type { PaletteColor, ThemeName } from '../../tokens/types';
 import '../../styles/swatch-book.css';
 
-// The palette as a swatch book: one chip per color, the way a printed colour guide shows it,
+// The palette as a swatch book: one chip per color, the way a printed color guide shows it,
 // with every code a click away. The colors and their uses are read from the token files.
 
 const INK_DARK = '#1A1C17';
@@ -214,7 +214,7 @@ export function SwatchBook() {
       <Page
         overline="Foundations"
         title="Swatch book"
-        lead={<>Every color in Pastel Studio, one chip each, the way a printed colour guide shows them. Click any code to copy it: the chip's color copies its hex. For how the colors become themes, see <Link to="/foundations/color">Color</Link>.</>}
+        lead={<>Every color in Pastel Studio, one chip each, the way a printed color guide shows them. Click any code to copy it: the chip's color copies its hex. For how the colors become themes, see <Link to="/foundations/color">Color</Link>.</>}
       >
         <section className="docs-swatch-intro" aria-label="About the palette">
           <div className="docs-swatch-intro-text">
