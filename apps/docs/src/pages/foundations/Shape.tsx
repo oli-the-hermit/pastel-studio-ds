@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button, Card, CardHeader, Chip, Field, TextInput } from '@pastel-studio/react';
+import { Anatomy } from '../../blocks/Anatomy';
 import { Code, Page, Section } from '../../blocks/Page';
 import { Example } from '../../blocks/Example';
 import { scaleGroup } from '../../tokens';
@@ -27,6 +29,15 @@ export function Shape() {
             ))}
           </ul>
         </Example>
+      </Section>
+
+      <Section title="Corners in a component" description="The radius of each, measured from the live component and named after its token. Pills stay pills at any height.">
+        <div className="docs-anatomy-pair">
+          <Anatomy example={<Button variant="primary">Save</Button>} show={['radius', 'size']} prefer={['--ps-button-height']} maxScale={2.4} />
+          <Anatomy example={<Chip tone="accent">3 tasks left</Chip>} show={['radius', 'size']} prefer={['--ps-chip-height']} maxScale={2.4} />
+          <Anatomy example={<Field label="List name"><TextInput defaultValue="Weekend errands" /></Field>} target="input" show={['radius', 'size']} prefer={['--ps-field-height']} width={260} maxScale={1.4} />
+          <Anatomy example={<Card><CardHeader title="Weekend errands" /><p>Three things left.</p></Card>} show={['radius']} width={260} maxScale={1.2} />
+        </div>
       </Section>
 
       <Section title="Lines and rings" description={<>Widths only; the color comes from the theme. Rings are drawn with <Code>box-shadow</Code> or <Code>outline</Code>, so they never change a component's size. They outline focus and selection, not areas: areas are separated by tone.</>}>
