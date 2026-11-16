@@ -659,6 +659,8 @@
   .docs-update-status { display: flex; flex-direction: column; gap: var(--ps-space-8); }
   .docs-topbar-stage { border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
   .docs-topbar-stage.is-narrow { width: min(460px, 100%); }
+  .docs-window-frame-stage { height: 220px; border-radius: var(--ps-radius-lg); overflow: hidden; }
+  .docs-window-frame-screen { display: grid; place-items: center; }
   .docs-window-row { display: flex; align-items: center; gap: var(--ps-space-16); padding: var(--ps-space-12); border-radius: var(--ps-radius-lg); background: var(--ps-bg); }
   .docs-shell-stage { position: relative; height: 100%; }
   .docs-shell-picture { position: absolute; inset: 0; background: var(--ps-accent-container); }

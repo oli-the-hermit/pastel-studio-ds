@@ -36,6 +36,7 @@
 @import url('./components/Switch/switch.css') layer(ps.components);
 @import url('./components/SegmentedControl/segmented-control.css') layer(ps.components);
 @import url('./components/Field/field.css') layer(ps.components);
+@import url('./components/PasswordField/password-field.css') layer(ps.components);
 @import url('./components/Select/select.css') layer(ps.components);
 @import url('./components/PlayerControl/player-control.css') layer(ps.components);
 @import url('./components/Slider/slider.css') layer(ps.components);
@@ -74,6 +75,7 @@
 @import url('./components/AppShell/app-shell.css') layer(ps.components);
 @import url('./components/TopBar/top-bar.css') layer(ps.components);
 @import url('./components/WindowControls/window-controls.css') layer(ps.components);
+@import url('./components/WindowFrame/window-frame.css') layer(ps.components);
 @import url('./components/ColorSwatchGrid/color-swatch-grid.css') layer(ps.components);
 @import url('./components/AppearancePanel/appearance-panel.css') layer(ps.components);
 @import url('./components/AccountMenu/account-menu.css') layer(ps.components);

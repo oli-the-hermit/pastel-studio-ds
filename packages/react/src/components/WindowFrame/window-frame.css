@@ -1,0 +1,21 @@
+/* ── WindowFrame: a bare title bar over a screen with no TopBar ──
+   The bar has TopBar's height and puts the window's buttons where a framed TopBar does, so they
+   stay in place when the app moves from the sign-in screen to its pages. */
+.ps-window-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ps-bg);
+}
+.ps-window-frame-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--ps-topbar-height);
+  padding-right: var(--ps-space-10);
+}
+.ps-window-frame-space { flex: 1; align-self: stretch; }
+.ps-window-frame-controls { margin-left: var(--ps-space-10); }
+/* The screen fills the rest of the window, whatever its own root is. */
+.ps-window-frame-body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.ps-window-frame-body > * { flex: 1; min-height: 0; }
