@@ -54,6 +54,13 @@ describe('AccountMenu', () => {
     expect(screen.getByRole('dialog', { name: 'Look and feel' })).toBeTruthy();
   });
 
+  it('leaves out the exit for a local profile', async () => {
+    const user = userEvent.setup();
+    render(<AccountMenu profile={profile} views={views} />);
+    await user.click(screen.getByRole('button', { name: 'Sam Rivera' }));
+    expect(screen.getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Profile', 'Appearance']);
+  });
+
   it('runs the exit once, disabled until it finishes', async () => {
     const user = userEvent.setup();
     let finish = () => {};

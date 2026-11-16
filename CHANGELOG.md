@@ -340,3 +340,4 @@ is a breaking change.
   there too.
 - Text formatting icons, from Pastel Espresso's notes editor: `IconHeading`, `IconBold`, `IconItalic`, `IconStrike`,
   `IconCode`, `IconLink`, `IconListOrdered`, `IconChecklist`, `IconQuote`, `IconCodeBlock`, `IconUndo`, `IconRedo`.
+- `AccountMenu`: `exit` is optional. A local profile, with nothing to sign out of, leaves it out.
