@@ -6,7 +6,58 @@ export const labels = {
   help: 'Help',
   dismiss: 'Close',
   about: 'About Pastel Studio',
-  aboutBody: 'Nodes for ComfyUI built with the Pastel Studio design system.',
+
+  account: {
+    you: 'You',
+    profile: 'Profile',
+    appearance: 'Appearance',
+    settings: 'Settings',
+  },
+
+  profile: {
+    name: 'Display name',
+    nameHint: 'Shown on your badge in every Pastel Studio node. It stays on this computer.',
+    picture: 'Picture',
+    pictureHint: 'A square crop of it is kept in your ComfyUI user folder.',
+    choose: 'Choose picture…',
+    change: 'Change picture…',
+    remove: 'Remove picture',
+    save: 'Save',
+    saved: 'Profile saved',
+  },
+
+  appearance: {
+    matchComfy: 'Match ComfyUI',
+    matchComfyHint: "Use the light or dark look of ComfyUI's color palette.",
+  },
+
+  settings: {
+    editor: 'Editor',
+    textSize: 'Text size',
+    textSizes: { sm: 'Small', md: 'Medium', lg: 'Large' },
+    spellcheck: 'Check spelling',
+    spellcheckHint: 'Underline misspelled words while you write.',
+    formatBar: 'Formatting row',
+    formatBarHint: 'The bold, list and heading buttons above the text. Shortcuts and the right-click menu work either way.',
+  },
+
+  aboutView: {
+    tagline: 'Nodes for ComfyUI, built with the Pastel Studio design system.',
+    version: (v: string) => `Version ${v}`,
+    stage: 'Alpha',
+    privacyTitle: 'Your prompts stay yours',
+    privacyBody: 'Prompts, settings and your profile are saved in your ComfyUI user folder. Nothing is sent anywhere.',
+    license: 'Free and open source, under the MIT license.',
+    credits: 'Made by San Milano.',
+    source: 'Source code',
+    sourceHint: 'pastel-studio-ds on GitHub',
+    report: 'Report a problem',
+    reportHint: 'Opens a new issue with your versions filled in',
+    star: 'Star on GitHub',
+    starHint: 'The easiest way to say thanks',
+    docs: 'Design system documentation',
+    docsHint: 'The components these nodes are built from',
+  },
 
   file: {
     save: 'Save prompt…',

@@ -1,6 +1,10 @@
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
+import { version } from '../package.json';
 import { app, type ComfyNode } from './comfy';
+import { links } from './lib/about';
+import { loadSettings, settingDefinitions } from './lib/settings';
+import { startTheming } from './lib/theme';
 import { createShadowHost } from './mount/shadowHost';
 import { createValueStore } from './mount/valueStore';
 import { PromptNode } from './nodes/PromptNode';
@@ -12,6 +16,12 @@ const NAME_PROPERTY = 'pastel_prompt_name';
 
 app.registerExtension({
   name: 'PastelStudio.Core',
+  settings: settingDefinitions,
+  aboutPageBadges: [{ label: `Pastel Studio v${version}`, url: links.repo, icon: 'pi pi-github' }],
+  setup() {
+    loadSettings();
+    startTheming();
+  },
   getCustomWidgets: () => ({
     // Inputs declared as PASTEL_PROMPT in Python get this widget instead of a default one.
     PASTEL_PROMPT(node: ComfyNode, inputName: string) {
@@ -28,7 +38,7 @@ app.registerExtension({
         nameStore.set(String(node.properties[NAME_PROPERTY] ?? ''));
       };
 
-      const { host, container } = createShadowHost();
+      const { host, container, release } = createShadowHost();
       const root = createRoot(container);
       root.render(createElement(PromptNode, { store, nameStore }));
 
@@ -43,6 +53,7 @@ app.registerExtension({
       const onRemoved = node.onRemoved;
       node.onRemoved = function () {
         root.unmount();
+        release();
         onRemoved?.call(this);
       };
       return { widget };

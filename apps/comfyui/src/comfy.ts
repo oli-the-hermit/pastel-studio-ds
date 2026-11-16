@@ -26,8 +26,19 @@ export interface ComfyNode {
   setDirtyCanvas?: (fg: boolean, bg?: boolean) => void;
 }
 
+export interface ComfySetting {
+  id: string;
+  name: string;
+  type: string;
+  defaultValue: unknown;
+  onChange?: (value: unknown) => void;
+}
+
 export interface ComfyExtension {
   name: string;
+  settings?: ComfySetting[];
+  aboutPageBadges?: { label: string; url: string; icon: string }[];
+  setup?: () => void | Promise<void>;
   getCustomWidgets?: () => Record<string, (node: ComfyNode, inputName: string) => { widget: ComfyWidget }>;
 }
 
@@ -36,7 +47,10 @@ export interface ComfyApp {
   extensionManager?: {
     toast?: { add: (t: { severity: string; summary: string; detail?: string; life?: number }) => void };
     setting?: { get: (id: string) => unknown; set: (id: string, value: unknown) => Promise<void> };
+    colorPalette?: { getActiveColorPalette?: () => { id?: string; light_theme?: boolean } | undefined };
   };
+  /** The legacy settings dialog: still an EventTarget that fires "<setting id>.change". */
+  ui?: { settings?: EventTarget };
 }
 
 /** ComfyUI's HTTP client: fetchApi prefixes the API path and sends the current user. */

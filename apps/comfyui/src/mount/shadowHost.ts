@@ -1,3 +1,4 @@
+import { followTheme } from '../lib/theme';
 import { designSystemSheet, registerFonts } from './styles';
 
 /** Keys that still reach the window while typing in our UI. */
@@ -21,8 +22,11 @@ export function isolateEvents(host: HTMLElement): void {
   host.addEventListener('contextmenu', (e) => e.stopPropagation());
 }
 
-/** A host element for a node's UI; its shadow root keeps our styles and ComfyUI's apart. */
-export function createShadowHost(theme: 'dark' | 'light' = 'dark'): { host: HTMLDivElement; container: HTMLDivElement } {
+/**
+ * A host element for a node's UI; its shadow root keeps our styles and ComfyUI's apart. Call
+ * `release` when the node goes, so the theme stops repainting it.
+ */
+export function createShadowHost(): { host: HTMLDivElement; container: HTMLDivElement; release: () => void } {
   registerFonts();
   const host = document.createElement('div');
   host.className = 'pastel-studio-host';
@@ -31,8 +35,7 @@ export function createShadowHost(theme: 'dark' | 'light' = 'dark'): { host: HTML
 
   const container = document.createElement('div');
   container.className = 'pastel-node';
-  container.dataset.theme = theme;
   shadow.append(container);
   isolateEvents(host);
-  return { host, container };
+  return { host, container, release: followTheme(container) };
 }

@@ -1,3 +1,4 @@
+import { followTheme } from '../lib/theme';
 import { designSystemSheet, registerFonts } from './styles';
 import { isolateEvents } from './shadowHost';
 
@@ -19,8 +20,8 @@ export function overlayLayer(): HTMLDivElement {
   shadow.adoptedStyleSheets = [designSystemSheet()];
   layer = document.createElement('div');
   layer.className = 'pastel-overlay-layer';
-  layer.dataset.theme = 'dark';
   shadow.append(layer);
+  followTheme(layer);
   isolateEvents(host);
   document.body.append(host);
   return layer;

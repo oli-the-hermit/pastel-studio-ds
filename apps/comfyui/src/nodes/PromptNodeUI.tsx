@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Editor } from '@tiptap/react';
 import {
+  AccountMenu,
   IconApp,
   IconBold,
   IconCode,
@@ -11,8 +12,11 @@ import {
   IconHelp,
   IconInfo,
   IconItalic,
+  IconPalette,
   IconPaste,
+  IconSettings,
   IconStrike,
+  IconUser,
   MenuBar,
   Modal,
   ToastRegion,
@@ -28,7 +32,13 @@ import { labels } from '../labels';
 import { pasteMarkdown, readClipboard, selectedText, writeClipboard } from '../lib/clipboard';
 import { MARKDOWN_TYPE, ZIP_TYPE, saveFileAs } from '../lib/files';
 import { exportPrompts, savePrompt } from '../lib/prompts';
+import { useAvatar } from '../lib/avatar';
+import { useSettings } from '../lib/settings';
 import { useStoreValue, type ValueStore } from '../mount/valueStore';
+import { AboutView } from '../panels/AboutView';
+import { AppearanceView } from '../panels/AppearanceView';
+import { ProfileView } from '../panels/ProfileView';
+import { SettingsView } from '../panels/SettingsView';
 import { LoadPromptModal } from '../panels/LoadPromptModal';
 import { SavePromptModal } from '../panels/SavePromptModal';
 import { TipsModal } from '../panels/TipsModal';
@@ -53,6 +63,9 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
   // The text as last saved or loaded; null when this node's text was never saved here.
   const [savedText, setSavedText] = useState<string | null>(() => (nameStore.get() ? store.get() : null));
   const { toasts, showToast } = useToasts();
+  const settings = useSettings();
+  const avatar = useAvatar(settings.avatarVersion);
+  const [accountView, setAccountView] = useState<string | null>(null);
   const { openMenu, element: contextMenu } = useContextMenuState();
   const onReady = useCallback((e: Editor | null) => setEditor(e), []);
   const onError = useCallback((message: string) => showToast(message, 'error'), [showToast]);
@@ -197,12 +210,17 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
     );
   };
 
+  // Spellcheck is an attribute of the editable element, which TipTap owns.
+  useEffect(() => {
+    editor?.view.dom.setAttribute('spellcheck', String(settings.spellcheck));
+  }, [editor, settings.spellcheck]);
+
   const words = wordCount(editor);
   const dirty = savedText !== null && savedText !== markdown;
 
   return (
     <div
-      className="pastel-prompt"
+      className={`pastel-prompt pastel-prompt--text-${settings.textSize}`}
       onKeyDown={(e) => {
         if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 's') {
           // Our save, not the browser's "save page" (ComfyUI never sees keys typed in here).
@@ -211,8 +229,34 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
         }
       }}
     >
-      <MenuBar menus={menus} />
-      {editor && <FormatBar editor={editor} />}
+      <div className="pastel-prompt-top">
+        <MenuBar menus={menus} />
+        <AccountMenu
+          compact
+          profile={{ name: settings.profileName || labels.account.you, avatar }}
+          view={accountView}
+          onViewChange={setAccountView}
+          views={[
+            {
+              key: 'profile',
+              label: labels.account.profile,
+              icon: <IconUser size={16} />,
+              render: () => (
+                <ProfileView
+                  onDone={(message) => {
+                    setAccountView(null);
+                    showToast(message);
+                  }}
+                  onError={onError}
+                />
+              ),
+            },
+            { key: 'appearance', label: labels.account.appearance, icon: <IconPalette size={16} />, render: () => <AppearanceView /> },
+            { key: 'settings', label: labels.account.settings, icon: <IconSettings size={16} />, render: () => <SettingsView /> },
+          ]}
+        />
+      </div>
+      {editor && settings.showFormatBar && <FormatBar editor={editor} />}
       <PromptEditor store={store} onReady={onReady} onContextMenu={onEditorMenu} />
       <div className="pastel-prompt-status">
         <span>{labels.editor.words(words)}</span>
@@ -239,7 +283,7 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
       <LoadPromptModal isOpen={dialog === 'load'} onClose={close} onLoad={load} onError={onError} />
       <TipsModal isOpen={dialog === 'tips'} onClose={close} />
       <Modal isOpen={dialog === 'about'} title={labels.about} onClose={close} dismissible>
-        <p>{labels.aboutBody}</p>
+        <AboutView />
       </Modal>
       <ToastRegion toasts={toasts} className="pastel-toasts" />
     </div>
