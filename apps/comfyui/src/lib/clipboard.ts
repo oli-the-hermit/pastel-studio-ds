@@ -4,14 +4,39 @@ import type { Editor } from '@tiptap/react';
 // http has none; callers then show the "use Ctrl+C / Ctrl+V" hint.
 export const hasClipboard = () => typeof navigator !== 'undefined' && !!navigator.clipboard && window.isSecureContext;
 
-export async function writeClipboard(text: string): Promise<boolean> {
-  if (!hasClipboard()) return false;
+/**
+ * The older way to copy: select a hidden textarea and run "copy". It needs no permission and
+ * works over plain http, where the async clipboard doesn't exist.
+ */
+function copyWithSelection(text: string): boolean {
+  const active = document.activeElement as HTMLElement | null;
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  Object.assign(area.style, { position: 'fixed', top: '0', left: '-9999px', opacity: '0' });
+  document.body.append(area);
+  area.select();
+  let copied: boolean;
   try {
-    await navigator.clipboard.writeText(text);
-    return true;
+    copied = document.execCommand('copy');
   } catch {
-    return false;
+    copied = false;
   }
+  area.remove();
+  active?.focus?.();
+  return copied;
+}
+
+export async function writeClipboard(text: string): Promise<boolean> {
+  if (hasClipboard()) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Denied (no permission, or the click didn't count as one): try the older way.
+    }
+  }
+  return copyWithSelection(text);
 }
 
 export async function readClipboard(): Promise<string | null> {

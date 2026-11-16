@@ -19,6 +19,8 @@ export interface DOMWidgetOptions {
 export interface ComfyNode {
   id: number | string;
   widgets?: ComfyWidget[];
+  properties: Record<string, unknown>;
+  onConfigure?: (info: unknown) => void;
   addDOMWidget: (name: string, type: string, element: HTMLElement, options: DOMWidgetOptions) => ComfyWidget;
   onRemoved?: () => void;
   setDirtyCanvas?: (fg: boolean, bg?: boolean) => void;
@@ -37,10 +39,16 @@ export interface ComfyApp {
   };
 }
 
+/** ComfyUI's HTTP client: fetchApi prefixes the API path and sends the current user. */
+export interface ComfyApi {
+  fetchApi: (route: string, options?: RequestInit) => Promise<Response>;
+}
+
 declare global {
   interface Window {
-    comfyAPI: { app: { app: ComfyApp } };
+    comfyAPI: { app: { app: ComfyApp }; api: { api: ComfyApi } };
   }
 }
 
 export const app = window.comfyAPI.app.app;
+export const api = window.comfyAPI.api.api;

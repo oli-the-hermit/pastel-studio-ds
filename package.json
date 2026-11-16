@@ -30,7 +30,7 @@
     "accents": "node scripts/accents/generate.ts",
     "check:accents": "node scripts/accents/generate.ts --check",
     "test": "vitest run",
-    "test:comfyui-py": "python -m pytest apps/comfyui/pack/tests -q",
+    "test:comfyui-py": "python -m pytest apps/comfyui/tests -q",
     "visual:capture": "node scripts/visual/capture.ts",
     "visual:baseline": "node scripts/visual/capture.ts --out documentation/visual/baseline",
     "visual:diff": "node scripts/visual/diff.ts",

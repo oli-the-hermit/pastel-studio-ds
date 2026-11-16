@@ -7,11 +7,11 @@ import type { ValueStore } from '../mount/valueStore';
 // with ComfyUI.
 const PromptNodeUI = lazy(() => import('./PromptNodeUI'));
 
-export function PromptNode({ store }: { store: ValueStore }) {
+export function PromptNode({ store, nameStore }: { store: ValueStore; nameStore: ValueStore }) {
   return (
     <PortalProvider container={overlayLayer()}>
       <Suspense fallback={<div className="pastel-loading"><Spinner /></div>}>
-        <PromptNodeUI store={store} />
+        <PromptNodeUI store={store} nameStore={nameStore} />
       </Suspense>
     </PortalProvider>
   );

@@ -6,6 +6,10 @@ import {
   IconCode,
   IconCopy,
   IconCut,
+  IconDownload,
+  IconFolder,
+  IconHelp,
+  IconInfo,
   IconItalic,
   IconPaste,
   IconStrike,
@@ -22,10 +26,18 @@ import { FormatBar, textStyleItems } from '../editor/FormatBar';
 import { PromptEditor, plainText } from '../editor/PromptEditor';
 import { labels } from '../labels';
 import { pasteMarkdown, readClipboard, selectedText, writeClipboard } from '../lib/clipboard';
+import { MARKDOWN_TYPE, ZIP_TYPE, saveFileAs } from '../lib/files';
+import { exportPrompts, savePrompt } from '../lib/prompts';
 import { useStoreValue, type ValueStore } from '../mount/valueStore';
+import { LoadPromptModal } from '../panels/LoadPromptModal';
+import { SavePromptModal } from '../panels/SavePromptModal';
+import { TipsModal } from '../panels/TipsModal';
 
 const c = labels.clipboard;
 const f = labels.format;
+const l = labels.file;
+
+type Dialog = 'save' | 'load' | 'tips' | 'about' | null;
 
 function wordCount(editor: Editor | null): number {
   if (!editor) return 0;
@@ -33,14 +45,23 @@ function wordCount(editor: Editor | null): number {
   return text ? text.split(/\s+/).length : 0;
 }
 
-export default function PromptNodeUI({ store }: { store: ValueStore }) {
-  // Re-render on every change, for the word count.
-  useStoreValue(store);
+export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; nameStore: ValueStore }) {
+  const markdown = useStoreValue(store);
+  const savedName = useStoreValue(nameStore);
   const [editor, setEditor] = useState<Editor | null>(null);
-  const [about, setAbout] = useState(false);
+  const [dialog, setDialog] = useState<Dialog>(null);
+  // The text as last saved or loaded; null when this node's text was never saved here.
+  const [savedText, setSavedText] = useState<string | null>(() => (nameStore.get() ? store.get() : null));
   const { toasts, showToast } = useToasts();
   const { openMenu, element: contextMenu } = useContextMenuState();
   const onReady = useCallback((e: Editor | null) => setEditor(e), []);
+  const onError = useCallback((message: string) => showToast(message, 'error'), [showToast]);
+  const close = () => setDialog(null);
+
+  const markSaved = (name: string, text: string) => {
+    nameStore.set(name);
+    setSavedText(text);
+  };
 
   const copy = async (text: string, done: string) => {
     if (await writeClipboard(text)) showToast(done);
@@ -50,6 +71,51 @@ export default function PromptNodeUI({ store }: { store: ValueStore }) {
     const text = await readClipboard();
     if (text === null) showToast(c.noClipboard, 'warning');
     else pasteMarkdown(target, text);
+  };
+
+  /** Ctrl+S: saves under the current name, or asks for one. */
+  const quickSave = async () => {
+    if (!savedName) return setDialog('save');
+    try {
+      await savePrompt(savedName, store.get(), true);
+      markSaved(savedName, store.get());
+      showToast(l.saved(savedName));
+    } catch (e) {
+      onError(l.failed((e as Error).message));
+    }
+  };
+
+  const saveAs = async () => {
+    try {
+      const blob = new Blob([store.get()], { type: 'text/markdown' });
+      if (await saveFileAs(blob, `${savedName || 'prompt'}.md`, MARKDOWN_TYPE)) showToast(l.savedFile);
+    } catch (e) {
+      onError(l.failed((e as Error).message));
+    }
+  };
+
+  const exportAll = async () => {
+    try {
+      const archive = await exportPrompts();
+      if (!archive) return showToast(l.noSaved, 'info');
+      if (await saveFileAs(archive.blob, archive.filename, ZIP_TYPE)) showToast(l.exported);
+    } catch (e) {
+      onError(l.failed((e as Error).message));
+    }
+  };
+
+  const load = (text: string, name: string, saved: boolean) => {
+    if (!editor) return;
+    // Replacing the text is one undo step: Ctrl+Z brings the previous prompt back.
+    editor.chain().focus().setContent(text, { contentType: 'markdown' }).run();
+    store.set(editor.getMarkdown());
+    if (saved) markSaved(name, editor.getMarkdown());
+    else {
+      nameStore.set('');
+      setSavedText(null);
+    }
+    close();
+    showToast(l.loaded(name));
   };
 
   const copyItems = (target: Editor): MenuItem[] => [
@@ -63,7 +129,13 @@ export default function PromptNodeUI({ store }: { store: ValueStore }) {
       label: labels.appName,
       brand: true,
       icon: <IconApp size={16} />,
-      items: [{ key: 'about', label: labels.about, onSelect: () => setAbout(true) }],
+      items: [
+        { key: 'save', label: l.save, hint: 'Ctrl+S', onSelect: () => setDialog('save') },
+        { key: 'save-as', label: l.saveAs, icon: <IconDownload size={16} />, onSelect: () => void saveAs() },
+        { key: 'load', label: l.load, icon: <IconFolder size={16} />, onSelect: () => setDialog('load') },
+        { key: 'div', divider: true },
+        { key: 'export', label: l.export, onSelect: () => void exportAll() },
+      ],
     },
     {
       key: 'edit',
@@ -76,6 +148,14 @@ export default function PromptNodeUI({ store }: { store: ValueStore }) {
             { key: 'select-all', label: c.selectAll, hint: 'Ctrl+A', onSelect: () => editor.chain().focus().selectAll().run() },
           ]
         : [],
+    },
+    {
+      key: 'help',
+      label: labels.help,
+      items: [
+        { key: 'tips', label: labels.tips.menu, icon: <IconHelp size={16} />, onSelect: () => setDialog('tips') },
+        { key: 'about', label: labels.about, icon: <IconInfo size={16} />, onSelect: () => setDialog('about') },
+      ],
     },
   ];
 
@@ -112,25 +192,56 @@ export default function PromptNodeUI({ store }: { store: ValueStore }) {
         },
         { key: 'div-2', divider: true },
         ...copyItems(target),
+        { key: 'save', label: l.save, hint: 'Ctrl+S', onSelect: () => setDialog('save') },
       ]),
     );
   };
 
   const words = wordCount(editor);
+  const dirty = savedText !== null && savedText !== markdown;
 
   return (
-    <div className="pastel-prompt">
+    <div
+      className="pastel-prompt"
+      onKeyDown={(e) => {
+        if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 's') {
+          // Our save, not the browser's "save page" (ComfyUI never sees keys typed in here).
+          e.preventDefault();
+          void quickSave();
+        }
+      }}
+    >
       <MenuBar menus={menus} />
       {editor && <FormatBar editor={editor} />}
       <PromptEditor store={store} onReady={onReady} onContextMenu={onEditorMenu} />
-      <div className="pastel-prompt-status" aria-live="off">
-        {labels.editor.words(words)}
+      <div className="pastel-prompt-status">
+        <span>{labels.editor.words(words)}</span>
+        {savedName && (
+          <span className="pastel-prompt-saved" title={dirty ? l.unsaved : undefined}>
+            {l.savedAs(savedName)}
+            {dirty && <span className="pastel-prompt-dirty" aria-label={l.unsaved} />}
+          </span>
+        )}
       </div>
       {contextMenu}
-      <Modal isOpen={about} title={labels.about} onClose={() => setAbout(false)} dismissible>
+      <SavePromptModal
+        isOpen={dialog === 'save'}
+        initialName={savedName}
+        markdown={markdown}
+        onClose={close}
+        onSaved={(name) => {
+          markSaved(name, store.get());
+          close();
+          showToast(l.saved(name));
+        }}
+        onError={onError}
+      />
+      <LoadPromptModal isOpen={dialog === 'load'} onClose={close} onLoad={load} onError={onError} />
+      <TipsModal isOpen={dialog === 'tips'} onClose={close} />
+      <Modal isOpen={dialog === 'about'} title={labels.about} onClose={close} dismissible>
         <p>{labels.aboutBody}</p>
       </Modal>
-      <ToastRegion toasts={toasts} />
+      <ToastRegion toasts={toasts} className="pastel-toasts" />
     </div>
   );
 }
