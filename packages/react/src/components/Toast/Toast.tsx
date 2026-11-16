@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { IconCheck, IconClose, IconInfo, IconWarning } from '../../icons';
 import { cx } from '../../lib/cx';
+import { InPortal } from '../../lib/portal';
 
 export type ToastTone = 'success' | 'info' | 'warning' | 'error';
 
@@ -43,10 +44,12 @@ export interface ToastRegionProps extends Omit<React.HTMLAttributes<HTMLDivEleme
  * their own (role="alert"). Set --ps-toast-region-top on its class to clear an app bar.
  */
 export const ToastRegion = forwardRef<HTMLDivElement, ToastRegionProps>(({ toasts, className, ...rest }, ref) => (
-  <div ref={ref} className={cx('ps-toast-region', className)} role="status" aria-live="polite" {...rest}>
-    {toasts.map((t) => (
-      <Toast key={t.id} message={t.message} tone={t.tone} leaving={t.leaving} />
-    ))}
-  </div>
+  <InPortal>
+    <div ref={ref} className={cx('ps-toast-region', className)} role="status" aria-live="polite" {...rest}>
+      {toasts.map((t) => (
+        <Toast key={t.id} message={t.message} tone={t.tone} leaving={t.leaving} />
+      ))}
+    </div>
+  </InPortal>
 ));
 ToastRegion.displayName = 'ToastRegion';

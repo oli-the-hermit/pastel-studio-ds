@@ -69,6 +69,7 @@ export const defaultLabels = {
   back: 'Back',
   actions: 'Actions',
   moreActions: 'More actions',
+  menuBar: 'Menu bar',
   selectPlaceholder: 'Select an option',
   options: 'Options',
   search: 'Search…',

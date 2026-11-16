@@ -4,6 +4,8 @@ import { useLabels, type LabelOverrides } from '../../labels';
 import { cssDurationMs } from '../../lib/css';
 import { cx } from '../../lib/cx';
 import { useBlockingOverlay } from '../../lib/overlays';
+import { InPortal } from '../../lib/portal';
+import { deepActiveElement } from '../../lib/shadowDom';
 import { IconButton } from '../IconButton';
 
 export interface ModalProps {
@@ -63,12 +65,12 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
   useEffect(() => {
     if (!isOpen) return;
     // Focus goes back to whatever opened the modal once it closes.
-    const opener = document.activeElement as HTMLElement | null;
+    const opener = deepActiveElement() as HTMLElement | null;
 
     // Focus the first field, or the dialog itself, unless a child already claimed focus (autoFocus).
     const timer = setTimeout(() => {
       const modal = modalRef.current;
-      if (!modal || modal.contains(document.activeElement)) return;
+      if (!modal || modal.contains(deepActiveElement())) return;
       (modal.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select, .ps-select-trigger') ?? modal).focus();
     }, 50);
 
@@ -88,7 +90,7 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
     }
     const first = items[0];
     const last = items[items.length - 1];
-    const active = document.activeElement;
+    const active = deepActiveElement();
     if (e.shiftKey && (active === first || active === e.currentTarget)) {
       e.preventDefault();
       last.focus();
@@ -102,6 +104,7 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
   const shown = isOpen ? { title, children } : lastRef.current;
 
   return (
+    <InPortal>
     <div className={cx('ps-modal-backdrop', !isOpen && 'is-closing')} aria-hidden={!isOpen || undefined}>
       <div
         ref={modalRef}
@@ -123,5 +126,6 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
         </div>
       </div>
     </div>
+    </InPortal>
   );
 }

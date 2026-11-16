@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { IconCheck, IconChevronLeft, IconChevronRight, IconClose } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
+import { usePortalContainer } from '../../lib/portal';
+import { deepActiveElement } from '../../lib/shadowDom';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 
@@ -109,6 +111,7 @@ function placeCard(box: Box, cardW: number, cardH: number): CardPos {
  */
 export function Tour({ open, steps, chapters = [], onClose, mark, labels: ownLabels }: TourProps) {
   const labels = useLabels(ownLabels);
+  const portalContainer = usePortalContainer();
   const [index, setIndex] = useState(0);
   const [box, setBox] = useState<Box>(centerBox);
   const [cardPos, setCardPos] = useState<CardPos | null>(null);
@@ -213,7 +216,7 @@ export function Tour({ open, steps, chapters = [], onClose, mark, labels: ownLab
       else if (e.key === 'Tab') {
         const list = Array.from(cardRef.current?.querySelectorAll<HTMLElement>('button') || []);
         if (list.length) {
-          const i = list.indexOf(document.activeElement as HTMLElement);
+          const i = list.indexOf(deepActiveElement() as HTMLElement);
           list[e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i + 1) % list.length].focus();
         }
       } else if ((e.key === 'Enter' || e.key === ' ') && onButton) {
@@ -299,6 +302,6 @@ export function Tour({ open, steps, chapters = [], onClose, mark, labels: ownLab
         </div>
       </div>
     </div>,
-    document.body,
+    portalContainer ?? document.body,
   );
 }
