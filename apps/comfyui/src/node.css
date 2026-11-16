@@ -214,3 +214,6 @@
 .pastel-about-note strong { color: var(--ps-text-1); }
 .pastel-about-links { display: flex; flex-direction: column; gap: var(--ps-space-2); }
 .pastel-about-fine { color: var(--ps-text-3); font-size: var(--ps-font-size-sm); }
+
+/* The update card sits in Settings, not in a corner: flat and full width. */
+.pastel-update-card { width: auto; background: var(--ps-surface-2); box-shadow: none; }

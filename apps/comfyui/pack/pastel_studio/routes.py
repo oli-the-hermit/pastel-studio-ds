@@ -2,17 +2,20 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
 
 from aiohttp import web
 from server import PromptServer
 
 from .prompt_library import PROMPTS_DIR, build_export, saved_prompt_files
+from .updates import UpdateChecker
 
 
 def register_routes() -> None:
     routes = PromptServer.instance.routes
     user_manager = PromptServer.instance.user_manager
+    updates = UpdateChecker()
 
     @routes.get("/pastel/prompts/export")
     async def export_prompts(request):
@@ -28,3 +31,10 @@ def register_routes() -> None:
             content_type="application/zip",
             headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
+
+    @routes.get("/pastel/update")
+    async def check_update(request):
+        force = request.rel_url.query.get("force") == "1"
+        # urllib blocks: run it off the event loop so ComfyUI stays responsive.
+        result = await asyncio.get_running_loop().run_in_executor(None, updates.check, force)
+        return web.json_response(result)

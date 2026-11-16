@@ -1,0 +1,21 @@
+[project]
+name = "comfyui-pastel-studio"
+description = "Pastel Studio nodes for ComfyUI: a Markdown prompt editor with a prompt library, built with the Pastel Studio design system."
+# Keep in step with apps/comfyui/package.json (a test checks it).
+version = "0.1.0"
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/oli-the-hermit/pastel-studio-ds"
+Documentation = "https://github.com/oli-the-hermit/pastel-studio-ds/tree/main/apps/comfyui"
+"Bug Tracker" = "https://github.com/oli-the-hermit/pastel-studio-ds/issues"
+
+[tool.comfy]
+# Your Comfy Registry publisher (registry.comfy.org). The release workflow skips publishing to the
+# Registry while this is empty.
+PublisherId = ""
+DisplayName = "Pastel Studio"
+Icon = ""
+# The built front end is gitignored in the repository; the published pack must carry it.
+includes = ["web"]

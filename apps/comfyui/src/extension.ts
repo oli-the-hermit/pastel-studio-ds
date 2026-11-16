@@ -5,6 +5,7 @@ import { app, type ComfyNode } from './comfy';
 import { links } from './lib/about';
 import { loadSettings, settingDefinitions } from './lib/settings';
 import { startTheming } from './lib/theme';
+import { checkForUpdate } from './lib/updates';
 import { createShadowHost } from './mount/shadowHost';
 import { createValueStore } from './mount/valueStore';
 import { PromptNode } from './nodes/PromptNode';
@@ -21,6 +22,7 @@ app.registerExtension({
   setup() {
     loadSettings();
     startTheming();
+    void checkForUpdate();
   },
   getCustomWidgets: () => ({
     // Inputs declared as PASTEL_PROMPT in Python get this widget instead of a default one.

@@ -34,6 +34,7 @@ import { MARKDOWN_TYPE, ZIP_TYPE, saveFileAs } from '../lib/files';
 import { exportPrompts, savePrompt } from '../lib/prompts';
 import { useAvatar } from '../lib/avatar';
 import { useSettings } from '../lib/settings';
+import { takeAnnouncement, useUpdate } from '../lib/updates';
 import { useStoreValue, type ValueStore } from '../mount/valueStore';
 import { AboutView } from '../panels/AboutView';
 import { AppearanceView } from '../panels/AppearanceView';
@@ -66,6 +67,7 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
   const settings = useSettings();
   const avatar = useAvatar(settings.avatarVersion);
   const [accountView, setAccountView] = useState<string | null>(null);
+  const update = useUpdate();
   const { openMenu, element: contextMenu } = useContextMenuState();
   const onReady = useCallback((e: Editor | null) => setEditor(e), []);
   const onError = useCallback((message: string) => showToast(message, 'error'), [showToast]);
@@ -215,6 +217,11 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
     editor?.view.dom.setAttribute('spellcheck', String(settings.spellcheck));
   }, [editor, settings.spellcheck]);
 
+  // One node says an update is ready, once per page; every badge keeps a dot for it.
+  useEffect(() => {
+    if (update.status === 'available' && update.latest && takeAnnouncement()) showToast(labels.updates.toast(update.latest), 'info');
+  }, [update, showToast]);
+
   const words = wordCount(editor);
   const dirty = savedText !== null && savedText !== markdown;
 
@@ -233,7 +240,7 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
         <MenuBar menus={menus} />
         <AccountMenu
           compact
-          profile={{ name: settings.profileName || labels.account.you, avatar }}
+          profile={{ name: settings.profileName || labels.account.you, avatar, marker: update.status === 'available' ? labels.updates.marker : undefined }}
           view={accountView}
           onViewChange={setAccountView}
           views={[
@@ -252,7 +259,7 @@ export default function PromptNodeUI({ store, nameStore }: { store: ValueStore; 
               ),
             },
             { key: 'appearance', label: labels.account.appearance, icon: <IconPalette size={16} />, render: () => <AppearanceView /> },
-            { key: 'settings', label: labels.account.settings, icon: <IconSettings size={16} />, render: () => <SettingsView /> },
+            { key: 'settings', label: labels.account.settings, icon: <IconSettings size={16} />, render: () => <SettingsView onMessage={(message) => showToast(message, 'info')} /> },
           ]}
         />
       </div>

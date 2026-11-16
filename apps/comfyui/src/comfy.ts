@@ -47,6 +47,7 @@ export interface ComfyApp {
   extensionManager?: {
     toast?: { add: (t: { severity: string; summary: string; detail?: string; life?: number }) => void };
     setting?: { get: (id: string) => unknown; set: (id: string, value: unknown) => Promise<void> };
+    command?: { execute: (id: string) => Promise<void> };
     colorPalette?: { getActiveColorPalette?: () => { id?: string; light_theme?: boolean } | undefined };
   };
   /** The legacy settings dialog: still an EventTarget that fires "<setting id>.change". */

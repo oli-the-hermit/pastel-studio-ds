@@ -20,6 +20,8 @@ export interface PastelSettings {
   textSize: TextSize;
   spellcheck: boolean;
   showFormatBar: boolean;
+  /** Ask GitHub once a day whether a newer release exists: the pack's only internet request. */
+  checkUpdates: boolean;
 }
 
 const DEFAULTS: PastelSettings = {
@@ -31,6 +33,7 @@ const DEFAULTS: PastelSettings = {
   textSize: 'md',
   spellcheck: true,
   showFormatBar: true,
+  checkUpdates: true,
 };
 
 const IDS: Record<keyof PastelSettings, string> = {
@@ -42,6 +45,7 @@ const IDS: Record<keyof PastelSettings, string> = {
   textSize: 'PastelStudio.TextSize',
   spellcheck: 'PastelStudio.Spellcheck',
   showFormatBar: 'PastelStudio.ShowFormatBar',
+  checkUpdates: 'PastelStudio.CheckUpdates',
 };
 
 /** A stored value of the right kind, or the default (settings files can be edited by hand). */
