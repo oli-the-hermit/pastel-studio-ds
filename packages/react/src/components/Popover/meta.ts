@@ -22,7 +22,8 @@ export const meta: ComponentMeta = {
     'It opens below its anchor and flips above when there is no room below.',
     'It renders at the end of `<body>`, in the document of its anchor, so it is never clipped. It takes the theme of the place it opened from.',
     'It does not move focus. Whatever opens it decides where focus goes, and gives it back on Escape.',
-    'A press outside closes it. A popover opened at a point also closes on scroll and resize.',
+    'A press outside closes it. Scrolling inside it never closes it. A popover opened at a point closes when the page, or whatever holds what was right-clicked, scrolls, and is placed again when the window is resized.',
+    'Opened at a point, it slides to stay whole rather than shrinking; only a panel taller than the window scrolls, or with `columns` spreads into columns.',
   ],
   related: ['Menu', 'ContextMenu'],
 };
