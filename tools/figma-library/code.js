@@ -1267,6 +1267,152 @@ async function buildMedia() {
   }
 }
 
+// ══ 6. Layouts: the file views, sortable rows, the file dialog, the app shell ══
+async function buildLayouts() {
+  startRow();
+  const elev = (await figma.getLocalEffectStylesAsync()).find(s => s.name === 'elevation/overlay');
+  // Details columns in the code's proportions (2.6 : 1.7 : 1.3 : 0.7) over a 720 row
+  const COLS = [272, 178, 136, 74];
+  const cell = (w, name) => { const f = auto('HORIZONTAL', name); f.counterAxisAlignItems = 'CENTER'; f.resize(w, 20); f.primaryAxisSizingMode = 'FIXED'; return f; };
+
+  if (!exists('FileView')) {
+    const vs = [];
+    for (const [st, bg, fg, sub] of [['Default', null, 'text/1', 'text/2'], ['Hover', 'row/hover', 'text/1', 'text/2'], ['Selected', 'accent/container', 'accent/on-container', 'accent/on-container']]) {
+      const c = comp('HORIZONTAL', `State=${st}`); c.counterAxisAlignItems = 'CENTER'; c.resize(720, 40); c.primaryAxisSizingMode = 'FIXED';
+      await bindNum(c, 'height', 'size/row-height'); await pad(c, null, 'space/12', null, 'space/12'); await bindNum(c, 'itemSpacing', 'space/12'); await radius(c, 'radius/md');
+      if (bg) c.fills = [await paint(bg)];
+      const nameCell = cell(COLS[0], 'Name'); await bindNum(nameCell, 'itemSpacing', 'space/10'); c.appendChild(nameCell);
+      const fi = variantOf('FileIcon', 'Kind=File, Size=md').createInstance(); nameCell.appendChild(fi); if (st === 'Selected') await recolor(fi, sub);
+      const nm = await text('IMG_0042.jpg', 'sm/Medium', fg, 'Label'); nameCell.appendChild(nm); fill(nm); nm.textTruncation = 'ENDING';
+      for (const [i, [label, value]] of [['Modified', '12 Nov 2026, 18:04'], ['Type', 'JPEG image'], ['Size', '3.1 MB']].entries()) {
+        const k = cell(COLS[i + 1], label); if (label === 'Size') k.primaryAxisAlignItems = 'MAX'; c.appendChild(k);
+        const t = await text(value, 'sm/Regular', sub, label); k.appendChild(t); t.textTruncation = 'ENDING';
+      }
+      vs.push(c);
+    }
+    const row = figma.combineAsVariants(vs, page); row.name = 'FileRow';
+    row.description = 'A row of the details view: 40 tall, radius md, columns name (icon and sm/Medium), modified, type and size (text/2, tabular). Hover row/hover; selected the accent container.';
+    const k = row.addComponentProperty('Name', 'TEXT', 'IMG_0042.jpg');
+    for (const c of row.children) c.findOne(n => n.name === 'Label').componentPropertyReferences = { characters: k };
+    column(row, 12);
+    // Header
+    const head = comp('HORIZONTAL', 'FileHeader'); head.counterAxisAlignItems = 'CENTER'; head.resize(720, 34); head.primaryAxisSizingMode = 'FIXED';
+    await bindNum(head, 'height', 'size/button-height-sm'); await pad(head, null, 'space/12', null, 'space/12'); await bindNum(head, 'itemSpacing', 'space/12');
+    for (const [i, label] of ['Name', 'Modified', 'Type', 'Size'].entries()) {
+      const k2 = cell(COLS[i], label); if (label === 'Size') k2.primaryAxisAlignItems = 'MAX'; await bindNum(k2, 'itemSpacing', 'space/4'); head.appendChild(k2);
+      k2.appendChild(await text(label, 'xs/SemiBold', i === 0 ? 'text/1' : 'text/2', 'Label'));
+      if (i === 0) k2.appendChild(await iconInst('ArrowDown', 'text/1', 12, 'Sorted'));
+    }
+    head.description = 'The details view’s column heads: xs/SemiBold text/2; the sorted one in text/1 with its arrow. Click a head to sort.';
+    // A whole details view
+    const view = comp('VERTICAL', 'FileView (details)'); view.resize(720, 100); view.primaryAxisSizingMode = 'AUTO'; await bindNum(view, 'itemSpacing', 'space/1');
+    view.appendChild(head.createInstance());
+    const files = [['Folder', 'Trips', '3 Nov 2026, 10:12', 'Folder', ''], ['Folder', 'Studio', '1 Nov 2026, 09:40', 'Folder', ''], ['File', 'IMG_0042.jpg', '12 Nov 2026, 18:04', 'JPEG image', '3.1 MB'], ['File', 'IMG_0043.jpg', '12 Nov 2026, 18:05', 'JPEG image', '2.8 MB'], ['File', 'clip_01.mp4', '14 Nov 2026, 21:30', 'MP4 video', '58 MB']];
+    for (const [kind, name, mod, type, size] of files) {
+      const r = row.children.find(c => c.name === `State=${name === 'IMG_0042.jpg' ? 'Selected' : 'Default'}`).createInstance(); view.appendChild(r);
+      prop(r, 'Name', name);
+      const set = (n, val) => { const t = r.findOne(x => x.type === 'TEXT' && x.name === n); if (t) t.characters = val; };
+      set('Modified', mod); set('Type', type); set('Size', size);
+      if (kind === 'Folder') { const fi = r.findOne(x => x.type === 'INSTANCE' && x.name.includes('Kind=')) || r.findOne(x => x.type === 'INSTANCE'); if (fi) fi.swapComponent(variantOf('FileIcon', 'Kind=Folder, Size=md')); }
+    }
+    view.description = 'The details view: the column heads, then FileRows 1 apart.';
+    await section('FileView', [row, head, view]);
+  }
+
+  if (!exists('File list, tiles and icons')) {
+    // List: dense rows in columns
+    const li = comp('HORIZONTAL', 'FileListItem'); li.counterAxisAlignItems = 'CENTER'; li.resize(220, 28); li.primaryAxisSizingMode = 'FIXED';
+    await bindNum(li, 'width', 'size/file-list-col'); await bindNum(li, 'height', 'size/button-height-xs'); await pad(li, null, 'space/8', null, 'space/8'); await bindNum(li, 'itemSpacing', 'space/8'); await radius(li, 'radius/md');
+    li.appendChild(variantOf('FileIcon', 'Kind=File, Size=md').createInstance());
+    const ln = await text('IMG_0042.jpg', 'sm/Medium', 'text/1', 'Label'); li.appendChild(ln); fill(ln); ln.textTruncation = 'ENDING';
+    ln.componentPropertyReferences = { characters: li.addComponentProperty('Name', 'TEXT', 'IMG_0042.jpg') };
+    li.description = 'The list view: dense rows (28) in columns of 220. Hover row/hover; selected the accent container.';
+    // Tiles: cards with type and size
+    const tile = comp('HORIZONTAL', 'FileTile'); tile.counterAxisAlignItems = 'CENTER'; tile.resize(232, 84); tile.primaryAxisSizingMode = 'FIXED';
+    await bindNum(tile, 'width', 'size/file-tile-width'); await pad(tile, 'space/10', 'space/12', 'space/10', 'space/12'); await bindNum(tile, 'itemSpacing', 'space/12'); await radius(tile, 'radius/md');
+    tile.appendChild(variantOf('FileIcon', 'Kind=File, Size=xl').createInstance());
+    const tc = auto('VERTICAL', 'Text'); await bindNum(tc, 'itemSpacing', 'space/1'); tile.appendChild(tc); fill(tc);
+    const tn = await text('IMG_0042.jpg', 'sm/SemiBold', 'text/1', 'Label'); tc.appendChild(tn); fill(tn); tn.textTruncation = 'ENDING';
+    const tm = await text('JPEG image · 3.1 MB', 'xs/Medium', 'text/2', 'Meta'); tc.appendChild(tm); fill(tm); tm.textTruncation = 'ENDING';
+    tn.componentPropertyReferences = { characters: tile.addComponentProperty('Name', 'TEXT', 'IMG_0042.jpg') };
+    tm.componentPropertyReferences = { characters: tile.addComponentProperty('Meta', 'TEXT', 'JPEG image · 3.1 MB') };
+    tile.description = 'The tiles view: a 64 icon tile, the name sm/SemiBold and its type and size (xs, text/2), in cards 232 wide.';
+    // Icons: a grid of large icons
+    const ic = comp('VERTICAL', 'FileIconCell'); ic.counterAxisAlignItems = 'CENTER'; ic.resize(112, 120); ic.primaryAxisSizingMode = 'AUTO';
+    await bindNum(ic, 'width', 'size/file-icon-cell'); await pad(ic, 'space/14', 'space/8', 'space/10', 'space/8'); await bindNum(ic, 'itemSpacing', 'space/8'); await radius(ic, 'radius/md');
+    ic.appendChild(variantOf('FileIcon', 'Kind=Folder, Size=xl').createInstance());
+    const icn = await text('Trips', 'sm/Medium', 'text/1', 'Label'); ic.appendChild(icn); fill(icn); icn.textAlignHorizontal = 'CENTER'; icn.textAutoResize = 'HEIGHT'; icn.maxLines = 2; icn.textTruncation = 'ENDING';
+    icn.componentPropertyReferences = { characters: ic.addComponentProperty('Name', 'TEXT', 'Trips') };
+    ic.description = 'The icons view: a large icon over its name (two lines at most), cells 112 wide.';
+    await section('File list, tiles and icons', [li, tile, ic]);
+  }
+
+  if (!exists('SortableList')) {
+    const vs = [];
+    for (const [st, bg, fg] of [['Default', 'row/bg', 'text/1'], ['Hover', 'row/hover', 'text/1'], ['Dragging', 'surface/3', 'text/3']]) {
+      const c = comp('HORIZONTAL', `State=${st}`); c.counterAxisAlignItems = 'CENTER'; c.resize(420, 48); c.primaryAxisSizingMode = 'FIXED';
+      await pad(c, 'space/8', 'space/8', 'space/8', 'space/10'); /* --ps-grip-edge is 10 */ await bindNum(c, 'itemSpacing', 'space/12'); await radius(c, 'radius/md'); c.fills = [await paint(bg)];
+      c.appendChild(await iconInst('Grip', 'structure/grip', null, 'Grip'));
+      const t = await text('Holidays', 'md/Regular', fg, 'Label'); c.appendChild(t); fill(t);
+      const x = variantOf('IconButton', 'Size=xs, State=Default').createInstance(); prop(x, 'Icon', icon('Close').id); c.appendChild(x);
+      vs.push(c);
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'SortableItem';
+    set.description = 'A row to drag into order: row/bg (hover row/hover), radius md, the grip in structure/grip at its start. While dragged it is surface/3 and dimmed; where it would land, a 3px accent line.';
+    const k = set.addComponentProperty('Label', 'TEXT', 'Holidays');
+    for (const c of set.children) c.findOne(n => n.name === 'Label').componentPropertyReferences = { characters: k };
+    await section('SortableList', [column(set, 6)]);
+  }
+
+  startRow();
+  if (!exists('FileDialog')) {
+    const d = comp('VERTICAL', 'FileDialog'); d.resize(1040, 680); d.primaryAxisSizingMode = 'FIXED'; d.counterAxisSizingMode = 'FIXED';
+    await bindNum(d, 'width', 'size/file-dialog-width'); await bindNum(d, 'height', 'size/file-dialog-height');
+    await radius(d, 'radius/3xl'); d.fills = [await paint('surface/1')]; d.clipsContent = true; if (elev) await d.setEffectStyleIdAsync(elev.id);
+    const head = auto('HORIZONTAL', 'Header'); head.counterAxisAlignItems = 'CENTER'; d.appendChild(head); fill(head);
+    await pad(head, 'space/22', 'space/18', 'space/6', 'space/28'); await bindNum(head, 'itemSpacing', 'space/12');
+    const title = await text('Choose a folder', 'xl/Bold', 'text/1', 'Title'); head.appendChild(title); fill(title);
+    const close = variantOf('IconButton', 'Size=sm, State=Default').createInstance(); prop(close, 'Icon', icon('Close').id); head.appendChild(close);
+    const body = auto('VERTICAL', 'Body'); d.appendChild(body); fill(body); body.layoutSizingVertical = 'FILL';
+    await pad(body, 'space/14', 'space/28', 'space/28', 'space/28'); await bindNum(body, 'itemSpacing', 'space/12');
+    const top = auto('HORIZONTAL', 'Top'); top.counterAxisAlignItems = 'CENTER'; await bindNum(top, 'itemSpacing', 'space/8'); body.appendChild(top); fill(top);
+    for (const ic of ['Back', 'Forward', 'ArrowUp']) { const b = variantOf('IconButton', 'Size=md, State=Default').createInstance(); prop(b, 'Icon', icon(ic).id); top.appendChild(b); }
+    const addr = find('AddressBar').createInstance(); top.appendChild(addr); fill(addr);
+    const search = variantOf('SearchField', 'Filled=False').createInstance(); top.appendChild(search); search.resize(240, search.height);
+    const main = auto('HORIZONTAL', 'Main'); await bindNum(main, 'itemSpacing', 'space/10'); body.appendChild(main); fill(main); main.layoutSizingVertical = 'FILL';
+    const places = auto('VERTICAL', 'Places'); places.resize(220, 100); places.counterAxisSizingMode = 'FIXED'; await bindNum(places, 'width', 'size/file-dialog-places');
+    await pad(places, 'space/8', 'space/6', 'space/8', 'space/6'); await radius(places, 'radius/2xl'); places.fills = [await paint('surface/bg')]; main.appendChild(places); places.layoutSizingVertical = 'FILL';
+    for (const [label, ic, sel] of [['Pictures', 'Folder', false], ['Photos (D:)', 'Drive', true], ['Documents', 'Folder', false]]) {
+      const r = variantOf('TreeItem', `State=${sel ? 'Selected' : 'Default'}, Twisty=${sel ? 'Open' : 'Closed'}`).createInstance(); places.appendChild(r); fill(r); prop(r, 'Label', label); prop(r, 'Icon', icon(ic).id);
+    }
+    const filesPanel = auto('VERTICAL', 'Files'); await pad(filesPanel, 'space/8', 'space/8', 'space/8', 'space/8'); await radius(filesPanel, 'radius/2xl'); filesPanel.fills = [await paint('surface/bg')];
+    main.appendChild(filesPanel); fill(filesPanel); filesPanel.layoutSizingVertical = 'FILL'; filesPanel.clipsContent = true;
+    const fv = find('FileView (details)').createInstance(); filesPanel.appendChild(fv); fill(fv);
+    const foot = auto('HORIZONTAL', 'Footer'); foot.counterAxisAlignItems = 'MAX'; await bindNum(foot, 'itemSpacing', 'space/12'); body.appendChild(foot); fill(foot);
+    const nameField = variantOf('Field', 'Error=False').createInstance(); foot.appendChild(nameField); fill(nameField); prop(nameField, 'Label', 'Folder'); prop(nameField, 'Show note', false);
+    const actions = auto('HORIZONTAL', 'Actions'); await bindNum(actions, 'itemSpacing', 'space/8'); foot.appendChild(actions);
+    for (const [st, label] of [['Secondary', 'Cancel'], ['Primary', 'Choose']]) { const b = variantOf('Button', `Style=${st}, Size=md`).createInstance(); prop(b, 'Label', label); actions.appendChild(b); }
+    title.componentPropertyReferences = { characters: d.addComponentProperty('Title', 'TEXT', 'Choose a folder') };
+    d.description = 'Choosing a file or folder: a fixed-size dialog (1040×680). The top row (navigation, address, search), places (220) and files on the page background, then the name and the actions.';
+    await section('FileDialog', [d], 'surface/bg');
+  }
+
+  if (!exists('AppShell')) {
+    const shell = comp('HORIZONTAL', 'AppShell'); shell.resize(1280, 800); shell.primaryAxisSizingMode = 'FIXED'; shell.counterAxisSizingMode = 'FIXED';
+    shell.fills = [await paint('surface/bg')]; shell.clipsContent = true;
+    const nav = auto('VERTICAL', 'Nav'); await pad(nav, 'space/16', null, 'space/16', 'space/16'); shell.appendChild(nav); nav.layoutSizingVertical = 'FILL';
+    const drawer = find('Drawer (expanded)').createInstance(); nav.appendChild(drawer); drawer.layoutSizingVertical = 'FILL';
+    const col = auto('VERTICAL', 'Column'); shell.appendChild(col); fill(col); col.layoutSizingVertical = 'FILL';
+    const top = find('TopBar').createInstance(); col.appendChild(top); fill(top);
+    const main = auto('VERTICAL', 'Page'); await pad(main, 'space/4', 'space/16', 'space/16', 'space/16'); col.appendChild(main); fill(main); main.layoutSizingVertical = 'FILL';
+    const slot = auto('VERTICAL', 'Page content (replace)'); slot.primaryAxisAlignItems = 'CENTER'; slot.counterAxisAlignItems = 'CENTER';
+    await radius(slot, 'radius/3xl'); slot.fills = [await paint('surface/1')]; main.appendChild(slot); fill(slot); slot.layoutSizingVertical = 'FILL';
+    slot.appendChild(await text('The page goes here', 'md/Regular', 'text/3', 'Placeholder'));
+    shell.description = 'The window: the drawer floats at the left inside the page margin (16; 20 from 1024 wide, 24 from 1920), beside it the top bar and the page; only the page scrolls. Put a screen in "Page content".';
+    await section('AppShell', [shell], 'surface/bg');
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
 async function main() {
@@ -1295,6 +1441,8 @@ async function main() {
   await buildApp();
   progress('Building media pieces…');
   await buildMedia();
+  progress('Building layouts…');
+  await buildLayouts();
   await buildSample();
 }
 
