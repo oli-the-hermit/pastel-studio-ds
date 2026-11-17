@@ -7,6 +7,7 @@ import { typeLabel, type FsEntry } from '../../lib/fs';
 import type { FileViewMode, SelectMode, SortKey, SortState } from '../../lib/useFileBrowser';
 import { FileIcon } from '../FileIcon';
 import { ProgressBar } from '../ProgressBar';
+import { Tooltip } from '../Tooltip';
 
 /** A command from the keyboard, for the app to carry out. */
 export type FileCommand = 'delete' | 'rename' | 'up' | 'back' | 'forward' | 'copy' | 'cut' | 'paste';
@@ -150,7 +151,9 @@ export const FileView = forwardRef<HTMLDivElement, FileViewProps>(({
         onBlur={(e) => onRenameCommit?.(entry.id, e.currentTarget.value.trim() || entry.name)}
       />
     ) : (
-      <span className="ps-file-view-name" title={entry.name}>{entry.name}</span>
+      <Tooltip label={entry.name} onlyWhenClipped>
+        <span className="ps-file-view-name">{entry.name}</span>
+      </Tooltip>
     );
 
   const free = (entry: FsEntry) => labels.freeOf.replace('{free}', formatBytes(entry.free ?? 0)).replace('{total}', formatBytes(entry.capacity ?? 0));

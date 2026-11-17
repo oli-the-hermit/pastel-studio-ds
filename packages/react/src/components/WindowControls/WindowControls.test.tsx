@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { LabelsProvider } from '../../labels';
 import { WindowButton, WindowControls } from './WindowControls';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 describe('WindowControls', () => {
   it('is a group of three named buttons that report what was pressed', async () => {
@@ -43,7 +44,7 @@ describe('WindowButton', () => {
     render(<WindowButton label="Pin"><svg /></WindowButton>);
     const button = screen.getByRole('button', { name: 'Pin' });
     expect(button.getAttribute('type')).toBe('button');
-    expect(button.getAttribute('title')).toBe('Pin');
+    expect(tooltipText(button)).toBe('Pin');
   });
 
   it('is a toggle with aria-pressed and the active look only when pressed is given', () => {

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { cx } from '../../lib/cx';
+import { Tooltip } from '../Tooltip';
 
 export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   /** The element: `section`, `aside` or `article` make it a landmark or a self-contained item. */
@@ -34,7 +35,11 @@ export interface CardHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 /** A card's large header: a title (with an optional overline and subtitle row) and trailing actions. */
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ title, titleTooltip, overline, titleAddon, subtitle, actions, aside, className, ...rest }, ref) => {
-    const heading = <h2 className="ps-card-title" title={titleTooltip}>{title}</h2>;
+    const heading = (
+      <Tooltip label={titleTooltip} disabled={!titleTooltip}>
+        <h2 className="ps-card-title">{title}</h2>
+      </Tooltip>
+    );
     return (
       <div ref={ref} className={cx('ps-card-header', className)} {...rest}>
         <div className="ps-card-header-main">

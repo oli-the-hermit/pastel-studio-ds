@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { LabelsProvider } from '../../labels';
 import { isBlockingOverlayOpen } from '../../lib/overlays';
 import { Menu, tidyMenuItems, type MenuItem } from './Menu';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 const noop = () => {};
 const items = (onSelect: (key: string) => void = noop): MenuItem[] => [
@@ -49,7 +50,7 @@ describe('Menu', () => {
     rerender(<LabelsProvider labels={{ moreActions: 'Más acciones' }}><Menu items={items()} labels={{ moreActions: 'Row actions' }} /></LabelsProvider>);
     expect(trigger().getAttribute('aria-label')).toBe('Row actions');
     rerender(<Menu items={items()} ariaLabel="List actions" />);
-    expect(trigger().getAttribute('title')).toBe('List actions');
+    expect(tooltipText(trigger())).toBe('List actions');
   });
 
   it('picks an item, closes, and leaves a disabled item alone', async () => {

@@ -4,6 +4,7 @@ import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { useControllable } from '../../lib/useControllable';
 import { Menu, type MenuItem } from '../Menu';
+import { Tooltip } from '../Tooltip';
 
 export interface NavRailItem {
   key: string;
@@ -99,15 +100,19 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
       {(brand || onToggle) && (
         <div className="ps-nav-rail-head">
           {brand && onToggle && (
-            <button type="button" className="ps-nav-rail-brand is-toggle" aria-label={toggleLabel} title={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
-              {brand.mark}
-            </button>
+            <Tooltip label={toggleLabel}>
+              <button type="button" className="ps-nav-rail-brand is-toggle" aria-label={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
+                {brand.mark}
+              </button>
+            </Tooltip>
           )}
           {brand && !onToggle && <div className="ps-nav-rail-brand" title={brand.name}>{brand.mark}</div>}
           {!brand && onToggle && (
-            <button type="button" className="ps-nav-rail-toggle" aria-label={toggleLabel} title={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
-              <IconSidebar size={16} />
-            </button>
+            <Tooltip label={toggleLabel}>
+              <button type="button" className="ps-nav-rail-toggle" aria-label={toggleLabel} aria-expanded={expanded} onClick={onToggle}>
+                <IconSidebar size={16} />
+              </button>
+            </Tooltip>
           )}
           {expanded && brand && <span className="ps-nav-rail-brand-name">{brand.name}</span>}
         </div>
@@ -117,22 +122,23 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
         {items.map((item) => {
           const active = item.key === activeKey;
           return (
-            <button
-              key={item.key}
-              type="button"
-              className={cx('ps-nav-rail-item', active && 'is-active')}
-              data-key={item.key}
-              title={expanded ? undefined : item.label}
-              aria-current={active ? 'page' : undefined}
-              onClick={() => onSelect(item.key)}
-            >
-              <span className="ps-nav-rail-indicator">
-                {active && <span className="ps-nav-rail-pill" aria-hidden="true" />}
-                {item.icon}
-                {!!item.badge && <span className="ps-nav-rail-badge" aria-label={item.badgeLabel}>{item.badge}</span>}
-              </span>
-              <span className="ps-nav-rail-label">{item.label}</span>
-            </button>
+            // As a rail only its icon shows, so its name is a tooltip there.
+            <Tooltip key={item.key} label={item.label} disabled={expanded}>
+              <button
+                type="button"
+                className={cx('ps-nav-rail-item', active && 'is-active')}
+                data-key={item.key}
+                aria-current={active ? 'page' : undefined}
+                onClick={() => onSelect(item.key)}
+              >
+                <span className="ps-nav-rail-indicator">
+                  {active && <span className="ps-nav-rail-pill" aria-hidden="true" />}
+                  {item.icon}
+                  {!!item.badge && <span className="ps-nav-rail-badge" aria-label={item.badgeLabel}>{item.badge}</span>}
+                </span>
+                <span className="ps-nav-rail-label">{item.label}</span>
+              </button>
+            </Tooltip>
           );
         })}
       </div>
@@ -151,27 +157,30 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(({
                     <IconChevronDown size={14} className="ps-nav-rail-section-chevron" aria-hidden="true" />
                   </button>
                   {section.action && (
-                    <button type="button" className="ps-nav-rail-section-action" aria-label={section.action.label} title={section.action.label} onClick={section.action.onClick}>
-                      {section.action.icon}
-                    </button>
+                    <Tooltip label={section.action.label}>
+                      <button type="button" className="ps-nav-rail-section-action" aria-label={section.action.label} onClick={section.action.onClick}>
+                        {section.action.icon}
+                      </button>
+                    </Tooltip>
                   )}
                 </div>
                 {isOpen(section.key) && (
                   <div className="ps-nav-rail-places">
                     {section.places.map((place) => (
-                      <button
-                        key={place.key}
-                        type="button"
-                        className={cx('ps-nav-rail-place', place.active && 'is-active')}
-                        data-key={place.key}
-                        title={place.title ?? place.label}
-                        aria-current={place.active ? 'page' : undefined}
-                        onClick={() => onSelect(place.key)}
-                      >
-                        <span className="ps-nav-rail-place-icon">{place.icon}</span>
-                        <span className="ps-nav-rail-place-label">{place.label}</span>
-                        {place.meta != null && <span className="ps-nav-rail-place-meta">{place.meta}</span>}
-                      </button>
+                      // Its `title` (a folder's path) is the tooltip's line; without one, a name cut off by "…" shows whole.
+                      <Tooltip key={place.key} label={place.label} description={place.title} onlyWhenClipped={!place.title}>
+                        <button
+                          type="button"
+                          className={cx('ps-nav-rail-place', place.active && 'is-active')}
+                          data-key={place.key}
+                          aria-current={place.active ? 'page' : undefined}
+                          onClick={() => onSelect(place.key)}
+                        >
+                          <span className="ps-nav-rail-place-icon">{place.icon}</span>
+                          <span className="ps-nav-rail-place-label">{place.label}</span>
+                          {place.meta != null && <span className="ps-nav-rail-place-meta">{place.meta}</span>}
+                        </button>
+                      </Tooltip>
                     ))}
                     {!section.places.length && section.empty && <p className="ps-nav-rail-places-empty">{section.empty}</p>}
                   </div>

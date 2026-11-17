@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { PlayerControl } from './PlayerControl';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 const button = () => screen.getByRole('button');
 
@@ -10,7 +11,7 @@ describe('PlayerControl', () => {
   it('takes its name and tooltip from the label', () => {
     render(<PlayerControl label="Skip"><svg /></PlayerControl>);
     expect(screen.getByRole('button', { name: 'Skip' })).toBe(button());
-    expect(button().getAttribute('title')).toBe('Skip');
+    expect(tooltipText(button())).toBe('Skip');
     expect(button().getAttribute('type')).toBe('button');
     expect(button().className).toBe('ps-player-control');
   });
