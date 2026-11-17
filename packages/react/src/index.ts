@@ -31,6 +31,7 @@ export * from './components/Button';
 export * from './components/IconButton';
 export * from './components/TextButton';
 export * from './components/Popover';
+export * from './components/Combobox';
 export * from './components/Menu';
 export * from './components/MenuBar';
 export * from './components/ContextMenu';

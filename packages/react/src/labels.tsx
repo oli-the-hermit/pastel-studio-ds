@@ -244,6 +244,7 @@ export const defaultLabels = {
   searchIn: 'Search {name}',
   filesIn: 'Files in {name}',
   noResultsFor: 'No results for "{query}".',
+  suggestions: 'Suggestions',
   itemOne: '{count} item',
   itemOther: '{count} items',
   selectedCount: '{count} selected',
