@@ -31,7 +31,11 @@ It runs inside the Figma desktop app, with no network access and no account limi
    - EmptyState, and the drawer, expanded and as a rail.
 6. **Pickers and feedback:** SegmentedControl, Select, Slider, Tabs, ListPicker, Toast, StatusChip
    and Spinner.
-7. **A sample Files screen** made of those components, on a `Mockups` page.
+7. **App and account:**
+   - AccountMenu, and the appearance panel with every accent preset as a ColorSwatch.
+   - FileIcon, Subform, ProgressBar and UpdateCard.
+   - CrashScreen, the Tour card, and MenuBar.
+8. **A sample Files screen** made of those components, on a `Mockups` page.
 
 Only the dark theme is built: Figma's free plan allows one mode per collection.
 
@@ -55,7 +59,7 @@ find, and what it built before that stays.
 
 ## Keep it in step with the code
 
-The plugin's data (tokens, the accent and icons) is written into `code.js` by the generator, from
+The plugin's data (tokens, the accent, the accent presets and icons) is written into `code.js` by the generator, from
 `packages/tokens/src` and `packages/react/src` (the icons are rendered by React itself):
 
 ```
@@ -69,7 +73,7 @@ tokens from the code** (for tokens) or **Build what's missing** (for new icons).
 
 ## Add a component
 
-Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`…) is a list of blocks of
+Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`…) is a list of blocks of
 this shape:
 
 ```js
