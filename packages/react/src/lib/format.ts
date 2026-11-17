@@ -31,3 +31,12 @@ export function formatDuration(seconds: number, locale?: string): string {
   const rest = minutes % 60;
   return rest ? `${unit(Math.floor(minutes / 60), 'hour')} ${unit(rest, 'minute')}` : unit(minutes / 60, 'hour');
 }
+
+/** 45 s, 3 min, 1 hr 12 min: how long is left, rounded the way a person says it. */
+export function formatTimeLeft(seconds: number, locale?: string): string {
+  const s = Number.isFinite(seconds) && seconds > 0 ? seconds : 0;
+  if (s >= 60) return formatDuration(s, locale);
+  // Under a minute: to the next 5 seconds, never 0.
+  const rounded = Math.max(5, Math.ceil(s / 5) * 5);
+  return new Intl.NumberFormat(locale, { style: 'unit', unit: 'second', unitDisplay: 'short' }).format(Math.min(55, rounded));
+}
