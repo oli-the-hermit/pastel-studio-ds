@@ -146,7 +146,12 @@ import * as Icons from ${JSON.stringify(join(root, 'packages/react/src/icons/ico
 const out = {};
 for (const [name, C] of Object.entries(Icons)) {
   if (!name.startsWith('Icon') || typeof C !== 'function') continue;
-  out[name.slice(4)] = renderToStaticMarkup(React.createElement(C, { size: 18 }))
+  // Only the <svg>: a few icons (the drag grip) wrap theirs in a span, which Figma can't import
+  const markup = renderToStaticMarkup(React.createElement(C, { size: 18 }));
+  const from = markup.indexOf('<svg'), to = markup.lastIndexOf('</svg>');
+  if (from < 0 || to < 0) continue;
+  const svg = markup.slice(from, to + '</svg>'.length);
+  out[name.slice(4)] = svg
     .replace(/ aria-hidden="true"/, '').replace(/ class=""/, '').replace(/currentColor/g, '#F1F2EC')
     .replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 }
