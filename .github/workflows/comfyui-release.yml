@@ -1,0 +1,74 @@
+# Releases Pastel Studio for ComfyUI (apps/comfyui) when a tag comfyui-v<version> is pushed.
+#
+# To release: set the same version in apps/comfyui/package.json and apps/comfyui/pack/pyproject.toml
+# (a test fails if they differ), commit, then `git tag comfyui-v0.2.0 && git push origin comfyui-v0.2.0`.
+#
+# It runs the checks, builds the pack, attaches it as a zip to a GitHub Release (what the pack's update
+# check looks for), and publishes it to the Comfy Registry once pack/pyproject.toml has a PublisherId and
+# the repository has a REGISTRY_ACCESS_TOKEN secret. Until then that step says so and is skipped.
+name: ComfyUI release
+
+on:
+  push:
+    tags:
+      - 'comfyui-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - run: npm ci
+
+      - name: The tag matches the pack's version
+        run: |
+          version="${GITHUB_REF_NAME#comfyui-v}"
+          pack="$(node -p "require('./apps/comfyui/package.json').version")"
+          if [ "$version" != "$pack" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME is not the version in apps/comfyui/package.json ($pack)."
+            exit 1
+          fi
+
+      - run: npm run check
+
+      - run: pip install pytest && npm run test:comfyui-py
+
+      - run: npm run build -w @pastel-studio/comfyui
+
+      - name: Zip the pack
+        run: |
+          cd apps/comfyui/pack
+          zip -r "$GITHUB_WORKSPACE/comfyui-pastel-studio-${GITHUB_REF_NAME#comfyui-v}.zip" . -x '*__pycache__*'
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" comfyui-pastel-studio-*.zip \
+            --title "Pastel Studio for ComfyUI ${GITHUB_REF_NAME#comfyui-v}" \
+            --generate-notes
+
+      - name: Comfy Registry
+        env:
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+        run: |
+          if ! grep -Eq '^PublisherId = "[^"]+"' apps/comfyui/pack/pyproject.toml || [ -z "$REGISTRY_ACCESS_TOKEN" ]; then
+            echo "::notice::Skipped the Comfy Registry: set PublisherId in apps/comfyui/pack/pyproject.toml and add the REGISTRY_ACCESS_TOKEN secret."
+            exit 0
+          fi
+          pip install comfy-cli
+          cd apps/comfyui/pack
+          comfy --skip-prompt node publish --token "$REGISTRY_ACCESS_TOKEN"

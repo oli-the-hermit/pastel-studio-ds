@@ -3,6 +3,7 @@ import { IconCopy } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { handleMenuKeyDown, MenuList, tidyMenuItems, type MenuItem } from '../Menu';
 import { Popover, type AnchorPoint } from '../Popover';
+import { deepActiveElement } from '../../lib/shadowDom';
 
 type MaybeItem = MenuItem | false | null | undefined;
 
@@ -72,7 +73,7 @@ export function useContextMenuState(ownLabels?: ContextMenuLabels) {
     ]);
     if (!items.length) return;
     const doc = point.doc || document;
-    setMenu({ point, items, returnFocus: doc.activeElement as HTMLElement | null });
+    setMenu({ point, items, returnFocus: deepActiveElement(doc) as HTMLElement | null });
     setOpen(true);
   }, []);
 

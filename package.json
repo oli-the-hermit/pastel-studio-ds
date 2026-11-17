@@ -22,7 +22,7 @@
   "scripts": {
     "docs": "npm run dev -w @pastel-studio/docs",
     "docs:build": "npm run build -w @pastel-studio/docs",
-    "typecheck": "tsc -p packages/react --noEmit && tsc -p packages/react/tsconfig.consumer.json --noEmit && tsc -p packages/desktop --noEmit && tsc -p packages/catalog --noEmit && tsc -p apps/docs --noEmit",
+    "typecheck": "tsc -p packages/react --noEmit && tsc -p packages/react/tsconfig.consumer.json --noEmit && tsc -p packages/desktop --noEmit && tsc -p packages/catalog --noEmit && tsc -p apps/docs --noEmit && tsc -p apps/comfyui --noEmit",
     "lint": "eslint .",
     "lint:css": "stylelint \"packages/**/*.css\" \"apps/**/*.css\"",
     "check:tokens": "node scripts/tokens/check.ts",
@@ -30,6 +30,7 @@
     "accents": "node scripts/accents/generate.ts",
     "check:accents": "node scripts/accents/generate.ts --check",
     "test": "vitest run",
+    "test:comfyui-py": "python -m pytest apps/comfyui/tests -q",
     "visual:capture": "node scripts/visual/capture.ts",
     "visual:baseline": "node scripts/visual/capture.ts --out documentation/visual/baseline",
     "visual:diff": "node scripts/visual/diff.ts",

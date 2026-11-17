@@ -29,8 +29,8 @@ export interface AccountMenuProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   /** The avatar alone, for the rail; expanded, the badge also shows the name and a chevron. */
   compact?: boolean;
   views: AccountView[];
-  /** The last item, in the danger look: sign out, switch profile. Disabled while its promise runs. */
-  exit: { label: string; icon?: React.ReactNode; onSelect: () => void | Promise<void> };
+  /** The last item, in the danger look: sign out, switch profile. Disabled while its promise runs. Leave it out for a local profile, which has nothing to leave. */
+  exit?: { label: string; icon?: React.ReactNode; onSelect: () => void | Promise<void> };
   /** The open view's key, to control it from outside; null when the dialog is closed. */
   view?: string | null;
   onViewChange?: (key: string | null) => void;
@@ -61,15 +61,15 @@ export const AccountMenu = forwardRef<HTMLDivElement, AccountMenuProps>(({
   const runExit = async () => {
     setBusy(true);
     try {
-      await exit.onSelect();
+      await exit?.onSelect();
     } finally {
       setBusy(false);
     }
   };
   const items: MenuItem[] = [
     ...views.map((v) => ({ key: v.key, label: v.label, icon: v.icon, onSelect: () => setView(v.key) })),
-    { key: 'exit', label: exit.label, icon: exit.icon, danger: true, disabled: busy, onSelect: () => void runExit() },
   ];
+  if (exit) items.push({ key: 'exit', label: exit.label, icon: exit.icon, danger: true, disabled: busy, onSelect: () => void runExit() });
 
   return (
     <div ref={ref} className={cx('ps-account-menu', compact && 'ps-account-menu--compact', className)} {...rest}>

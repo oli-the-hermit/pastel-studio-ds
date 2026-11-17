@@ -45,3 +45,7 @@ Desktop.ini
 tmp/
 *.tmp
 *.bak
+
+# ComfyUI pack: built front end
+apps/comfyui/pack/web/
+__pycache__/

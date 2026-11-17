@@ -329,3 +329,15 @@ is a breaking change.
   same way.
 - `ListRow`, from Pastel Espresso: a row in a list of destinations, such as a Help page. An icon in an accent tile, a
   title (its name) over a description (its description), and a chevron, or an external-link mark with `external`.
+- `MenuBar`: a row of menus at the top of an app or a panel, like File, Edit and Help. The first menu can be the
+  app's own (`brand`, with its mark as `icon`), and `iconOnly` shows just the icon. One menu is open at a time:
+  pointing at another trigger, or ← and → inside an open menu, switches to it. A `menubar` with a roving tabindex.
+- `PortalProvider` and `usePortalContainer`: set where popovers, menus, tours, modals and toasts render. Without it
+  nothing changes. An app inside a shadow root or a transformed element (a node in a graph editor) gives them a
+  container of its own, so they are neither unstyled nor clipped.
+- Popovers, modals, tours and right-click menus work inside a shadow root: closing on a press outside, focus
+  return and the focus trap look past the shadow host, and a popover takes the theme of the place it opened from
+  there too.
+- Text formatting icons, from Pastel Espresso's notes editor: `IconHeading`, `IconBold`, `IconItalic`, `IconStrike`,
+  `IconCode`, `IconLink`, `IconListOrdered`, `IconChecklist`, `IconQuote`, `IconCodeBlock`, `IconUndo`, `IconRedo`.
+- `AccountMenu`: `exit` is optional. A local profile, with nothing to sign out of, leaves it out.

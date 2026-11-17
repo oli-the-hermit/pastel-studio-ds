@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { cssDurationMs } from '../../lib/css';
 import { cx } from '../../lib/cx';
 import { useBlockingOverlay } from '../../lib/overlays';
+import { usePortalContainer } from '../../lib/portal';
+import { deepElementFromPoint, eventIsInside } from '../../lib/shadowDom';
 
 /** A viewport point to anchor to instead of an element (right-click menus). */
 export interface AnchorPoint {
@@ -69,6 +71,7 @@ export function Popover({
   ariaLabel,
 }: PopoverProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const portalContainer = usePortalContainer();
   const [pos, setPos] = useState<Position | null>(null);
   // Stays true after `open` turns false while the exit (--ps-dur-1 in popover.css) plays.
   const [mounted, setMounted] = useState(open);
@@ -112,8 +115,9 @@ export function Popover({
     left = Math.min(Math.max(VIEWPORT_MARGIN, left), win.innerWidth - panelWidth - VIEWPORT_MARGIN);
     const top = placement === 'below' ? rect.bottom + gap : rect.top - gap - height;
 
-    // The panel lives in <body>, outside any themed region its anchor may be in.
-    const origin = anchorPoint ? doc.elementFromPoint?.(anchorPoint.x, anchorPoint.y) : anchorRef?.current;
+    // The panel lives outside any themed region its anchor may be in (in <body> or a
+    // PortalProvider's container), so it takes the anchor's theme.
+    const origin = anchorPoint ? deepElementFromPoint(doc, anchorPoint.x, anchorPoint.y) : anchorRef?.current;
     const theme = origin?.closest('[data-theme]')?.getAttribute('data-theme') ?? undefined;
 
     setPos({ top, left, maxHeight, minWidth: matchWidth ? rect.width : 0, placement, theme });
@@ -149,9 +153,8 @@ export function Popover({
     const win = doc.defaultView || window;
 
     const handlePointerDown = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Node;
-      if (panelRef.current?.contains(target)) return;
-      if (anchorRef?.current?.contains(target)) return;
+      if (eventIsInside(e, panelRef.current)) return;
+      if (eventIsInside(e, anchorRef?.current)) return;
       onCloseRef.current();
     };
 
@@ -212,7 +215,8 @@ export function Popover({
     >
       {children}
     </div>,
-    getDoc().body
+    // A PortalProvider's container, unless the anchor is in another window (Picture-in-Picture).
+    portalContainer && portalContainer.ownerDocument === getDoc() ? portalContainer : getDoc().body
   );
 }
 

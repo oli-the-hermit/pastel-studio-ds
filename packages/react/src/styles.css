@@ -25,6 +25,7 @@
 @import url('./components/TextButton/text-button.css') layer(ps.components);
 @import url('./components/Popover/popover.css') layer(ps.components);
 @import url('./components/Menu/menu.css') layer(ps.components);
+@import url('./components/MenuBar/menu-bar.css') layer(ps.components);
 @import url('./components/Modal/modal.css') layer(ps.components);
 @import url('./components/Card/card.css') layer(ps.components);
 @import url('./components/EmptyState/empty-state.css') layer(ps.components);

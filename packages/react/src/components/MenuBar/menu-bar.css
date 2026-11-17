@@ -1,0 +1,30 @@
+/* ── MenuBar: a row of menus (File, Edit, Help) ───────────────
+   Triggers look like text buttons; the open one keeps its fill while its menu is up. */
+.ps-menubar {
+  --ps-menubar-hover: var(--ps-surface-3);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-1);
+  min-width: 0;
+}
+.ps-menubar-trigger {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-6);
+  min-height: var(--ps-icon-button-size-sm);
+  padding: 0 var(--ps-space-10);
+  border-radius: var(--ps-radius-md);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-medium);
+  white-space: nowrap;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-menubar-trigger:hover,
+.ps-menubar-trigger.is-active { background: var(--ps-menubar-hover); color: var(--ps-text-1); }
+/* The app's own menu: its name reads as the title. */
+.ps-menubar-trigger--brand { color: var(--ps-text-1); font-weight: var(--ps-font-weight-semibold); }
+.ps-menubar-trigger--icon { justify-content: center; min-width: var(--ps-icon-button-size-sm); padding: 0; }
+.ps-menubar-icon { display: grid; flex: none; place-items: center; }
+.ps-menubar-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
