@@ -38,7 +38,12 @@ export default tseslint.config(
     }
   },
   {
-    files: ['scripts/**/*.{js,ts}', '*.config.{js,ts}'],
+    files: ['scripts/**/*.{js,ts}', 'tools/**/*.ts', '*.config.{js,ts}'],
     languageOptions: { globals: globals.node }
+  },
+  {
+    // A Figma development plugin: one classic script run inside Figma, where `figma` is a global
+    files: ['tools/figma-library/**/*.js'],
+    languageOptions: { sourceType: 'script', globals: { figma: 'readonly', console: 'readonly' } }
   }
 );

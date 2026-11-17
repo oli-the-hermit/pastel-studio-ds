@@ -1,0 +1,13 @@
+{
+  "name": "Pastel Studio DS: Figma library",
+  "id": "pastel-studio-ds-figma-library-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] },
+  "menu": [
+    { "name": "Build what's missing", "command": "build" },
+    { "name": "Update the tokens from the code", "command": "update" }
+  ]
+}
