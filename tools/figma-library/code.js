@@ -1413,6 +1413,154 @@ async function buildLayouts() {
   }
 }
 
+// ══ 7. Music: tracks, the queue, the now-playing bar, albums, the mini player ══
+async function buildMusic() {
+  startRow();
+  const box = (name, w, h) => { const f = auto('HORIZONTAL', name); f.counterAxisAlignItems = 'CENTER'; f.resize(w, h || 20); f.primaryAxisSizingMode = 'FIXED'; return f; };
+
+  if (!exists('TrackInfo')) {
+    const vs = [];
+    for (const [size, ts, gap] of [['sm', 'md/SemiBold', 'space/2'], ['md', 'md/Bold', 'space/2'], ['lg', 'xl/Bold', 'space/4']]) {
+      const c = comp('VERTICAL', `Size=${size}`); c.resize(260, 40); c.primaryAxisSizingMode = 'AUTO'; await bindNum(c, 'itemSpacing', gap);
+      const t = await text('Northern Lights', ts, 'text/1', 'Title'); c.appendChild(t); fill(t);
+      if (size === 'lg') { t.textAutoResize = 'HEIGHT'; t.maxLines = 2; t.textTruncation = 'ENDING'; } else t.textTruncation = 'ENDING';
+      const m = await text('Aurora Collective · Polar Nights', 'sm/Regular', 'text/2', 'Meta'); c.appendChild(m); fill(m); m.textTruncation = 'ENDING';
+      vs.push(c);
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'TrackInfo';
+    set.description = 'A track’s title over its artist and album (sm, text/2). sm: title md/SemiBold; md: md/Bold; lg: xl/Bold on up to two lines. The title ellipsizes.';
+    const tk = set.addComponentProperty('Title', 'TEXT', 'Northern Lights'), mk = set.addComponentProperty('Meta', 'TEXT', 'Aurora Collective · Polar Nights');
+    for (const c of set.children) { c.findOne(n => n.name === 'Title').componentPropertyReferences = { characters: tk }; c.findOne(n => n.name === 'Meta').componentPropertyReferences = { characters: mk }; }
+    const eq = comp('HORIZONTAL', 'Equalizer'); eq.counterAxisAlignItems = 'MAX'; eq.primaryAxisAlignItems = 'CENTER'; eq.resize(16, 16);
+    eq.primaryAxisSizingMode = 'FIXED'; eq.counterAxisSizingMode = 'FIXED'; await bindNum(eq, 'itemSpacing', 'space/2');
+    for (const h of [10, 16, 7, 13]) { const b = figma.createRectangle(); b.name = 'Bar'; b.resize(3, h); b.cornerRadius = 999; b.fills = [await paint('accent/text')]; eq.appendChild(b); }
+    eq.description = 'What is playing: four 3px bars that rise and fall, in the colour of the text around them (accent-text in a playing row).';
+    await section('TrackInfo', [column(set, 16), eq]);
+  }
+
+  if (!exists('TrackList')) {
+    const vs = [];
+    for (const [st, bg, titleColor] of [['Default', null, 'text/1'], ['Hover', 'row/hover', 'text/1'], ['Playing', null, 'accent/text']]) {
+      const c = comp('HORIZONTAL', `State=${st}`); c.counterAxisAlignItems = 'CENTER'; c.resize(720, 56); c.primaryAxisSizingMode = 'FIXED';
+      await bindNum(c, 'height', 'size/track-row-height'); await pad(c, null, 'space/8', null, 'space/8'); await bindNum(c, 'itemSpacing', 'space/12'); await radius(c, 'radius/lg');
+      if (bg) c.fills = [await paint(bg)];
+      const num = box('Number', 40, 40); num.primaryAxisAlignItems = 'CENTER'; c.appendChild(num);
+      if (st === 'Playing') num.appendChild(find('Equalizer').createInstance());
+      else num.appendChild(await text('3', 'sm/SemiBold', 'text/2', 'Number'));
+      const info = variantOf('TrackInfo', 'Size=sm').createInstance(); info.name = 'Track'; c.appendChild(info); fill(info);
+      if (st === 'Playing') { const t = info.findOne(n => n.type === 'TEXT' && n.name === 'Title'); if (t) t.fills = [await paint(titleColor)]; }
+      c.appendChild(variantOf('LikeButton', `Liked=${st === 'Playing' ? 'True' : 'False'}`).createInstance());
+      const time = box('Length', 56, 20); time.primaryAxisAlignItems = 'MAX'; c.appendChild(time);
+      time.appendChild(await text('3:58', 'sm/Regular', 'text/2', 'Length'));
+      const more = variantOf('IconButton', 'Size=md, State=Default').createInstance(); prop(more, 'Icon', icon('More').id); c.appendChild(more);
+      vs.push(c);
+    }
+    const row = figma.combineAsVariants(vs, page); row.name = 'TrackRow';
+    row.description = 'A row of a track list (56, radius lg): number (an Equalizer while playing), the track, the heart, the length (tabular, text/2) and its menu. Playing: the title in accent-text. More columns (album, date added) fold away as the list narrows.';
+    column(row, 8);
+    const head = comp('HORIZONTAL', 'TrackListHeader'); head.counterAxisAlignItems = 'CENTER'; head.resize(720, 34); head.primaryAxisSizingMode = 'FIXED';
+    await bindNum(head, 'height', 'size/button-height-sm'); await pad(head, null, 'space/8', null, 'space/8'); await bindNum(head, 'itemSpacing', 'space/12');
+    const caps = async (s, name) => { const t = await text(s, 'xs/Bold', 'text/2', name); t.letterSpacing = { unit: 'PERCENT', value: 12 }; return t; };
+    const h1 = box('Number', 40); h1.primaryAxisAlignItems = 'CENTER'; h1.appendChild(await caps('#', 'Number')); head.appendChild(h1);
+    const h2 = box('Title', 100); head.appendChild(h2); h2.appendChild(await caps('TITLE', 'Title')); fill(h2);
+    head.appendChild(box('Heart', 34));
+    const h4 = box('Length', 56); h4.primaryAxisAlignItems = 'MAX'; h4.appendChild(await iconInst('Clock', 'text/2', 14, 'Clock')); head.appendChild(h4);
+    head.appendChild(box('Menu', 40));
+    head.description = 'The track list’s column heads: xs bold caps in text/2; the length column shows a clock.';
+    await section('TrackList', [row, head]);
+  }
+
+  if (!exists('Queue')) {
+    const vs = [];
+    for (const playing of [false, true]) {
+      const c = comp('HORIZONTAL', `Playing=${playing ? 'True' : 'False'}`); c.counterAxisAlignItems = 'CENTER'; c.resize(312, 56); c.primaryAxisSizingMode = 'FIXED';
+      await pad(c, 'space/8', 'space/12', 'space/8', 'space/8'); await bindNum(c, 'itemSpacing', 'space/12'); await radius(c, 'radius/lg'); c.fills = [await paint('surface/2')];
+      c.appendChild(await iconInst('Grip', 'structure/grip', null, 'Grip'));
+      c.appendChild(variantOf('CoverArt', 'Size=xs').createInstance());
+      const info = variantOf('TrackInfo', 'Size=sm').createInstance(); c.appendChild(info); fill(info);
+      if (playing) { const t = info.findOne(n => n.type === 'TEXT' && n.name === 'Title'); if (t) t.fills = [await paint('accent/text')]; }
+      if (playing) c.appendChild(find('Equalizer').createInstance()); else c.appendChild(await text('3:58', 'sm/Regular', 'text/2', 'Length'));
+      vs.push(c);
+    }
+    const item = figma.combineAsVariants(vs, page); item.name = 'QueueItem';
+    item.description = 'A queued track: a raised row (surface/2, hover surface/3, radius lg) with a grip, its cover (xs), the track, the length. The playing one in accent.';
+    column(item, 8);
+    const q = comp('VERTICAL', 'PlayQueue'); q.resize(340, 100); q.primaryAxisSizingMode = 'AUTO'; await bindNum(q, 'width', 'size/play-queue-width');
+    await radius(q, 'radius/3xl'); q.fills = [await paint('surface/1')];
+    const head = auto('VERTICAL', 'Head'); await pad(head, 'space/18', 'space/14', 'space/10', 'space/14'); await bindNum(head, 'itemSpacing', 'space/10'); q.appendChild(head); fill(head);
+    head.appendChild(await text('Queue', 'lg/Bold', 'text/1', 'Title'));
+    const seg = find('SegmentedControl').createInstance(); head.appendChild(seg);
+    ['Up next', 'History'].forEach((l, k) => { if (seg.children[k]) prop(seg.children[k], 'Label', l); });
+    if (seg.children[2]) seg.children[2].visible = false;
+    const bodyQ = auto('VERTICAL', 'Body'); await pad(bodyQ, 'space/4', 'space/14', 'space/14', 'space/14'); await bindNum(bodyQ, 'itemSpacing', 'space/16'); q.appendChild(bodyQ); fill(bodyQ);
+    const sectionQ = async (label, meta, rows) => {
+      const s = auto('VERTICAL', label); await bindNum(s, 'itemSpacing', 'space/8'); bodyQ.appendChild(s); fill(s);
+      const l = auto('HORIZONTAL', 'Label'); l.primaryAxisAlignItems = 'SPACE_BETWEEN'; await pad(l, null, 'space/4', null, 'space/4'); s.appendChild(l); fill(l);
+      l.appendChild(await text(label, 'sm/SemiBold', 'text/2', 'Name')); if (meta) l.appendChild(await text(meta, 'sm/Medium', 'text/3', 'Meta'));
+      for (const p of rows) { const r = item.children.find(c => c.name === `Playing=${p ? 'True' : 'False'}`).createInstance(); s.appendChild(r); fill(r); }
+    };
+    await sectionQ('Now playing', null, [true]); await sectionQ('Up next', '12 tracks · 48 min', [false, false, false]);
+    q.description = 'The play queue panel (340): its title and Up next / History, then what is playing and what comes next, in QueueItems 6–8 apart.';
+    await section('Queue', [item, q], 'surface/bg');
+  }
+
+  startRow();
+  if (!exists('NowPlayingBar')) {
+    const c = comp('HORIZONTAL', 'NowPlayingBar'); c.counterAxisAlignItems = 'CENTER'; c.resize(1100, 76); c.primaryAxisSizingMode = 'FIXED';
+    await pad(c, 'space/10', 'space/16', 'space/10', 'space/10'); await bindNum(c, 'itemSpacing', 'space/16'); await radius(c, 'radius/3xl'); c.fills = [await paint('surface/1')];
+    const trackCol = auto('HORIZONTAL', 'Track'); trackCol.counterAxisAlignItems = 'CENTER'; await bindNum(trackCol, 'itemSpacing', 'space/12'); c.appendChild(trackCol); fill(trackCol);
+    trackCol.appendChild(variantOf('CoverArt', 'Size=sm').createInstance());
+    const info = variantOf('TrackInfo', 'Size=sm').createInstance(); trackCol.appendChild(info); fill(info);
+    trackCol.appendChild(variantOf('LikeButton', 'Liked=True').createInstance());
+    const center = auto('VERTICAL', 'Center'); center.counterAxisAlignItems = 'CENTER'; await bindNum(center, 'itemSpacing', 'space/2'); c.appendChild(center); fill(center);
+    center.appendChild(variantOf('TransportControls', 'Size=sm').createInstance());
+    const seek = auto('HORIZONTAL', 'Seek'); seek.counterAxisAlignItems = 'CENTER'; await bindNum(seek, 'itemSpacing', 'space/4'); center.appendChild(seek); fill(seek);
+    const t1 = variantOf('MediaTime', 'Tone=Default, Size=sm').createInstance(); prop(t1, 'Time', '1:24'); seek.appendChild(t1);
+    const sl = variantOf('Slider', 'Size=sm').createInstance(); seek.appendChild(sl); fill(sl);
+    const t2 = variantOf('MediaTime', 'Tone=Default, Size=sm').createInstance(); prop(t2, 'Time', '3:58'); seek.appendChild(t2);
+    const tools = auto('HORIZONTAL', 'Tools'); tools.counterAxisAlignItems = 'CENTER'; tools.primaryAxisAlignItems = 'MAX'; await bindNum(tools, 'itemSpacing', 'space/2'); c.appendChild(tools); fill(tools);
+    for (const ic of ['Lyrics', 'Queue']) { const b = variantOf('PlayerControl', 'Kind=Ghost, Size=sm').createInstance(); prop(b, 'Icon', icon(ic).id); tools.appendChild(b); }
+    tools.appendChild(find('VolumeControl').createInstance());
+    c.description = 'The bar along the bottom of a music app (surface/1, radius 3xl): the track with its cover and heart, the transport over the seek row, then lyrics, the queue and volume. Narrow, the seek row becomes a hairline along its top edge.';
+    await section('NowPlayingBar', [c], 'surface/bg');
+  }
+
+  if (!exists('AlbumHeader')) {
+    const c = comp('HORIZONTAL', 'AlbumHeader'); c.counterAxisAlignItems = 'MAX'; c.resize(900, 232); c.primaryAxisSizingMode = 'FIXED'; await bindNum(c, 'itemSpacing', 'space/28');
+    c.appendChild(variantOf('CoverArt', 'Size=lg').createInstance());
+    const main = auto('VERTICAL', 'Main'); await bindNum(main, 'itemSpacing', 'space/8'); c.appendChild(main); fill(main);
+    const kind = await text('ALBUM', 'xs/Bold', 'accent/text', 'Kind'); kind.letterSpacing = { unit: 'PERCENT', value: 17 }; main.appendChild(kind);
+    const title = await text('Polar Nights', '4xl/Bold', 'text/1', 'Title'); title.letterSpacing = { unit: 'PERCENT', value: -3 }; title.lineHeight = { unit: 'PERCENT', value: 100 }; main.appendChild(title); fill(title); title.textAutoResize = 'HEIGHT';
+    const meta = auto('HORIZONTAL', 'Meta'); meta.counterAxisAlignItems = 'BASELINE'; await bindNum(meta, 'itemSpacing', 'space/10'); main.appendChild(meta);
+    meta.appendChild(await text('Aurora Collective', 'md/Bold', 'text/1', 'Artist'));
+    for (const part of ['2024', '12 tracks', '48 min']) { meta.appendChild(await text('·', 'md/Regular', 'text/3', 'Dot')); meta.appendChild(await text(part, 'md/Regular', 'text/2', 'Part')); }
+    const acts = auto('HORIZONTAL', 'Actions'); acts.counterAxisAlignItems = 'CENTER'; await bindNum(acts, 'itemSpacing', 'space/4'); await bindNum(acts, 'paddingTop', 'space/12'); main.appendChild(acts);
+    acts.appendChild(variantOf('PlayerControl', 'Kind=Primary, Size=sm').createInstance());
+    const sh = variantOf('PlayerControl', 'Kind=Ghost, Size=md').createInstance(); prop(sh, 'Icon', icon('Shuffle').id); acts.appendChild(sh);
+    acts.appendChild(variantOf('LikeButton', 'Liked=False').createInstance());
+    const mo = variantOf('PlayerControl', 'Kind=Ghost, Size=md').createInstance(); prop(mo, 'Icon', icon('More').id); acts.appendChild(mo);
+    title.componentPropertyReferences = { characters: c.addComponentProperty('Title', 'TEXT', 'Polar Nights') };
+    c.description = 'The top of an album page: the cover (lg, 232) beside the kind (xs heavy caps, accent-text), the title (up to 4xl, heavy, tight), artist · year · tracks · length, and play, shuffle, like and more.';
+    await section('AlbumHeader', [c], 'surface/bg');
+  }
+
+  if (!exists('PipPlayer')) {
+    const c = figma.createComponent(); c.name = 'PipPlayer'; c.resize(320, 180); c.fills = [await paint('media/backdrop')]; c.clipsContent = true; await radius(c, 'radius/xl');
+    const pic = figma.createFrame(); pic.name = 'Video (replace with an image fill)'; pic.resize(320, 180); pic.fills = [await paint('surface/2')]; c.appendChild(pic); pic.constraints = { horizontal: 'STRETCH', vertical: 'STRETCH' };
+    const top = auto('HORIZONTAL', 'Top'); top.counterAxisAlignItems = 'CENTER'; await bindNum(top, 'itemSpacing', 'space/2'); c.appendChild(top); top.x = 6; top.y = 6;
+    const ttl = auto('HORIZONTAL', 'Title'); await pad(ttl, 'space/4', 'space/10', 'space/4', 'space/10'); await radius(ttl, 'radius/pill'); ttl.fills = [await paint('media/overlay')]; top.appendChild(ttl);
+    ttl.appendChild(await text('clip_01.mp4', 'xs/SemiBold', 'media/on-overlay', 'Name'));
+    const back = figma.createFrame(); back.name = 'Spacer'; back.fills = []; back.resize(140, 10); top.appendChild(back);
+    for (const ic of ['Expand', 'Close']) { const b = variantOf('IconButton', 'Size=sm, State=Default').createInstance(); prop(b, 'Icon', icon(ic).id); b.fills = [await paint('media/overlay')]; await recolor(b, 'media/on-overlay'); top.appendChild(b); }
+    const play = variantOf('PlayerControl', 'Kind=Primary, Size=sm').createInstance(); c.appendChild(play); play.x = (320 - play.width) / 2; play.y = (180 - play.height) / 2; play.constraints = { horizontal: 'CENTER', vertical: 'CENTER' };
+    const seek = variantOf('Slider', 'Size=sm').createInstance(); c.appendChild(seek); seek.resize(296, seek.height); seek.x = 12; seek.y = 180 - seek.height - 8;
+    const tr = seek.findOne(n => n.name === 'Track'); if (tr) tr.fills = [await paint('media/track')];
+    seek.constraints = { horizontal: 'STRETCH', vertical: 'MAX' };
+    c.description = 'The mini player in its own small window: the video on media/backdrop, its name and the window’s buttons on the see-through dock colour at the top, play in the middle, a thin seek bar at the bottom.';
+    await section('PipPlayer', [c], 'surface/bg');
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
 async function main() {
@@ -1443,6 +1591,8 @@ async function main() {
   await buildMedia();
   progress('Building layouts…');
   await buildLayouts();
+  progress('Building music pieces…');
+  await buildMusic();
   await buildSample();
 }
 

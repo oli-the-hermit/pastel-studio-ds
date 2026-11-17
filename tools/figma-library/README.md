@@ -41,7 +41,11 @@ It runs inside the Figma desktop app, with no network access and no account limi
 9. **Layouts:**
    - The file views: FileRow and FileHeader, the details view, FileListItem, FileTile and FileIconCell.
    - SortableItem, the FileDialog, and the AppShell.
-10. **A sample Files screen** made of those components, on a `Mockups` page.
+10. **Music:**
+    - TrackInfo, the Equalizer, and TrackRow with its header.
+    - QueueItem and the PlayQueue panel.
+    - The NowPlayingBar, the AlbumHeader, and the PipPlayer mini player.
+11. **A sample Files screen** made of those components, on a `Mockups` page.
 
 Only the dark theme is built: Figma's free plan allows one mode per collection.
 
@@ -79,7 +83,7 @@ tokens from the code** (for tokens) or **Build what's missing** (for new icons).
 
 ## Add a component
 
-Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`, `buildMedia`, `buildLayouts`…) is a list of blocks of
+Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`, `buildMedia`, `buildLayouts`, `buildMusic`…) is a list of blocks of
 this shape:
 
 ```js
