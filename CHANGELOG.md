@@ -382,3 +382,6 @@ is a breaking change.
   it says how it went and lists what went wrong on demand. The card folds to its header and hides without stopping
   anything. TransferIndicator is the top bar's button: a ring of overall progress around the count, amber while a
   question waits. New `formatTimeLeft` ("45 sec", "3 min"); new words for all of it.
+- `@pastel-studio/desktop`: `onWindowCloseRequested(handler)` asks before the window closes, however the close was
+  asked for, and `destroyWindow()` closes it without asking again; an app keeps the window open while it asks, for
+  example while files are still being copied. Needs `core:window:allow-destroy` in the app's capabilities.
