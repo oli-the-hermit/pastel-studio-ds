@@ -1,0 +1,125 @@
+/* ═══════════════════════════════════════════════════════════
+   Anatomy figures: a live component, enlarged, with its
+   measurements drawn over it. One color per kind of measurement,
+   taken from the status roles so both themes stay legible.
+ ═══════════════════════════════════════════════════════════ */
+@layer docs {
+  .docs-anatomy {
+    overflow: hidden;
+    border-radius: var(--ps-radius-xl);
+    background: var(--ps-surface-1);
+  }
+  .docs-anatomy + .docs-anatomy { margin-top: var(--ps-space-16); }
+
+  .docs-anatomy-stage {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--ps-bg);
+    background-image: radial-gradient(circle, var(--ps-surface-3) 1px, transparent 1.5px);
+    background-size: var(--ps-space-16) var(--ps-space-16);
+  }
+  .docs-anatomy-specimen {
+    position: absolute;
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+  .docs-anatomy-overlay { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  .docs-anatomy-tags { position: absolute; inset: 0; pointer-events: none; }
+
+  /* Each kind sets its color once; shapes, tags and legend keys read it. */
+  .docs-anatomy .is-size { --docs-anatomy-color: var(--ps-text-2); --docs-anatomy-ink: var(--ps-bg); }
+  .docs-anatomy .is-padding { --docs-anatomy-color: var(--ps-warning); --docs-anatomy-ink: var(--ps-bg); }
+  .docs-anatomy .is-gap { --docs-anatomy-color: var(--ps-success); --docs-anatomy-ink: var(--ps-bg); }
+  .docs-anatomy .is-radius { --docs-anatomy-color: var(--ps-danger); --docs-anatomy-ink: var(--ps-bg); }
+  .docs-anatomy .is-part { --docs-anatomy-color: var(--ps-accent); --docs-anatomy-ink: var(--ps-on-accent); }
+
+  .docs-anatomy-outline { fill: none; stroke: var(--ps-text-3); stroke-width: 1; stroke-dasharray: 2 3; }
+  .docs-anatomy-band { stroke: var(--docs-anatomy-color); stroke-width: 1; }
+  .docs-anatomy-hatch rect { fill: color-mix(in srgb, var(--docs-anatomy-color) 16%, transparent); }
+  .docs-anatomy-hatch line { stroke: color-mix(in srgb, var(--docs-anatomy-color) 60%, transparent); stroke-width: 1.5; }
+
+  .docs-anatomy-radius { --docs-anatomy-color: var(--ps-danger); }
+  .docs-anatomy-radius path { fill: none; stroke: var(--docs-anatomy-color); stroke-width: 3; stroke-linecap: round; }
+  .docs-anatomy-radius line { stroke: var(--docs-anatomy-color); stroke-width: 1; stroke-dasharray: 3 3; }
+  .docs-anatomy-radius circle { fill: var(--docs-anatomy-color); }
+
+  .docs-anatomy-dims line { stroke: var(--ps-text-2); stroke-width: 1; }
+  .docs-anatomy-dims .docs-anatomy-extension line { stroke: var(--ps-text-3); stroke-dasharray: 2 3; }
+  .docs-anatomy-dimmer { fill: color-mix(in srgb, var(--ps-bg) 62%, transparent); }
+
+  .docs-anatomy-part { --docs-anatomy-color: var(--ps-accent-text); }
+  .docs-anatomy-part rect { fill: none; stroke: var(--ps-text-1); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .docs-anatomy-part polyline { fill: none; stroke: var(--docs-anatomy-color); stroke-width: 1; }
+
+  .docs-anatomy-tag {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--ps-space-22);
+    height: var(--ps-space-20);
+    padding: 0 var(--ps-space-6);
+    border-radius: var(--ps-radius-pill);
+    background: var(--docs-anatomy-color);
+    color: var(--docs-anatomy-ink);
+    font-family: var(--docs-mono);
+    font-size: var(--ps-font-size-xs);
+    font-weight: var(--ps-font-weight-bold);
+    line-height: var(--ps-leading-none);
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+  }
+  .docs-anatomy-tag.is-left { transform: translate(0, -50%); }
+  .docs-anatomy-tag.is-right { transform: translate(-100%, -50%); }
+  .docs-anatomy-tag.is-part { height: var(--ps-space-22); font-family: var(--ps-font-family); }
+
+  /* ── Legend ── */
+  .docs-anatomy-legend {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr);
+    gap: var(--ps-space-24);
+    padding: var(--ps-space-20) var(--ps-space-24);
+    font-size: var(--ps-font-size-sm);
+  }
+  .docs-anatomy-parts { display: flex; flex-direction: column; gap: var(--ps-space-8); list-style: none; }
+  .docs-anatomy-parts li { display: flex; align-items: center; gap: var(--ps-space-10); color: var(--ps-text-1); font-weight: var(--ps-font-weight-semibold); }
+  .docs-anatomy-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--ps-space-22);
+    height: var(--ps-space-22);
+    border-radius: var(--ps-radius-round);
+    background: var(--ps-accent);
+    color: var(--ps-on-accent);
+    font-size: var(--ps-font-size-xs);
+    font-weight: var(--ps-font-weight-bold);
+  }
+  .docs-anatomy-values { display: flex; flex-direction: column; gap: var(--ps-space-8); }
+  .docs-anatomy-parts:only-child,
+  .docs-anatomy-values:only-child { grid-column: 1 / -1; }
+  .docs-anatomy-value { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: baseline; gap: var(--ps-space-12); }
+  .docs-anatomy-value dt { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--ps-space-2) var(--ps-space-8); color: var(--ps-text-1); font-weight: var(--ps-font-weight-semibold); }
+  .docs-anatomy-key {
+    align-self: center;
+    width: var(--ps-space-12);
+    height: var(--ps-space-12);
+    border-radius: var(--ps-radius-2xs);
+    background: var(--docs-anatomy-color);
+  }
+  .docs-anatomy-what { color: var(--ps-text-3); font-weight: var(--ps-font-weight-regular); }
+  .docs-anatomy-value dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ps-space-4) var(--ps-space-8); }
+  .docs-anatomy-px { color: var(--ps-text-1); font-family: var(--docs-mono); font-size: var(--ps-font-size-xs); }
+  .docs-anatomy-note { color: var(--ps-text-3); }
+  .docs-anatomy-caption { grid-column: 1 / -1; color: var(--ps-text-2); }
+
+  .docs-anatomy-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--ps-space-16); }
+  .docs-anatomy-pair .docs-anatomy + .docs-anatomy { margin-top: 0; }
+
+  @media (max-width: 900px) {
+    .docs-anatomy-legend { grid-template-columns: minmax(0, 1fr); gap: var(--ps-space-16); padding: var(--ps-space-16); }
+    .docs-anatomy-value { grid-template-columns: minmax(0, 1fr); gap: var(--ps-space-2); }
+    .docs-anatomy-pair { grid-template-columns: minmax(0, 1fr); }
+  }
+}

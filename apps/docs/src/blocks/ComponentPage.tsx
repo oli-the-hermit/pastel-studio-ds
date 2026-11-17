@@ -4,6 +4,8 @@ import { defaultLabels, IconCheck, IconClose, type MetaEntry } from '@pastel-stu
 import { componentPath, components } from '../components';
 import type { ComponentDoc, ExportDoc } from '../components/types';
 import { demoFor } from '../demos';
+import { anatomyFor } from '../anatomy';
+import { Anatomy } from './Anatomy';
 import { useDocsTheme } from '../theme';
 import { findRole, findToken, sentence } from '../tokens';
 import { Example } from './Example';
@@ -169,6 +171,7 @@ function Guidance({ dos, donts }: { dos: string[]; donts: string[] }) {
 export function ComponentPage({ component }: { component: ComponentDoc }) {
   const { meta, exports } = component;
   const demo = demoFor(component.name);
+  const anatomy = anatomyFor(component.name);
   const related = components.filter((c) => meta.related.includes(c.name));
   const names = exports.map((e) => e.name).join(', ');
 
@@ -202,6 +205,12 @@ export function ComponentPage({ component }: { component: ComponentDoc }) {
       {meta.variants.length > 0 && (
         <Section title="Variants and sizes">
           <Gallery entries={meta.variants} examples={demo?.variants} />
+        </Section>
+      )}
+
+      {anatomy && (
+        <Section title="Anatomy" description="Measured from the live component and enlarged: its parts, its size, padding, gaps and corners, each named after the token it comes from.">
+          {anatomy.map((spec, i) => <Anatomy key={i} {...spec} prefer={component.tokens} />)}
         </Section>
       )}
 

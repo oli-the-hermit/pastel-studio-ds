@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button, Card, CardHeader, Chip, IconPlus, ListRow, IconBug } from '@pastel-studio/react';
+import { Anatomy } from '../../blocks/Anatomy';
 import { Code, Page, Section } from '../../blocks/Page';
 import { Example } from '../../blocks/Example';
 import { TokenTable } from '../../blocks/TokenTable';
@@ -37,6 +39,29 @@ export function Spacing() {
             ]}
           />
         </Example>
+      </Section>
+
+      <Section title="Reading spacing in a component" description="Measured from the live components: padding in amber, the space between parts in green, sizes in grey. Every value lands on a step of the scale above.">
+        <Anatomy
+          example={<Card><CardHeader title="Weekend errands" titleAddon={<Chip tone="accent">3 left</Chip>} /><p>Groceries, the bike, and the parcel at the post office.</p></Card>}
+          width={340}
+          maxScale={1.4}
+          show={['padding', 'gap', 'size', 'parts']}
+          caption="Between groups, the steps are large: a card pads its content evenly, and its header stands apart from its body."
+        />
+        <Anatomy
+          example={<ListRow icon={<IconBug size={20} />} title="Report a problem" description="Opens an issue on GitHub" external />}
+          width={360}
+          maxScale={1.6}
+          show={['padding', 'gap', 'size']}
+          caption="Inside a component the steps are small: a row's padding and the space between its icon, text and trailing mark."
+        />
+        <Anatomy
+          example={<Button variant="primary" icon={<IconPlus />}>Add task</Button>}
+          show={['padding', 'gap', 'size']}
+          prefer={['--ps-button-height']}
+          caption="Controls have a fixed height, so the padding is only on the sides."
+        />
       </Section>
 
       <Section title="Component sizes" description={<>Fixed heights and sizes for controls. A field and a button side by side share a baseline because both come from here: <Code>--ps-field-height</Code> and <Code>--ps-button-height</Code>.</>}>

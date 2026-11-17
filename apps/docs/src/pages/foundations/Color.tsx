@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router';
+import { IconChevronRight } from '@pastel-studio/react';
 import { Callout, Code, Page, Section } from '../../blocks/Page';
 import { Example } from '../../blocks/Example';
 import { TokenTable } from '../../blocks/TokenTable';
@@ -189,6 +191,10 @@ export function Color() {
 
       <Section title="Reference palette" description={<>The raw colors themes are built from. Each name ends in the color's tone, its lightness from 0 (black) to 100 (white): two colors far apart in tone contrast well. For themes only: components use the roles above.</>}>
         <Palette />
+        <p className="docs-palette-more">
+          <Link to="/foundations/swatch-book" className="docs-link-arrow">Open the swatch book<IconChevronRight size={16} aria-hidden="true" /></Link>
+          {' '}for every color as a chip, with its HEX, RGB, HSL, OKLCH and CMYK codes to copy and the roles it fills.
+        </p>
       </Section>
     </Page>
   );

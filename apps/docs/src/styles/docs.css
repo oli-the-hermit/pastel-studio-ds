@@ -357,6 +357,8 @@
     box-shadow: inset 0 0 0 var(--ps-hairline) var(--ps-surface-4);
   }
   .docs-palette-tone { font-size: var(--ps-font-size-xs); font-weight: var(--ps-font-weight-semibold); }
+  .docs-palette-more { margin-top: var(--ps-space-24); color: var(--ps-text-2); }
+  .docs-link-arrow { display: inline-flex; align-items: center; gap: var(--ps-space-2); font-weight: var(--ps-font-weight-semibold); }
   .docs-palette-hex { font-family: var(--docs-mono); font-size: var(--ps-font-size-xs); color: var(--ps-text-2); }
 
   /* ── Typography ────────────────────────────────────────── */
