@@ -19,6 +19,15 @@ let V = {};          // variable name -> Variable
 let STY = [];        // local text styles
 let page;            // the Components page
 
+// What it is doing, shown until the next step and written to the console
+// (Plugins → Development → Show/Hide console), so a slow step can be told from a stuck one.
+let note = null;
+function progress(msg) {
+  console.log(`[Figma library] ${msg}`);
+  if (note) note.cancel();
+  note = figma.notify(msg, { timeout: Infinity });
+}
+
 // ── Lookups ──────────────────────────────────────────────
 function v(name) { const x = V[name]; if (!x) throw new Error(`Variable "${name}" not found`); return x; }
 async function resolveColor(variable) {
@@ -31,13 +40,27 @@ async function resolveColor(variable) {
   }
   throw new Error(`Alias loop at ${variable.name}`);
 }
+const colorCache = new Map();
 async function paint(name) {
-  const variable = v(name); const c = await resolveColor(variable);
+  const variable = v(name);
+  if (!colorCache.has(variable.id)) colorCache.set(variable.id, await resolveColor(variable));
+  const c = colorCache.get(variable.id);
   return figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r: c.r, g: c.g, b: c.b }, opacity: c.a === undefined ? 1 : c.a }, 'color', variable);
 }
 function textStyleId(name) { const s = STY.find(s => s.name === name); if (!s) throw new Error(`Text style "${name}" not found`); return s.id; }
+// Components by name, indexed once and refreshed on a miss: walking the whole page for each lookup
+// took minutes once the page held every icon and section.
+let compIndex = null;
+function indexComponents() {
+  compIndex = new Map();
+  for (const n of page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] })) {
+    if (n.type === 'COMPONENT' && n.parent && n.parent.type === 'COMPONENT_SET') continue; // variants are reached through their set
+    if (!compIndex.has(n.name)) compIndex.set(n.name, n);
+  }
+}
 function find(name) {
-  const n = page.findOne(n => (n.type === 'COMPONENT_SET' || n.type === 'COMPONENT') && n.name === name);
+  if (!compIndex || !compIndex.has(name) || compIndex.get(name).removed) indexComponents();
+  const n = compIndex.get(name);
   if (!n) throw new Error(`Component "${name}" not found on the Components page`);
   return n;
 }
@@ -107,7 +130,7 @@ async function section(name, nodes, bg) {
   for (const n of nodes) { s.appendChild(n); n.x = x; n.y = 48; x += n.width + 40; }
   const w = Math.max(...nodes.map(n => n.x + n.width)), h = Math.max(...nodes.map(n => n.y + n.height));
   s.resizeWithoutConstraints(w + 24, h + 24); s.fills = [await paint(bg || 'surface/1')];
-  rowX += s.width + 48; log.push(`+ ${name}`); return s;
+  rowX += s.width + 48; log.push(`+ ${name}`); progress(`Added ${name}`); return s;
 }
 function grid(set, cols, cellW, cellH) {
   set.children.forEach((c, i) => { c.x = 24 + (i % cols) * cellW; c.y = 24 + Math.floor(i / cols) * cellH; });
@@ -203,6 +226,7 @@ async function buildIcons() {
   let added = 0;
   for (const [name, svg] of Object.entries(DATA.icons)) {
     if (have.has(`Icon/${name}`)) continue;
+    if (added % 20 === 0) progress(`Adding icons… (${added} so far)`);
     let c;
     try { c = figma.createComponentFromNode(figma.createNodeFromSvg(svg)); }
     catch { skippedIcons.push(name); continue; } // one icon Figma can't read must not stop the rest
@@ -1122,25 +1146,26 @@ async function main() {
   }
   await figma.setCurrentPageAsync(page);
   for (const s of ['Regular', 'Medium', 'SemiBold', 'Bold']) await figma.loadFontAsync({ family: 'Geist', style: s });
-  figma.notify(update ? 'Updating the tokens from the code…' : 'Checking the foundations…', { timeout: 1500 });
+  progress(update ? 'Updating the tokens from the code…' : 'Checking the foundations…');
   await buildFoundations(update);
   if (update) return;
   await buildIcons();
-  figma.notify('Building the basic components…', { timeout: 1500 });
+  progress('Building the basic components…');
   await buildBasics();
-  figma.notify('Building dialogs…', { timeout: 1500 });
+  progress('Building dialogs…');
   await buildDialogs();
-  figma.notify('Building explorer pieces…', { timeout: 1500 });
+  progress('Building explorer pieces…');
   await buildExplorer();
-  figma.notify('Building pickers and feedback…', { timeout: 1500 });
+  progress('Building pickers and feedback…');
   await buildPickers();
-  figma.notify('Building app and account pieces…', { timeout: 1500 });
+  progress('Building app and account pieces…');
   await buildApp();
   await buildSample();
 }
 
 main()
   .then(() => {
+    if (note) note.cancel();
     if (figma.command === 'update') return figma.closePlugin('Tokens updated from the code.');
     const sections = log.filter(l => l.startsWith('+ ') && !/variable|text style|collection|effect style/.test(l)).length;
     const tokens = log.filter(l => /variable|text style|effect style/.test(l)).length;
@@ -1148,4 +1173,4 @@ main()
     const skipped = skippedIcons.length ? ` Skipped icons Figma couldn't read: ${skippedIcons.join(', ')}.` : '';
     figma.closePlugin((what ? `Done: added ${what}.` : 'Nothing to add: everything is already there.') + skipped);
   })
-  .catch(err => { console.error(err); figma.closePlugin(`Stopped: ${err.message}. What was built before it stays; run again after fixing.`); });
+  .catch(err => { if (note) note.cancel(); console.error(err); figma.closePlugin(`Stopped: ${err.message}. What was built before it stays; run again after fixing.`); });
