@@ -70,6 +70,35 @@ describe('Popover', () => {
     expect(behind.mock.calls.map(([e]) => (e as KeyboardEvent).key)).toEqual(['a']);
   });
 
+  it('a point menu stays open while its own list scrolls, or the window is resized', () => {
+    const onClose = vi.fn();
+    render(
+      <Popover open anchorPoint={{ x: 10, y: 10 }} onClose={onClose} role="menu" ariaLabel="Actions">
+        <div data-testid="rows">rows</div>
+      </Popover>
+    );
+    fireEvent.scroll(screen.getByRole('menu', { name: 'Actions' }));
+    fireEvent.scroll(screen.getByTestId('rows'));
+    fireEvent(window, new Event('resize'));
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('a point menu closes when the page scrolls, but not when an unrelated area does', () => {
+    const onClose = vi.fn();
+    render(
+      <>
+        <div data-testid="elsewhere" />
+        <Popover open anchorPoint={{ x: 10, y: 10 }} onClose={onClose} role="menu" ariaLabel="Actions">
+          rows
+        </Popover>
+      </>
+    );
+    fireEvent.scroll(screen.getByTestId('elsewhere'));
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.scroll(document);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it('stays on screen while it leaves, then goes', async () => {
     const { rerender } = render(<Anchored open />);
     rerender(<Anchored open={false} />);

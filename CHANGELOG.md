@@ -352,3 +352,12 @@ is a breaking change.
 - `FileExplorerLayout`: from 720px down to 481px the address stays on the top row beside navigation and search, its
   earlier folders folding to "…" and the search narrowing, so the page has two rows above the view instead of three.
   Only at a phone's width (480px or less) does the address take a row of its own. From Pastel Studio Pro's narrow window.
+- `Popover` at a point (right-click menus): when the menu fits neither below nor above the pointer it slides up to
+  stay whole, instead of shrinking to the taller side with a scrollbar, so a long menu is only ever capped by a
+  window shorter than itself. New `columns` prop: a window too short even for that spreads the content into
+  side-by-side columns (`data-columns` and `--ps-popover-columns` on the panel); `Menu` and `ContextMenu` turn it on,
+  and `MenuList` keeps each group of rows between dividers in one column. Scrolling inside a popover no longer closes
+  or moves it; a point menu closes only when the page, or whatever holds what was right-clicked, scrolls, and a
+  resized window places it again instead of closing it. A submenu keeps the menu's top edge where it was. The
+  placement math is in `lib/position.ts`. From Pastel Studio Pro, whose 16-row media menu came up half height and
+  closed when scrolled.

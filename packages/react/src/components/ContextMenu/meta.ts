@@ -8,6 +8,7 @@ export const meta: ComponentMeta = {
   states: [
     { name: 'Open', description: 'It opens at the pointer, with the same items a `Menu` shows.' },
     { name: 'With selected text', description: 'When text is selected, a Copy item comes first, since the browser\'s menu is gone.' },
+    { name: 'In a short window', description: 'It never shrinks to a scrolling list while the window can hold it: it slides up to stay whole. A window too short even for that spreads it into columns, each group of rows kept together.' },
   ],
   variants: [],
   keyboard: [
@@ -23,6 +24,7 @@ export const meta: ComponentMeta = {
   aria: [
     'The panel is a `menu` named "Actions"; focus moves to its first item when it opens.',
     'Text fields keep the browser\'s menu: it has cut, paste and spelling suggestions.',
+    'Scrolling inside the menu, or in an area unrelated to what was right-clicked, leaves it open; scrolling the page closes it. Resizing the window places it again.',
     'Everything in a context menu must also be reachable another way, such as a `Menu` on the same row: touch screens have no right-click.',
   ],
   related: ['Menu', 'Popover'],

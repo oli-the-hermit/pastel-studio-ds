@@ -110,63 +110,79 @@ export function MenuList({ items, onPicked, labels: ownLabels }: MenuListProps) 
     }
   };
 
+  // Rows between dividers form a group. Groups take no room of their own, except when a short
+  // window spreads the menu into columns: then a group never splits across two of them.
+  const groups: { key: string; items: (MenuAction | MenuSubmenu)[] }[] = [];
+  for (const item of shown) {
+    if (isDivider(item)) groups.push({ key: item.key, items: [] });
+    else if (groups.length === 0) groups.push({ key: 'first', items: [item] });
+    else groups[groups.length - 1].items.push(item);
+  }
+
+  const row = (item: MenuAction | MenuSubmenu) => {
+    if (isSubmenu(item)) {
+      return (
+        <button
+          key={item.key}
+          type="button"
+          role="menuitem"
+          aria-haspopup="menu"
+          className="ps-menu-item"
+          disabled={item.disabled}
+          onClick={() => go([...path, item])}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              go([...path, item]);
+            }
+          }}
+        >
+          <span className="ps-menu-item-icon">{item.icon}</span>
+          <span className="ps-menu-item-label">{item.label}</span>
+          {item.hint && <span className="ps-menu-item-hint">{item.hint}</span>}
+          <span className="ps-menu-item-more" aria-hidden="true"><IconChevronRight size={16} /></span>
+        </button>
+      );
+    }
+    const check = item.checked !== undefined;
+    const mark = item.checked ? <IconCheck size={16} strokeWidth={2.4} /> : null;
+    return (
+      <button
+        key={item.key}
+        type="button"
+        role={check ? (item.radio ? 'menuitemradio' : 'menuitemcheckbox') : 'menuitem'}
+        aria-checked={check ? item.checked : undefined}
+        className={cx('ps-menu-item', item.danger && 'is-danger', item.checked && 'is-checked')}
+        disabled={item.disabled}
+        onClick={() => {
+          if (!item.keepOpen) onPicked();
+          item.onSelect();
+        }}
+      >
+        <span className="ps-menu-item-icon">{item.icon ?? mark}</span>
+        <span className="ps-menu-item-label">{item.label}</span>
+        {item.hint && <kbd className="ps-menu-item-hint">{item.hint}</kbd>}
+        {item.icon && check && <span className="ps-menu-item-check" aria-hidden="true">{mark}</span>}
+      </button>
+    );
+  };
+
   return (
     <div ref={listRef} className="ps-menu-list" onKeyDown={onKeyDown}>
       {open && (
-        <button type="button" role="menuitem" className="ps-menu-item ps-menu-item--back" aria-label={`${labels.back}: ${open.label}`} onClick={() => go(path.slice(0, -1))}>
-          <span className="ps-menu-item-icon"><IconChevronLeft size={16} /></span>
-          <span className="ps-menu-item-label">{open.label}</span>
-        </button>
-      )}
-      {open && <div className="ps-menu-divider" role="separator" />}
-      {shown.map((item) => {
-        if (isDivider(item)) return <div key={item.key} className="ps-menu-divider" role="separator" />;
-        if (isSubmenu(item)) {
-          return (
-            <button
-              key={item.key}
-              type="button"
-              role="menuitem"
-              aria-haspopup="menu"
-              className="ps-menu-item"
-              disabled={item.disabled}
-              onClick={() => go([...path, item])}
-              onKeyDown={(e) => {
-                if (e.key === 'ArrowRight') {
-                  e.preventDefault();
-                  go([...path, item]);
-                }
-              }}
-            >
-              <span className="ps-menu-item-icon">{item.icon}</span>
-              <span className="ps-menu-item-label">{item.label}</span>
-              {item.hint && <span className="ps-menu-item-hint">{item.hint}</span>}
-              <span className="ps-menu-item-more" aria-hidden="true"><IconChevronRight size={16} /></span>
-            </button>
-          );
-        }
-        const check = item.checked !== undefined;
-        const mark = item.checked ? <IconCheck size={16} strokeWidth={2.4} /> : null;
-        return (
-          <button
-            key={item.key}
-            type="button"
-            role={check ? (item.radio ? 'menuitemradio' : 'menuitemcheckbox') : 'menuitem'}
-            aria-checked={check ? item.checked : undefined}
-            className={cx('ps-menu-item', item.danger && 'is-danger', item.checked && 'is-checked')}
-            disabled={item.disabled}
-            onClick={() => {
-              if (!item.keepOpen) onPicked();
-              item.onSelect();
-            }}
-          >
-            <span className="ps-menu-item-icon">{item.icon ?? mark}</span>
-            <span className="ps-menu-item-label">{item.label}</span>
-            {item.hint && <kbd className="ps-menu-item-hint">{item.hint}</kbd>}
-            {item.icon && check && <span className="ps-menu-item-check" aria-hidden="true">{mark}</span>}
+        <div className="ps-menu-group">
+          <button type="button" role="menuitem" className="ps-menu-item ps-menu-item--back" aria-label={`${labels.back}: ${open.label}`} onClick={() => go(path.slice(0, -1))}>
+            <span className="ps-menu-item-icon"><IconChevronLeft size={16} /></span>
+            <span className="ps-menu-item-label">{open.label}</span>
           </button>
-        );
-      })}
+        </div>
+      )}
+      {groups.map((group, i) => (
+        <React.Fragment key={group.key}>
+          {(i > 0 || open) && <div className="ps-menu-divider" role="separator" />}
+          <div className="ps-menu-group">{group.items.map(row)}</div>
+        </React.Fragment>
+      ))}
     </div>
   );
 }
@@ -239,6 +255,7 @@ export function Menu({
         matchWidth={false}
         className={cx('ps-menu', surface === 'overlay' && 'ps-menu--overlay', menuClassName)}
         role="menu"
+        columns
       >
         {header && <div className="ps-menu-header">{header}</div>}
         <div onKeyDown={handleMenuKeyDown}>

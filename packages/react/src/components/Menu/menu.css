@@ -38,8 +38,24 @@
 }
 .ps-menu-divider { height: var(--ps-hairline); margin: var(--ps-space-6) var(--ps-space-4); background: var(--ps-menu-hover); }
 
-/* The rows' wrapper takes no room of its own. */
-.ps-menu-list { display: contents; }
+/* The rows' wrapper and the groups between dividers take no room of their own. */
+.ps-menu-list,
+.ps-menu-group { display: contents; }
+
+/* A window too short for the whole menu: Popover sets data-columns and the rows flow into that
+   many columns, a group never split between two. Dividers give way to space between groups. */
+.ps-menu[data-columns] { max-width: none; }
+.ps-menu[data-columns] .ps-menu-list {
+  display: block;
+  column-count: var(--ps-popover-columns);
+  column-gap: var(--ps-space-6);
+}
+.ps-menu[data-columns] .ps-menu-group {
+  display: block;
+  break-inside: avoid;
+  padding-bottom: var(--ps-space-8);
+}
+.ps-menu[data-columns] .ps-menu-divider { display: none; }
 /* A submenu row ends with a chevron; its Back row is quieter. */
 .ps-menu-item-more { display: grid; flex: none; place-items: center; margin-left: var(--ps-space-4); color: var(--ps-text-2); }
 .ps-menu-item--back { color: var(--ps-text-2); font-weight: var(--ps-font-weight-semibold); }

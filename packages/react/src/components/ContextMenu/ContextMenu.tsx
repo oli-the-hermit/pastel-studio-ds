@@ -102,6 +102,7 @@ export function useContextMenuState(ownLabels?: ContextMenuLabels) {
       className="ps-menu ps-context-menu"
       role="menu"
       ariaLabel={labels.actions}
+      columns
     >
       <div ref={panelRef} onKeyDown={handleMenuKeyDown}>
         <MenuList items={menu.items} onPicked={close} />

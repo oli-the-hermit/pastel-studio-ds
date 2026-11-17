@@ -4,6 +4,7 @@ import { cssDurationMs } from '../../lib/css';
 import { cx } from '../../lib/cx';
 import { useBlockingOverlay } from '../../lib/overlays';
 import { usePortalContainer } from '../../lib/portal';
+import { keepTop, maxColumns, menuColumns, placeAtPoint, placeBeside, VIEWPORT_MARGIN } from '../../lib/position';
 import { deepElementFromPoint, eventIsInside } from '../../lib/shadowDom';
 
 /** A viewport point to anchor to instead of an element (right-click menus). */
@@ -35,6 +36,12 @@ export interface PopoverProps {
   role?: string;
   id?: string;
   ariaLabel?: string;
+  /**
+   * Lets the content flow into side-by-side columns when the window is too short to show it
+   * whole, instead of scrolling (menus). The content lays itself out from `data-columns` and
+   * `--ps-popover-columns` on the panel.
+   */
+  columns?: boolean;
 }
 
 interface Position {
@@ -45,15 +52,36 @@ interface Position {
   placement: 'below' | 'above';
   /** The theme of the place it opened from, so a popover in a themed region matches it. */
   theme?: string;
+  /** More than 1 when the content flows into columns; `width` is then set to hold them. */
+  columns: number;
+  width?: number;
 }
 
-const VIEWPORT_MARGIN = 8;
+/** Space between columns, in px; matches the column gap in menu.css (--ps-space-6). */
+const COLUMN_GAP = 6;
+
+/** The panel's size as one column, measured by briefly taking its columns off. */
+function naturalSize(panel: HTMLElement) {
+  const cols = panel.getAttribute('data-columns');
+  const width = panel.style.width;
+  if (cols) {
+    panel.removeAttribute('data-columns');
+    panel.style.width = '';
+  }
+  const size = { width: panel.offsetWidth, height: panel.scrollHeight };
+  if (cols) {
+    panel.setAttribute('data-columns', cols);
+    panel.style.width = width;
+  }
+  return size;
+}
 
 /**
  * Floating panel anchored to an element or a point. Renders into the anchor's own
  * document (so it also works inside a Picture-in-Picture window), flips above the
  * anchor when there is no room below, and swallows Escape so it never reaches an
- * enclosing modal.
+ * enclosing modal. At a point (a right-click) it slides to fit rather than shrinking,
+ * and with `columns` it spreads into columns when the window is too short.
  */
 export function Popover({
   open,
@@ -69,6 +97,7 @@ export function Popover({
   role,
   id,
   ariaLabel,
+  columns = false,
 }: PopoverProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const portalContainer = usePortalContainer();
@@ -83,6 +112,14 @@ export function Popover({
   onCloseRef.current = onClose;
   onEscapeRef.current = onEscape;
 
+  // What a point menu last measured and where it went, so rows changing in place (a submenu)
+  // keep its top edge still.
+  const lastPoint = useRef<{ point: AnchorPoint; natural: number; top: number } | null>(null);
+  // The element that was right-clicked, found once per point (later the menu covers the point).
+  const origin = useRef<{ point: AnchorPoint | null | undefined; el: Element | null }>({ point: undefined, el: null });
+  // Columns added when groups that never split left the balanced columns a little too tall.
+  const columnBump = useRef({ natural: 0, extra: 0 });
+
   const getDoc = useCallback(
     () => anchorRef?.current?.ownerDocument || anchorPoint?.doc || document,
     [anchorRef, anchorPoint]
@@ -93,35 +130,76 @@ export function Popover({
     return anchorRef?.current?.getBoundingClientRect() ?? null;
   }, [anchorRef, anchorPoint]);
 
-  const reposition = useCallback(() => {
-    const rect = getAnchorRect();
-    const panel = panelRef.current;
-    if (!rect || !panel) return;
-    const doc = getDoc();
-    const win = doc.defaultView || window;
-    // A point anchor opens right at the cursor, not a gap away from it.
-    const gap = anchorPoint ? 2 : offset;
-    const panelHeight = panel.scrollHeight;
-    const panelWidth = Math.max(panel.offsetWidth, matchWidth ? rect.width : 0);
+  const originElement = useCallback((): Element | null => {
+    if (!anchorPoint) return anchorRef?.current ?? null;
+    if (origin.current.point !== anchorPoint) {
+      origin.current = { point: anchorPoint, el: deepElementFromPoint(getDoc(), anchorPoint.x, anchorPoint.y) };
+    }
+    return origin.current.el;
+  }, [anchorPoint, anchorRef, getDoc]);
 
-    const spaceBelow = win.innerHeight - rect.bottom - gap - VIEWPORT_MARGIN;
-    const spaceAbove = rect.top - gap - VIEWPORT_MARGIN;
-    const placement: Position['placement'] =
-      panelHeight <= spaceBelow || spaceBelow >= spaceAbove ? 'below' : 'above';
-    const maxHeight = Math.max(120, placement === 'below' ? spaceBelow : spaceAbove);
-    const height = Math.min(panelHeight, maxHeight);
+  const reposition = useCallback(
+    (fresh = false) => {
+      const rect = getAnchorRect();
+      const panel = panelRef.current;
+      if (!rect || !panel) return;
+      const doc = getDoc();
+      const win = doc.defaultView || window;
+      const viewport = { width: win.innerWidth, height: win.innerHeight };
+      const available = viewport.height - 2 * VIEWPORT_MARGIN;
 
-    let left = align === 'end' ? rect.right - panelWidth : rect.left;
-    left = Math.min(Math.max(VIEWPORT_MARGIN, left), win.innerWidth - panelWidth - VIEWPORT_MARGIN);
-    const top = placement === 'below' ? rect.bottom + gap : rect.top - gap - height;
+      const natural = naturalSize(panel);
+      const shown = Number(panel.getAttribute('data-columns') || 1);
+      let cols = 1;
+      if (columns) {
+        cols = menuColumns(natural.height, natural.width, viewport, { gap: COLUMN_GAP });
+        if (columnBump.current.natural !== natural.height) columnBump.current = { natural: natural.height, extra: 0 };
+        if (cols > 1) {
+          const widest = maxColumns(natural.width, viewport, { gap: COLUMN_GAP });
+          cols = Math.min(widest, cols + columnBump.current.extra);
+          if (shown === cols && panel.scrollHeight > available && cols < widest) {
+            columnBump.current.extra += 1;
+            cols += 1;
+          }
+        }
+      }
+      const width = cols > 1 ? cols * natural.width + (cols - 1) * COLUMN_GAP : undefined;
+      // When the column count just changed, the panel on screen is not the one being placed:
+      // estimate its height; the ResizeObserver places it again once it has rendered.
+      const height = cols === shown ? panel.scrollHeight : Math.ceil(natural.height / cols);
+      const size = { width: width ?? Math.max(natural.width, matchWidth ? rect.width : 0), height };
 
-    // The panel lives outside any themed region its anchor may be in (in <body> or a
-    // PortalProvider's container), so it takes the anchor's theme.
-    const origin = anchorPoint ? deepElementFromPoint(doc, anchorPoint.x, anchorPoint.y) : anchorRef?.current;
-    const theme = origin?.closest('[data-theme]')?.getAttribute('data-theme') ?? undefined;
+      let placed;
+      if (anchorPoint) {
+        placed = placeAtPoint(anchorPoint, size, viewport);
+        const last = lastPoint.current;
+        // Rows changed in place (a submenu, or back): keep the top edge, only moving it up to fit.
+        if (!fresh && last && last.point === anchorPoint && last.natural !== natural.height) {
+          placed.top = keepTop(last.top, Math.min(size.height, placed.maxHeight), viewport);
+          placed.side = 'below';
+        }
+        lastPoint.current = { point: anchorPoint, natural: natural.height, top: placed.top };
+      } else {
+        placed = placeBeside(rect, size, viewport, { gap: offset, align });
+      }
 
-    setPos({ top, left, maxHeight, minWidth: matchWidth ? rect.width : 0, placement, theme });
-  }, [getAnchorRect, getDoc, anchorRef, anchorPoint, align, matchWidth, offset]);
+      // The panel lives outside any themed region its anchor may be in (in <body> or a
+      // PortalProvider's container), so it takes the anchor's theme.
+      const theme = originElement()?.closest('[data-theme]')?.getAttribute('data-theme') ?? undefined;
+
+      setPos({
+        top: placed.top,
+        left: placed.left,
+        maxHeight: placed.maxHeight,
+        minWidth: matchWidth ? rect.width : 0,
+        placement: placed.side,
+        theme,
+        columns: cols,
+        width,
+      });
+    },
+    [getAnchorRect, getDoc, originElement, anchorPoint, align, matchWidth, offset, columns]
+  );
 
   useEffect(() => {
     if (open) {
@@ -131,6 +209,7 @@ export function Popover({
     const t = window.setTimeout(() => {
       setMounted(false);
       setPos(null);
+      lastPoint.current = null;
     }, cssDurationMs('--ps-dur-1', getDoc()));
     return () => window.clearTimeout(t);
   }, [open, getDoc]);
@@ -139,11 +218,21 @@ export function Popover({
     if (open && mounted) reposition();
   }, [open, mounted, reposition]);
 
-  // Content can change height (search filtering, inline create): keep the placement right.
+  // A new column count was placed from an estimate: place it again now that it has rendered.
+  const shownColumns = pos?.columns;
   useLayoutEffect(() => {
-    if (!open || !mounted || !panelRef.current || typeof ResizeObserver === 'undefined') return;
+    if (open && mounted && shownColumns) reposition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when the count changes
+  }, [shownColumns]);
+
+  // Content can change size (search filtering, inline create, a submenu): keep the placement
+  // right. The panel's own box stops growing at its height limit, so its rows are watched too.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !mounted || !panel || typeof ResizeObserver === 'undefined') return;
     const ro = new ResizeObserver(() => reposition());
-    ro.observe(panelRef.current);
+    ro.observe(panel);
+    Array.from(panel.children).forEach((child) => ro.observe(child));
     return () => ro.disconnect();
   }, [open, mounted, reposition]);
 
@@ -167,27 +256,43 @@ export function Popover({
       (onEscapeRef.current || onCloseRef.current)();
     };
 
-    // A point has nothing to follow: close on scroll or resize instead of drifting.
-    const handleViewportChange = () => (anchorPoint ? onCloseRef.current() : reposition());
+    // Scrolling inside the panel (a long list) never moves it. An anchored panel follows its
+    // anchor. A point has nothing to follow: it closes when the page, or whatever holds the
+    // element that was right-clicked, scrolls; an unrelated area scrolling leaves it alone.
+    const handleScroll = (e: Event) => {
+      if (eventIsInside(e, panelRef.current)) return;
+      if (!anchorPoint) {
+        reposition();
+        return;
+      }
+      const target = e.target as Node | null;
+      const clicked = originElement();
+      const isPage = !target || target === doc || target === doc.documentElement || target === doc.body;
+      if (isPage || (clicked && typeof target.contains === 'function' && target.contains(clicked))) onCloseRef.current();
+    };
+    // A resized window places it again from scratch, so it stays whole in a smaller window.
+    const handleResize = () => reposition(true);
+    const handleBlur = () => onCloseRef.current();
 
     doc.addEventListener('mousedown', handlePointerDown);
     doc.addEventListener('touchstart', handlePointerDown);
     doc.addEventListener('keydown', handleKeyDown, true);
-    win.addEventListener('resize', handleViewportChange);
-    win.addEventListener('scroll', handleViewportChange, true);
-    win.addEventListener('blur', anchorPoint ? handleViewportChange : noop);
+    win.addEventListener('resize', handleResize);
+    win.addEventListener('scroll', handleScroll, true);
+    win.addEventListener('blur', anchorPoint ? handleBlur : noop);
     return () => {
       doc.removeEventListener('mousedown', handlePointerDown);
       doc.removeEventListener('touchstart', handlePointerDown);
       doc.removeEventListener('keydown', handleKeyDown, true);
-      win.removeEventListener('resize', handleViewportChange);
-      win.removeEventListener('scroll', handleViewportChange, true);
-      win.removeEventListener('blur', anchorPoint ? handleViewportChange : noop);
+      win.removeEventListener('resize', handleResize);
+      win.removeEventListener('scroll', handleScroll, true);
+      win.removeEventListener('blur', anchorPoint ? handleBlur : noop);
     };
-  }, [open, anchorRef, anchorPoint, getDoc, reposition]);
+  }, [open, anchorRef, anchorPoint, getDoc, reposition, originElement]);
 
   if (!open && !mounted) return null;
   const stateClass = !open ? 'is-leaving' : pos ? `is-${pos.placement}` : 'is-measuring';
+  const multi = pos && pos.columns > 1 ? pos.columns : undefined;
 
   return createPortal(
     <div
@@ -196,14 +301,19 @@ export function Popover({
       role={role}
       aria-label={ariaLabel}
       data-theme={pos?.theme}
+      data-columns={multi}
       className={cx('ps-popover', pos && !open && `is-${pos.placement}`, stateClass, className)}
-      style={{
-        top: pos?.top ?? -9999,
-        left: pos?.left ?? -9999,
-        maxHeight: pos?.maxHeight,
-        minWidth: pos?.minWidth,
-        pointerEvents: open ? undefined : 'none',
-      }}
+      style={
+        {
+          top: pos?.top ?? -9999,
+          left: pos?.left ?? -9999,
+          maxHeight: pos?.maxHeight,
+          minWidth: pos?.minWidth,
+          width: pos?.width,
+          '--ps-popover-columns': multi,
+          pointerEvents: open ? undefined : 'none',
+        } as React.CSSProperties
+      }
       // Portaled content still bubbles through the React tree; keep clicks from
       // reaching clickable ancestors such as a selectable card.
       onMouseDown={(e) => e.stopPropagation()}
