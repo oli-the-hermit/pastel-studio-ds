@@ -35,7 +35,10 @@ It runs inside the Figma desktop app, with no network access and no account limi
    - AccountMenu, and the appearance panel with every accent preset as a ColorSwatch.
    - FileIcon, Subform, ProgressBar and UpdateCard.
    - CrashScreen, the Tour card, and MenuBar.
-8. **A sample Files screen** made of those components, on a `Mockups` page.
+8. **Media:**
+   - PlayerControl, TransportControls, MediaTime, LikeButton, VolumeControl and CoverArt.
+   - The MediaControls dock over a video, and the MediaViewer with its details panel.
+9. **A sample Files screen** made of those components, on a `Mockups` page.
 
 Only the dark theme is built: Figma's free plan allows one mode per collection.
 
@@ -73,7 +76,7 @@ tokens from the code** (for tokens) or **Build what's missing** (for new icons).
 
 ## Add a component
 
-Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`…) is a list of blocks of
+Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`, `buildMedia`…) is a list of blocks of
 this shape:
 
 ```js

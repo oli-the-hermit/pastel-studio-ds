@@ -58,13 +58,18 @@ const ROLE_NAMES: Record<string, string> = {
   warning: 'status/warning', 'warning-container': 'status/warning-container', success: 'status/success', 'success-container': 'status/success-container',
   live: 'status/live', 'on-live': 'status/on-live', 'grid-line': 'structure/grid-line', grip: 'structure/grip', 'focus-ring': 'structure/focus-ring',
   scrim: 'structure/scrim', 'field-bg': 'field/bg', 'field-hover': 'field/hover', 'row-bg': 'row/bg', 'row-hover': 'row/hover',
+  'media-backdrop': 'media/backdrop', 'media-overlay': 'media/overlay', 'media-overlay-hover': 'media/overlay-hover',
+  'media-overlay-track': 'media/track', 'media-overlay-buffer': 'media/buffer', 'media-on-overlay': 'media/on-overlay',
+  'media-on-overlay-2': 'media/on-overlay-2', 'media-focus-ring': 'media/focus-ring',
 };
 const SCOPES: Record<string, string[]> = {
   surface: ['FRAME_FILL', 'SHAPE_FILL'], drawer: ['FRAME_FILL', 'SHAPE_FILL'], field: ['FRAME_FILL', 'SHAPE_FILL'], row: ['FRAME_FILL', 'SHAPE_FILL'],
   text: ['TEXT_FILL', 'SHAPE_FILL', 'STROKE_COLOR'],
 };
 const scopesFor = (name: string, css: string) => {
-  if (css === 'focus-ring') return ['STROKE_COLOR'];
+  if (css.endsWith('focus-ring')) return ['STROKE_COLOR'];
+  if (css.includes('on-overlay')) return ['TEXT_FILL', 'SHAPE_FILL', 'STROKE_COLOR'];
+  if (css.startsWith('media-')) return ['FRAME_FILL', 'SHAPE_FILL'];
   if (css === 'scrim') return ['FRAME_FILL'];
   if (css === 'grid-line') return ['STROKE_COLOR', 'FRAME_FILL', 'SHAPE_FILL'];
   if (/^on-|^accent-text$/.test(css) || css === 'on-accent-2') return ['TEXT_FILL', 'SHAPE_FILL', 'STROKE_COLOR'];
@@ -103,6 +108,7 @@ for (const [css, name] of Object.entries(ROLE_NAMES)) {
   const ref = value.match(/^var\(--ps-([a-z0-9-]+)\)$/);
   const mix = value.match(/^color-mix\(in oklab, var\(--ps-([a-z0-9-]+)\) (\d+)%, var\(--ps-([a-z0-9-]+)\)\)$/);
   const rgb = value.match(/^rgb\((\d+) (\d+) (\d+) \/ (\d+)%\)$/);
+  const fade = value.match(/^color-mix\(in srgb, var\(--ps-([a-z0-9-]+)\) (\d+)%, transparent\)$/);
   if (ref) {
     const prim = ref[1].replace(/-(\d+)$/, '/$1');
     if (primitives[prim] || primitives[ref[1]]) roles.push({ name, css, alias: primitives[prim] ? prim : ref[1], scopes });
@@ -111,6 +117,8 @@ for (const [css, name] of Object.entries(ROLE_NAMES)) {
   } else if (mix) {
     const a = toOklab(resolve(mix[1])), b = toOklab(resolve(mix[3])), t = Number(mix[2]) / 100;
     roles.push({ name, css, value: toHex(fromOklab(a.map((x, i) => x * t + b[i] * (1 - t)))), scopes });
+  } else if (fade) {
+    roles.push({ name, css, value: toHex(primitives[fade[1].replace(/-(\d+)$/, '/$1')] ? hex(primitives[fade[1].replace(/-(\d+)$/, '/$1')]) : resolve(fade[1])), alpha: Number(fade[2]) / 100, scopes });
   } else if (rgb) {
     roles.push({ name, css, value: toHex({ r: +rgb[1] / 255, g: +rgb[2] / 255, b: +rgb[3] / 255, a: 1 }), alpha: +rgb[4] / 100, scopes });
   } else throw new Error(`Don't know how to carry --ps-${css}: ${value}`);
