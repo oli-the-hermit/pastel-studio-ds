@@ -53,7 +53,7 @@ function textStyleId(name) { const s = STY.find(s => s.name === name); if (!s) t
 let compIndex = null;
 function indexComponents() {
   compIndex = new Map();
-  for (const n of page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] })) {
+  for (const n of figma.root.children.flatMap(p => p.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] }))) {
     if (n.type === 'COMPONENT' && n.parent && n.parent.type === 'COMPONENT_SET') continue; // variants are reached through their set
     if (!compIndex.has(n.name)) compIndex.set(n.name, n);
   }
@@ -123,14 +123,14 @@ async function ensureTextStyle(name, size, weight, lineHeight) {
 let rowX = 0, rowY = 0;
 function bottomOfPage() { return Math.max(0, ...page.children.map(n => n.y + n.height)); }
 function startRow() { rowX = 0; rowY = bottomOfPage() + 96; }
-function exists(name) { return page.children.some(n => n.type === 'SECTION' && n.name === name); }
+function exists(name) { return SECTIONS.has(name); } // on any page: sections move to their family's page
 async function section(name, nodes, bg) {
   const s = figma.createSection(); s.name = name; s.x = rowX; s.y = rowY;
   let x = 24;
   for (const n of nodes) { s.appendChild(n); n.x = x; n.y = 48; x += n.width + 40; }
   const w = Math.max(...nodes.map(n => n.x + n.width)), h = Math.max(...nodes.map(n => n.y + n.height));
   s.resizeWithoutConstraints(w + 24, h + 24); s.fills = [await paint(bg || 'surface/1')];
-  rowX += s.width + 48; log.push(`+ ${name}`); progress(`Added ${name}`); return s;
+  rowX += s.width + 48; SECTIONS.set(name, s); log.push(`+ ${name}`); progress(`Added ${name}`); return s;
 }
 function grid(set, cols, cellW, cellH) {
   set.children.forEach((c, i) => { c.x = 24 + (i % cols) * cellW; c.y = 24 + Math.floor(i / cols) * cellH; });
@@ -216,9 +216,9 @@ async function buildFoundations(update) {
 
 // ══ Icons: one component per icon of @pastel-studio/react, added when missing ══
 async function buildIcons() {
-  let s = page.children.find(n => n.type === 'SECTION' && n.name === 'Icons');
+  let s = SECTIONS.get('Icons');
   const isNew = !s;
-  if (!s) { s = figma.createSection(); s.name = 'Icons'; s.x = 0; s.y = page.children.length > 1 ? bottomOfPage() + 96 : 0; }
+  if (!s) { s = figma.createSection(); s.name = 'Icons'; page.appendChild(s); s.x = 0; s.y = page.children.length > 1 ? bottomOfPage() + 96 : 0; SECTIONS.set('Icons', s); }
   const oldBottom = s.y + s.height;
   const have = new Set(s.children.map(n => n.name));
   let i = s.children.filter(n => n.type === 'COMPONENT').length;
@@ -243,7 +243,7 @@ async function buildIcons() {
   s.resizeWithoutConstraints(24 + 12 * 48, 48 + Math.ceil(i / 12) * 48 + 24);
   s.fills = [await paint('surface/bg')];
   const grew = s.y + s.height - oldBottom;
-  if (!isNew && grew > 0) for (const n of page.children) if (n !== s && n.y >= oldBottom) n.y += grew; // keep the sections below clear
+  if (!isNew && grew > 0) for (const n of s.parent.children) if (n !== s && n.y >= oldBottom) n.y += grew; // keep the sections below clear
   log.push(`+ ${added} icons`);
 }
 
@@ -1561,6 +1561,195 @@ async function buildMusic() {
   }
 }
 
+// ══ Pages: the file laid out like a design kit ═══════════
+// Cover, getting started, foundations, a page per family of components, then the screens. Sections
+// are built on the "Components" page and then moved to their family's page; a section is found by
+// its name on any page, so moving one never makes the plugin build it twice.
+const PAGES = [
+  { name: 'Cover' },
+  { name: 'Getting started' },
+  { name: '——— Foundations' },
+  { name: 'Color' }, { name: 'Typography' }, { name: 'Spacing & sizes' },
+  { name: 'Icons', sections: ['Icons'] },
+  { name: 'Elevation' },
+  { name: '——— Components' },
+  { name: 'Actions', about: 'Buttons and the small things people press.', sections: ['Button', 'IconButton', 'TextButton', 'Chip'] },
+  { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'Field', 'PasswordField', 'SearchField', 'Select', 'Slider', 'Form parts', 'Subform'] },
+  { name: 'Selection', about: 'Choosing on or off, one of a few, or a colour.', sections: ['Checkbox', 'Switch', 'SegmentedControl', 'Tabs', 'Appearance'] },
+  { name: 'Navigation', about: 'Moving around an app: the drawer, the top bar, addresses and trees.', sections: ['NavItem', 'Drawer', 'TopBar', 'MenuBar', 'AddressBar', 'TreeView', 'AccountMenu'] },
+  { name: 'Menus & pickers', about: 'Floating lists to pick from.', sections: ['Menu', 'ListPicker'] },
+  { name: 'Containers & layout', about: 'Cards, dialogs, rows and the window itself.', sections: ['Card', 'Modal', 'ListRow', 'DetailsPane', 'StatusBar', 'EmptyState', 'SortableList', 'AppShell', 'CrashScreen'] },
+  { name: 'Feedback & status', about: 'What the app tells people: notices, progress, status.', sections: ['Toast', 'StatusChip', 'Spinner', 'ProgressBar', 'UpdateCard', 'Tour'] },
+  { name: 'Files', about: 'Files and folders: tiles, icons, the views and the file dialog.', sections: ['MediaTile', 'FileIcon', 'FileView', 'File list, tiles and icons', 'FileDialog'] },
+  { name: 'Media', about: 'Players, the controls over a video, and the viewer.', sections: ['PlayerControl', 'Transport', 'Like and volume', 'CoverArt', 'MediaControls', 'MediaViewer'] },
+  { name: 'Music', about: 'Tracks, the queue, albums and the now-playing bar.', sections: ['TrackInfo', 'TrackList', 'Queue', 'NowPlayingBar', 'AlbumHeader', 'PipPlayer'] },
+  { name: '——— Screens' },
+  { name: 'Mockups' },
+  { name: 'Pastel Espresso' }, { name: 'Pastel Studio Pro' }, { name: 'Pastel Media Pro' },
+];
+const SECTIONS = new Map();   // section name -> node, on any page
+async function loadAllPages() {
+  for (const p of figma.root.children) await p.loadAsync();
+  for (const p of figma.root.children) for (const n of p.children) if (n.type === 'SECTION' && !SECTIONS.has(n.name)) SECTIONS.set(n.name, n);
+}
+async function ensurePage(name) {
+  let p = figma.root.children.find(x => x.name === name);
+  if (!p) { p = figma.createPage(); p.name = name; log.push(`+ page ${name}`); }
+  await p.loadAsync();
+  return p;
+}
+async function heading(p, title, about) {
+  if (p.children.some(n => n.name === 'Heading')) return;
+  const h = auto('VERTICAL', 'Heading'); await bindNum(h, 'itemSpacing', 'space/8');
+  const t = await text(title, '4xl/Bold', 'text/1', 'Title'); h.appendChild(t);
+  if (about) { const a = await text(about, 'lg/SemiBold', 'text/2', 'About'); h.appendChild(a); }
+  p.appendChild(h); h.x = 0; h.y = 0;
+}
+function layOut(p, names) {
+  let x = 0, y = 200, rowH = 0;
+  for (const name of names) {
+    const s = SECTIONS.get(name); if (!s || s.parent !== p) continue;
+    if (x > 0 && x + s.width > 2600) { x = 0; y += rowH + 96; rowH = 0; }
+    s.x = x; s.y = y; x += s.width + 96; rowH = Math.max(rowH, s.height);
+  }
+}
+async function organize() {
+  progress('Laying out the pages…');
+  for (const spec of PAGES) {
+    const p = await ensurePage(spec.name);
+    if (spec.sections) {
+      if (spec.about) await heading(p, spec.name, spec.about);
+      let moved = false;
+      for (const name of spec.sections) { const s = SECTIONS.get(name); if (s && s.parent !== p) { p.appendChild(s); moved = true; } }
+      if (moved) layOut(p, spec.sections);
+    }
+  }
+  PAGES.forEach((spec, i) => { const p = figma.root.children.find(x => x.name === spec.name); if (p) figma.root.insertChild(i, p); });
+  // The building page is left empty once everything has moved
+  if (page && page.children.length === 0 && figma.root.children.length > 1) {
+    const other = figma.root.children.find(x => x !== page);
+    await figma.setCurrentPageAsync(other); page.remove(); page = other;
+  }
+}
+
+// ══ Cover, getting started and the foundations ════════════
+async function frameOn(p, name, w) {
+  if (p.children.some(n => n.name === name)) return null;
+  const f = auto('VERTICAL', name); f.resize(w, 100); f.counterAxisSizingMode = 'FIXED'; f.primaryAxisSizingMode = 'AUTO';
+  await pad(f, 'space/48', 'space/48', 'space/48', 'space/48'); await bindNum(f, 'itemSpacing', 'space/24'); await radius(f, 'radius/4xl');
+  f.fills = [await paint('surface/bg')]; p.appendChild(f); f.x = 0; f.y = 0; log.push(`+ ${name}`); return f;
+}
+async function para(parent, s, style, color, w) {
+  const t = await text(s, style || 'md/Regular', color || 'text/2', 'Text'); parent.appendChild(t);
+  if (w !== false) { fill(t); t.textAutoResize = 'HEIGHT'; } return t;
+}
+async function buildCover() {
+  const p = await ensurePage('Cover');
+  const f = await frameOn(p, 'Cover', 1600); if (!f) return;
+  f.resize(1600, 960); f.primaryAxisSizingMode = 'FIXED'; f.primaryAxisAlignItems = 'CENTER';
+  const mark = auto('HORIZONTAL', 'Mark'); mark.resize(96, 96); mark.primaryAxisSizingMode = 'FIXED'; mark.counterAxisSizingMode = 'FIXED';
+  mark.primaryAxisAlignItems = 'CENTER'; mark.counterAxisAlignItems = 'CENTER'; await radius(mark, 'radius/3xl'); mark.fills = [await paint('accent/accent')];
+  mark.appendChild(await iconInst('FolderSolid', 'accent/on-accent', 48, 'Icon')); f.appendChild(mark);
+  await para(f, 'Pastel Studio', '4xl/Bold', 'text/1', false);
+  await para(f, 'Design system: the Figma library', '2xl/Bold', 'text/2', false);
+  await para(f, 'Every colour, size and component here is built from pastel-studio-ds and bound to its tokens. Screens for Pastel Espresso, Pastel Studio Pro and Pastel Media Pro are made of these pieces.', 'lg/SemiBold', 'text/3');
+  const row = auto('HORIZONTAL', 'Accents'); await bindNum(row, 'itemSpacing', 'space/10'); f.appendChild(row);
+  for (const a of DATA.accents.filter(x => x.group === 'vibrant').slice(0, 12)) {
+    const d = figma.createEllipse(); d.name = a.id; d.resize(36, 36); const h = a.fill;
+    d.fills = [{ type: 'SOLID', color: { r: parseInt(h.slice(1, 3), 16) / 255, g: parseInt(h.slice(3, 5), 16) / 255, b: parseInt(h.slice(5, 7), 16) / 255 } }]; row.appendChild(d);
+  }
+}
+async function buildGettingStarted() {
+  const p = await ensurePage('Getting started');
+  const f = await frameOn(p, 'Getting started', 1100); if (!f) return;
+  await para(f, 'Getting started', '3xl/Bold', 'text/1', false);
+  const parts = [
+    ['Colours and sizes are variables', 'Pick fills from Color (Dark): surface, text, accent, status and the rest. Spacing, Radius and Size hold every px token. Each variable shows its CSS name (var(--ps-…)) in Dev Mode, so a choice here is a token in the code.'],
+    ['Type is a set of text styles', 'xs to 4xl over a weight, in Geist: md/Regular for body text, sm/SemiBold for labels, xl/Bold for titles.'],
+    ['Components have variants and properties', 'Pick a state or size from the variants (Style=Primary, Size=sm) and change labels and icons from the properties panel. Swap any icon from the Icons page.'],
+    ['Screens are made of instances', 'The Screens pages hold each app’s windows, built from these components. Move and change things there freely: a change to a component shows on every screen.'],
+    ['Keeping it in step with the code', 'The library is built by the plugin in pastel-studio-ds, tools/figma-library. "Build what’s missing" adds new pieces and never overwrites what is here; "Update the tokens from the code" rewrites the values after the tokens change.'],
+  ];
+  for (const [h, b] of parts) { await para(f, h, 'xl/Bold', 'text/1', false); await para(f, b, 'md/Regular', 'text/2'); }
+}
+async function buildColorPage() {
+  const p = await ensurePage('Color');
+  const f = await frameOn(p, 'Colour roles', 1600); if (!f) return;
+  await para(f, 'Colour roles', '3xl/Bold', 'text/1', false);
+  await para(f, 'Use these, never the raw palette below: each role knows its job and follows the theme and the accent.', 'md/Regular', 'text/2');
+  const groups = {};
+  for (const r of DATA.roles) (groups[r.name.split('/')[0]] = groups[r.name.split('/')[0]] || []).push(r);
+  for (const [g, roles] of Object.entries(groups)) {
+    await para(f, g[0].toUpperCase() + g.slice(1), 'lg/Bold', 'text/1', false);
+    const row = auto('HORIZONTAL', g); row.layoutWrap = 'WRAP'; await bindNum(row, 'itemSpacing', 'space/16'); await bindNum(row, 'counterAxisSpacing', 'space/16'); f.appendChild(row); fill(row);
+    for (const r of roles) {
+      const cell = auto('VERTICAL', r.name); await bindNum(cell, 'itemSpacing', 'space/6'); row.appendChild(cell);
+      const sw = figma.createRectangle(); sw.name = 'Swatch'; sw.resize(160, 72); sw.cornerRadius = 14; sw.fills = [await paint(r.name)];
+      sw.strokes = [await paint('surface/3')]; sw.strokeWeight = 1; cell.appendChild(sw);
+      cell.appendChild(await text(r.name, 'sm/SemiBold', 'text/1', 'Name'));
+      cell.appendChild(await text(`--ps-${r.css}`, 'xs/Medium', 'text/3', 'Token'));
+    }
+  }
+  await para(f, 'The palette', '2xl/Bold', 'text/1', false);
+  const pal = auto('HORIZONTAL', 'Palette'); pal.layoutWrap = 'WRAP'; await bindNum(pal, 'itemSpacing', 'space/8'); await bindNum(pal, 'counterAxisSpacing', 'space/12'); f.appendChild(pal); fill(pal);
+  for (const name of Object.keys(DATA.primitives)) {
+    const cell = auto('VERTICAL', name); await bindNum(cell, 'itemSpacing', 'space/4'); pal.appendChild(cell);
+    const sw = figma.createRectangle(); sw.name = 'Swatch'; sw.resize(72, 48); sw.cornerRadius = 10; sw.fills = [await paint(name)]; cell.appendChild(sw);
+    cell.appendChild(await text(name, 'xs/Medium', 'text/2', 'Name'));
+  }
+}
+async function buildTypePage() {
+  const p = await ensurePage('Typography');
+  const f = await frameOn(p, 'Type ramp', 1400); if (!f) return;
+  await para(f, 'Type ramp', '3xl/Bold', 'text/1', false);
+  await para(f, 'Geist, from a 15px root. Body text is md/Regular; labels sm/SemiBold; card titles 2xl/Bold.', 'md/Regular', 'text/2');
+  for (const t of DATA.textStyles.slice().reverse()) {
+    const row = auto('HORIZONTAL', t.name); row.counterAxisAlignItems = 'BASELINE'; await bindNum(row, 'itemSpacing', 'space/24'); f.appendChild(row); fill(row);
+    const lab = auto('VERTICAL', 'Label'); lab.resize(220, 20); lab.counterAxisSizingMode = 'FIXED'; row.appendChild(lab);
+    lab.appendChild(await text(t.name, 'sm/SemiBold', 'text/1', 'Name'));
+    lab.appendChild(await text(`${t.css} · ${t.size}px · ${t.lineHeight}%`, 'xs/Medium', 'text/3', 'Spec'));
+    const s = await text('Your media stays where it is', t.name, 'text/1', 'Sample'); row.appendChild(s);
+  }
+}
+async function buildSpacingPage() {
+  const p = await ensurePage('Spacing & sizes');
+  const f = await frameOn(p, 'Spacing and radius', 1200); if (!f) return;
+  await para(f, 'Spacing', '3xl/Bold', 'text/1', false);
+  for (const n of DATA.numbers.filter(x => x.collection === 'Spacing')) {
+    const row = auto('HORIZONTAL', n.name); row.counterAxisAlignItems = 'CENTER'; await bindNum(row, 'itemSpacing', 'space/16'); f.appendChild(row);
+    const lab = await text(`${n.name} · ${n.value}px`, 'sm/Medium', 'text/2', 'Name'); lab.resize(160, lab.height); lab.textAutoResize = 'HEIGHT'; row.appendChild(lab);
+    const bar = figma.createRectangle(); bar.name = 'Bar'; bar.resize(Math.max(1, n.value), 16); bar.fills = [await paint('accent/accent')]; bar.setBoundVariable('width', v(n.name)); row.appendChild(bar);
+  }
+  await para(f, 'Radius', '3xl/Bold', 'text/1', false);
+  const rr = auto('HORIZONTAL', 'Radii'); rr.layoutWrap = 'WRAP'; await bindNum(rr, 'itemSpacing', 'space/24'); await bindNum(rr, 'counterAxisSpacing', 'space/16'); f.appendChild(rr); fill(rr);
+  for (const n of DATA.numbers.filter(x => x.collection === 'Radius')) {
+    const cell = auto('VERTICAL', n.name); cell.counterAxisAlignItems = 'CENTER'; await bindNum(cell, 'itemSpacing', 'space/8'); rr.appendChild(cell);
+    const sq = figma.createRectangle(); sq.name = 'Shape'; sq.resize(72, 72); sq.fills = [await paint('surface/2')];
+    for (const k of ['topLeftRadius', 'topRightRadius', 'bottomLeftRadius', 'bottomRightRadius']) sq.setBoundVariable(k, v(n.name)); cell.appendChild(sq);
+    cell.appendChild(await text(`${n.name.split('/')[1]} · ${n.value}`, 'xs/Medium', 'text/2', 'Name'));
+  }
+  await para(f, 'Sizes', '3xl/Bold', 'text/1', false);
+  await para(f, 'Every fixed size of the components (field and button heights, the top bar, the drawer, tiles and panels) is a variable in the Size collection, named after its token.', 'md/Regular', 'text/2');
+}
+async function buildElevationPage() {
+  const p = await ensurePage('Elevation');
+  const f = await frameOn(p, 'Elevation', 1200); if (!f) return;
+  await para(f, 'Elevation', '3xl/Bold', 'text/1', false);
+  await para(f, 'Surfaces are told apart by tone (bg < surface 1 < 2 < 3 < 4), never by borders or shadows. Only floating layers (menus, popovers, dialogs, toasts) cast the overlay shadow, and only a dialog dims the page behind it with the scrim.', 'md/Regular', 'text/2');
+  const row = auto('HORIZONTAL', 'Steps'); await bindNum(row, 'itemSpacing', 'space/16'); f.appendChild(row);
+  for (const s of ['surface/bg', 'surface/1', 'surface/2', 'surface/3', 'surface/4']) {
+    const c = auto('VERTICAL', s); c.resize(150, 110); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'FIXED'; await pad(c, 'space/12', 'space/12', 'space/12', 'space/12');
+    await radius(c, 'radius/xl'); c.fills = [await paint(s)]; c.strokes = [await paint('surface/3')]; c.strokeWeight = 1;
+    c.appendChild(await text(s, 'sm/SemiBold', 'text/1', 'Name')); row.appendChild(c);
+  }
+  const elev = (await figma.getLocalEffectStylesAsync()).find(s => s.name === 'elevation/overlay');
+  const flo = auto('VERTICAL', 'Floating layer'); flo.resize(280, 120); flo.primaryAxisSizingMode = 'FIXED'; flo.counterAxisSizingMode = 'FIXED';
+  await pad(flo, 'space/16', 'space/16', 'space/16', 'space/16'); await radius(flo, 'radius/lg'); flo.fills = [await paint('surface/3')]; if (elev) await flo.setEffectStyleIdAsync(elev.id);
+  flo.appendChild(await text('elevation/overlay', 'md/SemiBold', 'text/1', 'Name'));
+  flo.appendChild(await text('Menus, popovers, dialogs and toasts.', 'sm/Regular', 'text/2', 'About'));
+  f.appendChild(flo);
+}
+
 // ── Main ─────────────────────────────────────────────────
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
 async function main() {
@@ -1572,6 +1761,7 @@ async function main() {
     page.name = 'Components';
   }
   await figma.setCurrentPageAsync(page);
+  await loadAllPages();
   for (const s of ['Regular', 'Medium', 'SemiBold', 'Bold']) await figma.loadFontAsync({ family: 'Geist', style: s });
   progress(update ? 'Updating the tokens from the code…' : 'Checking the foundations…');
   await buildFoundations(update);
@@ -1594,13 +1784,16 @@ async function main() {
   progress('Building music pieces…');
   await buildMusic();
   await buildSample();
+  progress('Writing the cover and the foundations…');
+  await buildCover(); await buildGettingStarted(); await buildColorPage(); await buildTypePage(); await buildSpacingPage(); await buildElevationPage();
+  await organize();
 }
 
 main()
   .then(() => {
     if (note) note.cancel();
     if (figma.command === 'update') return figma.closePlugin('Tokens updated from the code.');
-    const sections = log.filter(l => l.startsWith('+ ') && !/variable|text style|collection|effect style/.test(l)).length;
+    const sections = log.filter(l => l.startsWith('+ ') && !/variable|text style|collection|effect style|page /.test(l)).length;
     const tokens = log.filter(l => /variable|text style|effect style/.test(l)).length;
     const what = [sections && `${sections} sections`, tokens && `${tokens} tokens and styles`].filter(Boolean).join(' and ');
     const skipped = skippedIcons.length ? ` Skipped icons Figma couldn't read: ${skippedIcons.join(', ')}.` : '';
