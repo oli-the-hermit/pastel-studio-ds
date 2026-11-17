@@ -1561,18 +1561,15 @@ async function buildMusic() {
   }
 }
 
-// ══ Pages: the file laid out like a design kit ═══════════
-// Cover, getting started, foundations, a page per family of components, then the screens. Sections
-// are built on the "Components" page and then moved to their family's page; a section is found by
-// its name on any page, so moving one never makes the plugin build it twice.
-const PAGES = [
-  { name: 'Cover' },
-  { name: 'Getting started' },
-  { name: '——— Foundations' },
-  { name: 'Color' }, { name: 'Typography' }, { name: 'Spacing & sizes' },
-  { name: 'Icons', sections: ['Icons'] },
-  { name: 'Elevation' },
-  { name: '——— Components' },
+// ══ Pages: the file laid out like a design kit, in three pages ══
+// Figma's free plan allows three pages a file, so the kit's pages become sections:
+//   Library  the cover, getting started, Foundations, then one section per family of components
+//   Screens  one section per app, for the apps' own screens plugins
+//   Mockups  the sample screen and room to play
+// A section is found by its name anywhere in the file, so moving one never rebuilds it.
+const LIBRARY = 'Library', SCREENS = 'Screens';
+const FAMILIES = [
+  { name: 'Foundations', about: 'Colour, type, spacing, icons and elevation: the tokens everything is built from.', frames: ['Colour roles', 'Type ramp', 'Spacing and radius', 'Elevation'], sections: ['Icons'] },
   { name: 'Actions', about: 'Buttons and the small things people press.', sections: ['Button', 'IconButton', 'TextButton', 'Chip'] },
   { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'Field', 'PasswordField', 'SearchField', 'Select', 'Slider', 'Form parts', 'Subform'] },
   { name: 'Selection', about: 'Choosing on or off, one of a few, or a colour.', sections: ['Checkbox', 'Switch', 'SegmentedControl', 'Tabs', 'Appearance'] },
@@ -1583,58 +1580,84 @@ const PAGES = [
   { name: 'Files', about: 'Files and folders: tiles, icons, the views and the file dialog.', sections: ['MediaTile', 'FileIcon', 'FileView', 'File list, tiles and icons', 'FileDialog'] },
   { name: 'Media', about: 'Players, the controls over a video, and the viewer.', sections: ['PlayerControl', 'Transport', 'Like and volume', 'CoverArt', 'MediaControls', 'MediaViewer'] },
   { name: 'Music', about: 'Tracks, the queue, albums and the now-playing bar.', sections: ['TrackInfo', 'TrackList', 'Queue', 'NowPlayingBar', 'AlbumHeader', 'PipPlayer'] },
-  { name: '——— Screens' },
-  { name: 'Mockups' },
-  { name: 'Pastel Espresso' }, { name: 'Pastel Studio Pro' }, { name: 'Pastel Media Pro' },
 ];
-const SECTIONS = new Map();   // section name -> node, on any page
+const APPS = ['Pastel Espresso', 'Pastel Studio Pro', 'Pastel Media Pro'];
+// Pages an earlier version of this plugin made, one per topic: their contents move to Library
+const OLD_PAGES = ['Cover', 'Getting started', '——— Foundations', 'Color', 'Typography', 'Spacing & sizes', 'Icons', 'Elevation', '——— Components',
+  'Actions', 'Inputs', 'Selection', 'Navigation', 'Menus & pickers', 'Containers & layout', 'Feedback & status', 'Files', 'Media', 'Music', '——— Screens',
+  'Pastel Espresso', 'Pastel Studio Pro', 'Pastel Media Pro', 'Components'];
+
+const SECTIONS = new Map();   // section name -> node, anywhere in the file
 async function loadAllPages() {
   for (const p of figma.root.children) await p.loadAsync();
-  for (const p of figma.root.children) for (const n of p.children) if (n.type === 'SECTION' && !SECTIONS.has(n.name)) SECTIONS.set(n.name, n);
+  for (const p of figma.root.children) for (const n of p.findAllWithCriteria({ types: ['SECTION'] })) if (!SECTIONS.has(n.name)) SECTIONS.set(n.name, n);
 }
-async function ensurePage(name) {
-  let p = figma.root.children.find(x => x.name === name);
-  if (!p) { p = figma.createPage(); p.name = name; log.push(`+ page ${name}`); }
-  await p.loadAsync();
-  return p;
-}
-async function heading(p, title, about) {
-  if (p.children.some(n => n.name === 'Heading')) return;
-  const h = auto('VERTICAL', 'Heading'); await bindNum(h, 'itemSpacing', 'space/8');
-  const t = await text(title, '4xl/Bold', 'text/1', 'Title'); h.appendChild(t);
-  if (about) { const a = await text(about, 'lg/SemiBold', 'text/2', 'About'); h.appendChild(a); }
-  p.appendChild(h); h.x = 0; h.y = 0;
-}
-function layOut(p, names) {
-  let x = 0, y = 200, rowH = 0;
-  for (const name of names) {
-    const s = SECTIONS.get(name); if (!s || s.parent !== p) continue;
-    if (x > 0 && x + s.width > 2600) { x = 0; y += rowH + 96; rowH = 0; }
-    s.x = x; s.y = y; x += s.width + 96; rowH = Math.max(rowH, s.height);
+function libraryPage() { return figma.root.children.find(p => p.name === LIBRARY) || page; }
+function findFrame(name) { for (const p of figma.root.children) { const f = p.findOne(n => n.type === 'FRAME' && n.name === name); if (f) return f; } return null; }
+async function bigSection(p, name, about) {
+  let s = p.children.find(n => n.type === 'SECTION' && n.name === name);
+  if (s) return s;
+  s = figma.createSection(); s.name = name; p.appendChild(s); s.fills = [await paint('surface/bg')]; SECTIONS.set(name, s);
+  if (about) {
+    const h = auto('VERTICAL', 'Heading'); await bindNum(h, 'itemSpacing', 'space/8');
+    h.appendChild(await text(name, '4xl/Bold', 'text/1', 'Title')); h.appendChild(await text(about, 'lg/SemiBold', 'text/2', 'About'));
+    s.appendChild(h); h.x = 64; h.y = 64;
   }
+  log.push(`+ ${name}`); return s;
+}
+// Lays a family's children out in rows under its heading, and sizes the family to fit
+function layOutFamily(s) {
+  const kids = s.children.filter(n => n.name !== 'Heading');
+  let x = 64, y = 200, rowH = 0;
+  for (const n of kids) {
+    if (x > 64 && x + n.width > 3000) { x = 64; y += rowH + 96; rowH = 0; }
+    n.x = x; n.y = y; x += n.width + 96; rowH = Math.max(rowH, n.height);
+  }
+  const w = Math.max(1200, ...kids.map(n => n.x + n.width)) + 64, h = Math.max(320, ...kids.map(n => n.y + n.height)) + 64;
+  s.resizeWithoutConstraints(w, h);
 }
 async function organize() {
-  progress('Laying out the pages…');
-  for (const spec of PAGES) {
-    const p = await ensurePage(spec.name);
-    if (spec.sections) {
-      if (spec.about) await heading(p, spec.name, spec.about);
-      let moved = false;
-      for (const name of spec.sections) { const s = SECTIONS.get(name); if (s && s.parent !== p) { p.appendChild(s); moved = true; } }
-      if (moved) layOut(p, spec.sections);
-    }
+  progress('Laying out the library…');
+  let lib = libraryPage(); lib.name = LIBRARY; page = lib;
+  // Fold any page an earlier version made into Library, so the file stays within three pages
+  for (const p of figma.root.children.slice()) {
+    if (p === lib || p.name === 'Mockups' || p.name === SCREENS || !OLD_PAGES.includes(p.name)) continue;
+    await p.loadAsync();
+    for (const n of p.children.slice()) lib.appendChild(n);
+    if (figma.currentPage === p) await figma.setCurrentPageAsync(lib);
+    p.remove(); log.push(`- page ${p.name}`);
   }
-  PAGES.forEach((spec, i) => { const p = figma.root.children.find(x => x.name === spec.name); if (p) figma.root.insertChild(i, p); });
-  // The building page is left empty once everything has moved
-  if (page && page.children.length === 0 && figma.root.children.length > 1) {
-    const other = figma.root.children.find(x => x !== page);
-    await figma.setCurrentPageAsync(other); page.remove(); page = other;
+  // The cover and getting started at the top, then the families stacked under them
+  const cover = findFrame('Cover'), start = findFrame('Getting started');
+  if (cover && cover.parent !== lib) lib.appendChild(cover);
+  if (start && start.parent !== lib) lib.appendChild(start);
+  if (cover) { cover.x = 0; cover.y = 0; }
+  if (start) { start.x = cover ? cover.width + 96 : 0; start.y = 0; }
+  let y = Math.max(cover ? cover.height : 0, start ? start.height : 0) + 160;
+  for (const fam of FAMILIES) {
+    const s = await bigSection(lib, fam.name, fam.about);
+    let moved = false;
+    for (const name of fam.frames || []) { const f = findFrame(name); if (f && f.parent !== s) { s.appendChild(f); moved = true; } }
+    for (const name of fam.sections) { const c = SECTIONS.get(name); if (c && c.parent !== s) { s.appendChild(c); moved = true; } }
+    if (moved) layOutFamily(s);
+    s.x = 0; s.y = y; y += s.height + 160;
   }
+  // The screens page, with a section per app
+  let screens = figma.root.children.find(p => p.name === SCREENS);
+  if (!screens) {
+    if (figma.root.children.length >= 3) throw new Error('This file already has three pages, the free plan’s limit. Delete a page you don’t need, then run again.');
+    screens = figma.createPage(); screens.name = SCREENS; log.push(`+ page ${SCREENS}`);
+  }
+  await screens.loadAsync();
+  let sy = 0;
+  for (const app of APPS) { const s = await bigSection(screens, app, `${app}’s screens, built by its screens plugin from this library.`); if (s.height < 400) s.resizeWithoutConstraints(1600, 400); s.x = 0; s.y = sy; sy += s.height + 160; }
+  // Library, Screens, Mockups
+  [LIBRARY, SCREENS, 'Mockups'].forEach((name, i) => { const p = figma.root.children.find(x => x.name === name); if (p) figma.root.insertChild(Math.min(i, figma.root.children.length - 1), p); });
 }
 
 // ══ Cover, getting started and the foundations ════════════
 async function frameOn(p, name, w) {
-  if (p.children.some(n => n.name === name)) return null;
+  if (findFrame(name)) return null;
   const f = auto('VERTICAL', name); f.resize(w, 100); f.counterAxisSizingMode = 'FIXED'; f.primaryAxisSizingMode = 'AUTO';
   await pad(f, 'space/48', 'space/48', 'space/48', 'space/48'); await bindNum(f, 'itemSpacing', 'space/24'); await radius(f, 'radius/4xl');
   f.fills = [await paint('surface/bg')]; p.appendChild(f); f.x = 0; f.y = 0; log.push(`+ ${name}`); return f;
@@ -1644,7 +1667,7 @@ async function para(parent, s, style, color, w) {
   if (w !== false) { fill(t); t.textAutoResize = 'HEIGHT'; } return t;
 }
 async function buildCover() {
-  const p = await ensurePage('Cover');
+  const p = libraryPage();
   const f = await frameOn(p, 'Cover', 1600); if (!f) return;
   f.resize(1600, 960); f.primaryAxisSizingMode = 'FIXED'; f.primaryAxisAlignItems = 'CENTER';
   const mark = auto('HORIZONTAL', 'Mark'); mark.resize(96, 96); mark.primaryAxisSizingMode = 'FIXED'; mark.counterAxisSizingMode = 'FIXED';
@@ -1660,7 +1683,7 @@ async function buildCover() {
   }
 }
 async function buildGettingStarted() {
-  const p = await ensurePage('Getting started');
+  const p = libraryPage();
   const f = await frameOn(p, 'Getting started', 1100); if (!f) return;
   await para(f, 'Getting started', '3xl/Bold', 'text/1', false);
   const parts = [
@@ -1673,7 +1696,7 @@ async function buildGettingStarted() {
   for (const [h, b] of parts) { await para(f, h, 'xl/Bold', 'text/1', false); await para(f, b, 'md/Regular', 'text/2'); }
 }
 async function buildColorPage() {
-  const p = await ensurePage('Color');
+  const p = libraryPage();
   const f = await frameOn(p, 'Colour roles', 1600); if (!f) return;
   await para(f, 'Colour roles', '3xl/Bold', 'text/1', false);
   await para(f, 'Use these, never the raw palette below: each role knows its job and follows the theme and the accent.', 'md/Regular', 'text/2');
@@ -1699,7 +1722,7 @@ async function buildColorPage() {
   }
 }
 async function buildTypePage() {
-  const p = await ensurePage('Typography');
+  const p = libraryPage();
   const f = await frameOn(p, 'Type ramp', 1400); if (!f) return;
   await para(f, 'Type ramp', '3xl/Bold', 'text/1', false);
   await para(f, 'Geist, from a 15px root. Body text is md/Regular; labels sm/SemiBold; card titles 2xl/Bold.', 'md/Regular', 'text/2');
@@ -1712,7 +1735,7 @@ async function buildTypePage() {
   }
 }
 async function buildSpacingPage() {
-  const p = await ensurePage('Spacing & sizes');
+  const p = libraryPage();
   const f = await frameOn(p, 'Spacing and radius', 1200); if (!f) return;
   await para(f, 'Spacing', '3xl/Bold', 'text/1', false);
   for (const n of DATA.numbers.filter(x => x.collection === 'Spacing')) {
@@ -1732,7 +1755,7 @@ async function buildSpacingPage() {
   await para(f, 'Every fixed size of the components (field and button heights, the top bar, the drawer, tiles and panels) is a variable in the Size collection, named after its token.', 'md/Regular', 'text/2');
 }
 async function buildElevationPage() {
-  const p = await ensurePage('Elevation');
+  const p = libraryPage();
   const f = await frameOn(p, 'Elevation', 1200); if (!f) return;
   await para(f, 'Elevation', '3xl/Bold', 'text/1', false);
   await para(f, 'Surfaces are told apart by tone (bg < surface 1 < 2 < 3 < 4), never by borders or shadows. Only floating layers (menus, popovers, dialogs, toasts) cast the overlay shadow, and only a dialog dims the page behind it with the scrim.', 'md/Regular', 'text/2');
@@ -1754,12 +1777,9 @@ async function buildElevationPage() {
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
 async function main() {
   const update = figma.command === 'update';
-  page = figma.root.children.find(p => p.name === 'Components');
-  if (!page) {
-    const first = figma.root.children[0];
-    page = figma.root.children.length === 1 && first.children.length === 0 ? first : figma.createPage();
-    page.name = 'Components';
-  }
+  // Build on the Library page (an older file calls it Components); a new file's first page becomes it
+  page = figma.root.children.find(p => p.name === 'Library') || figma.root.children.find(p => p.name === 'Components') || figma.root.children[0];
+  page.name = 'Library';
   await figma.setCurrentPageAsync(page);
   await loadAllPages();
   for (const s of ['Regular', 'Medium', 'SemiBold', 'Bold']) await figma.loadFontAsync({ family: 'Geist', style: s });

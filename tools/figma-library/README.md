@@ -47,13 +47,12 @@ It runs inside the Figma desktop app, with no network access and no account limi
     - The NowPlayingBar, the AlbumHeader, and the PipPlayer mini player.
 11. **A sample Files screen** made of those components, on a `Mockups` page.
 
-**How the file is laid out**, like a design kit:
-- a Cover and a Getting started page;
-- Foundations: Color (every role with its token, then the palette), Typography (the type ramp), Spacing & sizes, Icons and Elevation;
-- a page per family of components: Actions, Inputs, Selection, Navigation, Menus & pickers, Containers & layout, Feedback & status, Files, Media and Music;
-- Screens: Mockups, and one page per app (Pastel Espresso, Pastel Studio Pro, Pastel Media Pro) for the apps' own screens plugins.
+**How the file is laid out**, like a design kit in three pages (the free plan's limit):
+- **Library:** the cover and Getting started, then a section per topic: Foundations (colour roles and the palette, the type ramp, spacing and radius, elevation, icons), then one per family of components (Actions, Inputs, Selection, Navigation, Menus & pickers, Containers & layout, Feedback & status, Files, Media, Music), each with a heading.
+- **Screens:** a section per app (Pastel Espresso, Pastel Studio Pro, Pastel Media Pro) for the apps' own screens plugins.
+- **Mockups:** the sample screen and room to play.
 
-Sections are built on a `Components` page, then moved to their family's page. A section is found by its name on any page, so moving one never rebuilds it.
+Sections can be shown and hidden from the layers panel. A section is found by its name anywhere in the file, so moving one never rebuilds it. Pages from an earlier, one-page-per-topic version are folded into Library.
 
 Only the dark theme is built: Figma's free plan allows one mode per collection.
 
