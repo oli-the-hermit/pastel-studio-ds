@@ -63,6 +63,11 @@
   .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body,
   .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
   .ps-file-explorer-layout-tree { display: none; }
+  /* The address keeps its row: its earlier folders fold to "…" first, and the search gives way. */
+  .ps-file-explorer-layout-search { flex: 0 1 200px; min-width: 120px; }
+}
+/* A phone's width: the address on a row of its own, under navigation and search. */
+@container ps-file-explorer-layout (max-width: 480px) {
   .ps-file-explorer-layout-top { flex-wrap: wrap; }
   .ps-file-explorer-layout-address { flex-basis: 100%; order: 3; }
   .ps-file-explorer-layout-search { flex: 1 1 160px; }

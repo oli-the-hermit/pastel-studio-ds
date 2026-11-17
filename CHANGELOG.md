@@ -349,3 +349,6 @@ is a breaking change.
   height and the window's buttons where a framed TopBar puts them, so they stay in place after sign-in. In
   `@pastel-studio/desktop`, `DesktopWindowFrame` wires it to the Tauri window and renders the screen alone in a browser.
   Pastel Studio Pro's sign-in had no title bar, so the window could not be moved or closed until signed in.
+- `FileExplorerLayout`: from 720px down to 481px the address stays on the top row beside navigation and search, its
+  earlier folders folding to "…" and the search narrowing, so the page has two rows above the view instead of three.
+  Only at a phone's width (480px or less) does the address take a row of its own. From Pastel Studio Pro's narrow window.
