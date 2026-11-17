@@ -271,6 +271,8 @@ export const defaultLabels = {
   zoomFit: 'Fit to window',
   createNamed: 'Create "{name}"',
   allItems: 'All',
+  showPassword: 'Show password',
+  hidePassword: 'Hide password',
 };
 
 export type Labels = typeof defaultLabels;

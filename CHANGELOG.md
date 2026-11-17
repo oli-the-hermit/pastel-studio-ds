@@ -341,3 +341,11 @@ is a breaking change.
 - Text formatting icons, from Pastel Espresso's notes editor: `IconHeading`, `IconBold`, `IconItalic`, `IconStrike`,
   `IconCode`, `IconLink`, `IconListOrdered`, `IconChecklist`, `IconQuote`, `IconCodeBlock`, `IconUndo`, `IconRedo`.
 - `AccountMenu`: `exit` is optional. A local profile, with nothing to sign out of, leaves it out.
+- `PasswordField`, from Pastel Studio Pro's sign-in: a Field for a password with a button at its end that shows what was
+  typed and hides it again (`defaultShown` to start shown). Spell check and autocorrect are off, and Edge's
+  own reveal and clear buttons are hidden, so only one eye shows. New words `showPassword`
+  and `hidePassword`; new icon `IconEyeOff`.
+- `WindowFrame`: a frameless window's bare title bar for a screen with no TopBar (starting up, signing in), with TopBar's
+  height and the window's buttons where a framed TopBar puts them, so they stay in place after sign-in. In
+  `@pastel-studio/desktop`, `DesktopWindowFrame` wires it to the Tauri window and renders the screen alone in a browser.
+  Pastel Studio Pro's sign-in had no title bar, so the window could not be moved or closed until signed in.

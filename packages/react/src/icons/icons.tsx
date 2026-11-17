@@ -987,6 +987,16 @@ export const IconEye: React.FC<IconProps> = (p) => (
   </StrokeIcon>
 );
 
+/** IconEye struck through: hidden, as on a password's "hide" button. */
+export const IconEyeOff: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.6 3.5" />
+    <path d="M6.6 6.6A17.4 17.4 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6" />
+    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+    <line x1="3" y1="3" x2="21" y2="21" />
+  </StrokeIcon>
+);
+
 export const IconBookmark: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <path d="M18 21 12 16.5 6 21V5.5A2.5 2.5 0 0 1 8.5 3h7A2.5 2.5 0 0 1 18 5.5z" />
