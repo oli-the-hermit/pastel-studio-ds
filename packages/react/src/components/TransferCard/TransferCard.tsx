@@ -27,7 +27,7 @@ export interface TransferConflict {
 type TransferWord =
   | 'transferStop' | 'transferWaiting' | 'transferCounting' | 'transferBytesOf' | 'transferTimeLeft' | 'transferSpeed'
   | 'transferExists' | 'transferIncoming' | 'transferExisting' | 'transferReplace' | 'transferSkip' | 'transferKeepBoth'
-  | 'transferForRest' | 'transferErrors';
+  | 'transferForRest' | 'transferErrors' | 'transferRetry';
 
 export interface TransferRowProps {
   /** What it does and where: "Copying 48 files to Art". */
@@ -48,6 +48,11 @@ export interface TransferRowProps {
   onResolve?: (choice: ConflictChoice, forTheRest: boolean) => void;
   /** Takes a finished row away. */
   onDismiss?: () => void;
+  /**
+   * Tries again what didn't make it: a Retry button on a finished row that has `errors` or
+   * `failed`. Its list of what went wrong starts open, so the reason is in view.
+   */
+  onRetry?: () => void;
   labels?: LabelOverrides<TransferWord | 'close'>;
 }
 
@@ -63,12 +68,19 @@ const finished = (state: TransferState) => state === 'done' || state === 'failed
  */
 export function TransferRow({
   title, state, current, doneBytes = 0, totalBytes = 0, bytesPerSecond, secondsLeft, result, errors = [], conflict,
-  onStop, onResolve, onDismiss, labels: ownLabels,
+  onStop, onResolve, onDismiss, onRetry, labels: ownLabels,
 }: TransferRowProps) {
   const labels = useLabels(ownLabels);
   const [forTheRest, setForTheRest] = useState(false);
-  const [showErrors, setShowErrors] = useState(false);
   const over = finished(state);
+  const canRetry = over && !!onRetry && (state === 'failed' || errors.length > 0);
+  // A row that can be retried shows why at once; otherwise the list waits to be asked for.
+  const [showErrors, setShowErrors] = useState(canRetry);
+  const [wasRetryable, setWasRetryable] = useState(canRetry);
+  if (canRetry !== wasRetryable) {
+    setWasRetryable(canRetry);
+    if (canRetry) setShowErrors(true);
+  }
   const percent = totalBytes > 0 ? Math.min(100, (doneBytes / totalBytes) * 100) : 0;
   const status = state === 'done' ? 'completed' : state === 'failed' ? 'failed' : state === 'queued' || state === 'sizing' ? 'starting' : 'processing';
 
@@ -90,6 +102,11 @@ export function TransferRow({
           <IconButton size="xs" label={labels.transferStop} onClick={onStop}>
             <IconStop size={12} />
           </IconButton>
+        )}
+        {canRetry && (
+          <Button size="sm" variant="tonal" className="ps-transfer-row-retry" onClick={onRetry}>
+            {labels.transferRetry}
+          </Button>
         )}
         {over && onDismiss && (
           <IconButton size="xs" label={labels.close} onClick={onDismiss}>

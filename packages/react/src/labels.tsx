@@ -260,6 +260,7 @@ export const defaultLabels = {
   transferKeepBoth: 'Keep both',
   transferForRest: 'Do this for the rest ({count})',
   transferErrors: 'What went wrong',
+  transferRetry: 'Retry',
   transferClearFinished: 'Clear finished',
   transferCollapse: 'Make smaller',
   transferExpand: 'Show transfers',

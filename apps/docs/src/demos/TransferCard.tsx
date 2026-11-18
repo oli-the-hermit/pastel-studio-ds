@@ -92,6 +92,16 @@ export const demo: ComponentDemo = {
       />
     ),
     Finished: card(<TransferRow title="Copying 5 files to Art" state="done" result="4 copied, 1 skipped" errors={['old.png: the file is in use']} onDismiss={noop} />),
+    'Failed, retryable': card(
+      <TransferRow
+        title="Moving 3 files to Clips"
+        state="failed"
+        result="2 moved, 1 failed"
+        errors={['D:\\Footage\\clip.mp4 is open in another program. Close it there, then press Retry.']}
+        onRetry={noop}
+        onDismiss={noop}
+      />
+    ),
     Folded: card(<TransferRow title="Copying 48 files to Art" state="running" />, true),
   },
   variants: {},
