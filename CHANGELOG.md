@@ -393,3 +393,6 @@ is a breaking change.
   place of its first field. It falls back to the dialog when it finds nothing.
 - `TransferRow` takes `onRetry`: a finished row where something went wrong shows Retry beside its close button and
   lists why at once, instead of waiting to be asked. New word `transferRetry`.
+- The Figma library (`tools/figma-library`) builds Combobox (field and search, its open list, ComboboxOption),
+  Tooltip, and TransferRow, TransferCard and TransferIndicator, in a new batch `buildSuggestAndTransfer`. Apps' screens
+  plugins use them; Pastel Studio Pro's folder picker and transfer queue are made of them.

@@ -45,7 +45,11 @@ It runs inside the Figma desktop app, with no network access and no account limi
     - TrackInfo, the Equalizer, and TrackRow with its header.
     - QueueItem and the PlayQueue panel.
     - The NowPlayingBar, the AlbumHeader, and the PipPlayer mini player.
-11. **A sample Files screen** made of those components, on a `Mockups` page.
+11. **Suggestions, tooltips and transfers:**
+    - Combobox (field and search), its open list and ComboboxOption.
+    - Tooltip.
+    - TransferRow (running, asking, failed with Retry, done), the TransferCard and the TransferIndicator.
+12. **A sample Files screen** made of those components, on a `Mockups` page.
 
 **How the file is laid out**, like a design kit in three pages (the free plan's limit):
 - **Library:** the cover and Getting started, then a section per topic: Foundations (colour roles and the palette, the type ramp, spacing and radius, elevation, icons), then one per family of components (Actions, Inputs, Selection, Navigation, Menus & pickers, Containers & layout, Feedback & status, Files, Media, Music), each with a heading.
@@ -90,7 +94,7 @@ tokens from the code** (for tokens) or **Build what's missing** (for new icons).
 
 ## Add a component
 
-Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`, `buildMedia`, `buildLayouts`, `buildMusic`…) is a list of blocks of
+Each batch (`buildBasics`, `buildDialogs`, `buildExplorer`, `buildPickers`, `buildApp`, `buildMedia`, `buildLayouts`, `buildMusic`, `buildSuggestAndTransfer`…) is a list of blocks of
 this shape:
 
 ```js

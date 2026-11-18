@@ -1571,12 +1571,12 @@ const LIBRARY = 'Library', SCREENS = 'Screens';
 const FAMILIES = [
   { name: 'Foundations', about: 'Colour, type, spacing, icons and elevation: the tokens everything is built from.', frames: ['Colour roles', 'Type ramp', 'Spacing and radius', 'Elevation'], sections: ['Icons'] },
   { name: 'Actions', about: 'Buttons and the small things people press.', sections: ['Button', 'IconButton', 'TextButton', 'Chip'] },
-  { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'Field', 'PasswordField', 'SearchField', 'Select', 'Slider', 'Form parts', 'Subform'] },
+  { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'Field', 'PasswordField', 'SearchField', 'Select', 'Combobox', 'Slider', 'Form parts', 'Subform'] },
   { name: 'Selection', about: 'Choosing on or off, one of a few, or a colour.', sections: ['Checkbox', 'Switch', 'SegmentedControl', 'Tabs', 'Appearance'] },
   { name: 'Navigation', about: 'Moving around an app: the drawer, the top bar, addresses and trees.', sections: ['NavItem', 'Drawer', 'TopBar', 'MenuBar', 'AddressBar', 'TreeView', 'AccountMenu'] },
   { name: 'Menus & pickers', about: 'Floating lists to pick from.', sections: ['Menu', 'ListPicker'] },
   { name: 'Containers & layout', about: 'Cards, dialogs, rows and the window itself.', sections: ['Card', 'Modal', 'ListRow', 'DetailsPane', 'StatusBar', 'EmptyState', 'SortableList', 'AppShell', 'CrashScreen'] },
-  { name: 'Feedback & status', about: 'What the app tells people: notices, progress, status.', sections: ['Toast', 'StatusChip', 'Spinner', 'ProgressBar', 'UpdateCard', 'Tour'] },
+  { name: 'Feedback & status', about: 'What the app tells people: notices, progress, status.', sections: ['Toast', 'Tooltip', 'StatusChip', 'Spinner', 'ProgressBar', 'TransferCard', 'UpdateCard', 'Tour'] },
   { name: 'Files', about: 'Files and folders: tiles, icons, the views and the file dialog.', sections: ['MediaTile', 'FileIcon', 'FileView', 'File list, tiles and icons', 'FileDialog'] },
   { name: 'Media', about: 'Players, the controls over a video, and the viewer.', sections: ['PlayerControl', 'Transport', 'Like and volume', 'CoverArt', 'MediaControls', 'MediaViewer'] },
   { name: 'Music', about: 'Tracks, the queue, albums and the now-playing bar.', sections: ['TrackInfo', 'TrackList', 'Queue', 'NowPlayingBar', 'AlbumHeader', 'PipPlayer'] },
@@ -1773,6 +1773,186 @@ async function buildElevationPage() {
   f.appendChild(flo);
 }
 
+// ══ 8. Suggestions, tooltips and transfers ═══════════════
+// Combobox (combobox.css), Tooltip (tooltip.css), TransferRow, TransferCard and TransferIndicator
+// (transfer-card.css): the pieces Pastel Studio Pro's folder picker and transfer queue are made of.
+async function buildSuggestAndTransfer() {
+  startRow();
+  const elev = (await figma.getLocalEffectStylesAsync()).find(s => s.name === 'elevation/overlay');
+  const caps = async (s, color) => { const t = await text(s.toUpperCase(), 'xs/SemiBold', color || 'text/3', 'Group'); t.letterSpacing = { unit: 'PERCENT', value: 6 }; return t; };
+
+  if (!exists('Combobox')) {
+    // A suggestion in the list: icon, name and a quieter line (its path)
+    const ovs = [];
+    for (const active of [false, true]) {
+      const o = comp('HORIZONTAL', `Active=${active ? 'True' : 'False'}`); o.counterAxisAlignItems = 'CENTER'; o.primaryAxisSizingMode = 'FIXED'; o.resize(340, 44);
+      await bindNum(o, 'minHeight', 'size/row-height'); await pad(o, 'space/4', 'space/12', 'space/4', 'space/12'); await bindNum(o, 'itemSpacing', 'space/10'); await radius(o, 'radius/md');
+      o.fills = active ? [await paint('surface/4')] : [];
+      o.appendChild(await iconInst('Clock', 'text/2', 16, 'Icon'));
+      const col = auto('VERTICAL', 'Text'); o.appendChild(col); fill(col);
+      const l = await text('Summer Trip', 'md/Regular', 'text/1', 'Label'); col.appendChild(l); fill(l); l.textTruncation = 'ENDING';
+      const d = await text('D:\\Photos\\2026\\Summer Trip', 'xs/Medium', 'text/3', 'Detail'); col.appendChild(d); fill(d); d.textTruncation = 'ENDING';
+      ovs.push(o);
+    }
+    const opt = figma.combineAsVariants(ovs, page); opt.name = 'ComboboxOption';
+    const olk = opt.addComponentProperty('Label', 'TEXT', 'Summer Trip'), odk = opt.addComponentProperty('Detail', 'TEXT', 'D:\\Photos\\2026\\Summer Trip');
+    const osk = opt.addComponentProperty('Show detail', 'BOOLEAN', true), oik = opt.addComponentProperty('Icon', 'INSTANCE_SWAP', icon('Clock').id);
+    for (const c of opt.children) {
+      c.findOne(n => n.name === 'Label').componentPropertyReferences = { characters: olk };
+      c.findOne(n => n.name === 'Detail').componentPropertyReferences = { characters: odk, visible: osk };
+      c.findOne(n => n.name === 'Icon').componentPropertyReferences = { mainComponent: oik };
+    }
+    opt.description = 'A suggestion: row height, padding 4/12, radius md; an 18px icon in text/2, the name (md, text/1) and its path (xs, text/3). Highlighted (↑/↓ or hover): surface/4.';
+    column(opt, 16);
+
+    // The field itself, as TextInput's box or SearchField's pill
+    const vs = [];
+    for (const variant of ['Field', 'Search']) {
+      for (const filled of [false, true]) {
+        const search = variant === 'Search';
+        const c = comp('HORIZONTAL', `Variant=${variant}, Content=${filled ? 'Filled' : 'Placeholder'}`); c.counterAxisAlignItems = 'CENTER';
+        c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'FIXED'; c.resize(360, 40);
+        await bindNum(c, 'height', search ? 'size/button-height' : 'size/field-height');
+        await pad(c, null, search ? 'space/6' : 'space/4', null, search ? 'space/16' : 'space/14'); await bindNum(c, 'itemSpacing', 'space/6');
+        await radius(c, search ? 'radius/pill' : 'radius/md'); c.fills = [await paint('field/bg')];
+        if (search) c.appendChild(await iconInst('Search', 'text/2', 16, 'Search icon'));
+        const t = await text(filled ? (search ? 'summer' : 'D:\\Photos\\2026') : (search ? 'Search folders' : 'e.g. D:\\Photos\\2026'), 'md/Regular', filled ? 'text/1' : 'text/3', 'Text');
+        c.appendChild(t); fill(t); t.textTruncation = 'ENDING';
+        if (search && filled) { const x = variantOf('IconButton', 'Size=xs, State=Default').createInstance(); x.name = 'Clear'; c.appendChild(x); prop(x, 'Icon', icon('Close').id); }
+        if (!search) { const b = variantOf('IconButton', 'Size=sm, State=Default').createInstance(); b.name = 'End button'; c.appendChild(b); prop(b, 'Icon', icon('FolderOpen').id); }
+        vs.push(c);
+      }
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'Combobox';
+    const tk = set.addComponentProperty('Text', 'TEXT', 'e.g. D:\\Photos\\2026'), ek = set.addComponentProperty('Show end button', 'BOOLEAN', false);
+    for (const c of set.children) {
+      c.findOne(n => n.name === 'Text').componentPropertyReferences = { characters: tk };
+      const end = c.findOne(n => n.name === 'End button'); if (end) end.componentPropertyReferences = { visible: ek };
+    }
+    set.description = 'A text field that suggests as you type. Field: TextInput’s box (field height, radius md, padding 0/4/0/14), with room for a button at its end (Browse). Search: SearchField’s pill with its icon, and a clear button once there is text. Placeholder in text/3 is an example of what to type. The list opens on a click, typing or ↓, never on focus alone.';
+    grid(set, 2, 400, 64);
+
+    // The list under it: groups with their heading, then the suggestions
+    const list = comp('VERTICAL', 'ComboboxList'); list.counterAxisSizingMode = 'FIXED'; list.resize(360, 100); list.primaryAxisSizingMode = 'AUTO';
+    await pad(list, 'space/6', 'space/6', 'space/6', 'space/6'); await radius(list, 'radius/lg'); list.fills = [await paint('surface/3')];
+    if (elev) await list.setEffectStyleIdAsync(elev.id);
+    for (const [group, rows] of [['Recent', [['Summer Trip', 'D:\\Photos\\2026\\Summer Trip', 'Clock', true], ['Projects', 'D:\\Projects', 'Clock', false]]], ['Pinned', [['Clients', 'E:\\Work\\Clients', 'Pin', false]]]]) {
+      const h = auto('HORIZONTAL', 'Group heading'); await pad(h, 'space/8', 'space/12', 'space/4', 'space/12'); h.appendChild(await caps(group)); list.appendChild(h); fill(h);
+      for (const [label, detail, ic, act] of rows) {
+        const r = opt.children.find(x => x.name === `Active=${act ? 'True' : 'False'}`).createInstance(); list.appendChild(r); fill(r);
+        prop(r, 'Label', label); prop(r, 'Detail', detail); prop(r, 'Icon', icon(ic).id);
+      }
+    }
+    list.description = 'The suggestions, under the field: a popover (surface/3, radius lg, padding 6, elevation/overlay) with groups in the order they first appear, each under an xs caps heading in text/3.';
+    await section('Combobox', [set, list, opt]);
+  }
+
+  if (!exists('Tooltip')) {
+    const c = comp('VERTICAL', 'Tooltip'); await pad(c, 'space/6', 'space/10', 'space/6', 'space/10'); await bindNum(c, 'itemSpacing', 'space/2');
+    await radius(c, 'radius/md'); c.fills = [await paint('surface/4')]; if (elev) await c.setEffectStyleIdAsync(elev.id);
+    const row = auto('HORIZONTAL', 'Label'); row.counterAxisAlignItems = 'BASELINE'; await bindNum(row, 'itemSpacing', 'space/8'); c.appendChild(row);
+    const name = await text('Move to…', 'sm/SemiBold', 'text/1', 'Name'); row.appendChild(name);
+    const key = await text('Ctrl+Shift+M', 'xs/Medium', 'text/2', 'Shortcut'); row.appendChild(key);
+    const line = await text('Move or copy to a folder, copy the path, or delete from disk', 'sm/Regular', 'text/2', 'Line'); c.appendChild(line);
+    line.textAutoResize = 'HEIGHT'; line.resize(240, line.height);
+    const nk = c.addComponentProperty('Name', 'TEXT', 'Move to…'), sk = c.addComponentProperty('Shortcut', 'TEXT', 'Ctrl+Shift+M'), lk = c.addComponentProperty('Line', 'TEXT', line.characters);
+    const ssk = c.addComponentProperty('Show shortcut', 'BOOLEAN', true), slk = c.addComponentProperty('Show line', 'BOOLEAN', true);
+    name.componentPropertyReferences = { characters: nk }; key.componentPropertyReferences = { characters: sk, visible: ssk }; line.componentPropertyReferences = { characters: lk, visible: slk };
+    c.description = 'A control’s name (sm, semibold), its shortcut (xs, text/2) and, only where the name doesn’t say it, a line about what it does. surface/4, radius md, padding 6/10, elevation/overlay. Shows after the pointer rests 600 ms, or on keyboard focus; never takes the pointer.';
+    await section('Tooltip', [c], 'surface/bg');
+  }
+
+  if (!exists('TransferCard')) {
+    // One transfer, in each state it shows
+    const head = async (c, title, buttons) => {
+      const h = auto('HORIZONTAL', 'Head'); h.counterAxisAlignItems = 'CENTER'; await bindNum(h, 'itemSpacing', 'space/6'); c.appendChild(h); fill(h);
+      const t = await text(title, 'sm/Medium', 'text/1', 'Title'); h.appendChild(t); fill(t); t.textTruncation = 'ENDING';
+      for (const b of buttons) h.appendChild(b);
+      return h;
+    };
+    const small = (ic, name) => { const b = variantOf('IconButton', 'Size=xs, State=Default').createInstance(); b.name = name; prop(b, 'Icon', icon(ic).id); return b; };
+    const button = (style, label) => { const b = variantOf('Button', `Style=${style}, Size=sm`).createInstance(); prop(b, 'Label', label); return b; };
+    const line = async (s, color, name) => { const t = await text(s, 'xs/Medium', color, name); t.textTruncation = 'ENDING'; return t; };
+    const bar = (tone) => { const p = variantOf('ProgressBar', `Tone=${tone}, Size=md`).createInstance(); return p; };
+    const vs = [];
+    for (const state of ['Running', 'Asking', 'Failed', 'Done']) {
+      const c = comp('VERTICAL', `State=${state}`); c.counterAxisSizingMode = 'FIXED'; c.resize(364, 100); c.primaryAxisSizingMode = 'AUTO';
+      await pad(c, 'space/10', 'space/8', 'space/10', 'space/10'); await bindNum(c, 'itemSpacing', 'space/6'); await radius(c, 'radius/md'); c.fills = [await paint('surface/2')];
+      if (state === 'Running') {
+        await head(c, 'Copying 48 files to Art', [small('Stop', 'Stop')]);
+        const p = bar('Default'); c.appendChild(p); fill(p);
+        const cur = await line('IMG_0031.jpg', 'text/3', 'Current'); c.appendChild(cur); fill(cur);
+        const f = await line('1.2 GB of 4.1 GB · 29% · 2 min left · 38 MB/s', 'text/2', 'Facts'); c.appendChild(f); fill(f);
+      } else if (state === 'Asking') {
+        await head(c, 'Copying 48 files to Art', [small('Stop', 'Stop')]);
+        const p = bar('Default'); c.appendChild(p); fill(p);
+        const f = await line('1.2 GB of 4.1 GB · 29%', 'text/2', 'Facts'); c.appendChild(f); fill(f);
+        const q = auto('VERTICAL', 'Conflict'); await pad(q, 'space/10', 'space/10', 'space/10', 'space/10'); await bindNum(q, 'itemSpacing', 'space/8'); await radius(q, 'radius/md');
+        q.fills = [await paint('status/warning-container')]; c.appendChild(q); fill(q);
+        const qt = await text('“IMG_0024.jpg” is already there', 'sm/SemiBold', 'text/1', 'Question'); q.appendChild(qt); fill(qt);
+        for (const [k, val] of [['Coming in', '4.2 MB · 12 Nov 2026, 10:05'], ['Already there', '3.9 MB · 2 Oct 2026, 18:40']]) {
+          const r = auto('HORIZONTAL', k); await bindNum(r, 'itemSpacing', 'space/10'); q.appendChild(r); fill(r);
+          const kt = await text(k, 'xs/Medium', 'text/1', 'Key'); kt.resize(84, kt.height); kt.textAutoResize = 'HEIGHT'; r.appendChild(kt);
+          r.appendChild(await text(val, 'xs/Medium', 'text/1', 'Value'));
+        }
+        const rest = auto('HORIZONTAL', 'For the rest'); rest.counterAxisAlignItems = 'CENTER'; await bindNum(rest, 'itemSpacing', 'space/8'); q.appendChild(rest);
+        rest.appendChild(variantOf('Checkbox', 'Checked=False').createInstance()); rest.appendChild(await text('Do this for the rest (3)', 'xs/Medium', 'text/1', 'Label'));
+        const acts = auto('HORIZONTAL', 'Choices'); await bindNum(acts, 'itemSpacing', 'space/6'); q.appendChild(acts);
+        acts.appendChild(button('Tonal', 'Keep both')); acts.appendChild(button('Secondary', 'Skip')); acts.appendChild(button('Danger', 'Replace'));
+      } else if (state === 'Failed') {
+        await head(c, 'Moving 3 files to Clips', [button('Tonal', 'Retry'), small('Close', 'Close')]);
+        const r = await line('2 moved, 1 failed', 'status/danger', 'Result'); c.appendChild(r); fill(r);
+        const tg = variantOf('TextButton', 'Tone=Default, State=Default').createInstance(); prop(tg, 'Label', 'What went wrong (1)'); c.appendChild(tg);
+        const errs = auto('VERTICAL', 'Errors'); await pad(errs, null, null, null, 'space/16'); c.appendChild(errs); fill(errs);
+        const e = await text('D:\\Footage\\clip.mp4 is open in another program. Close it there, then press Retry.', 'xs/Medium', 'text/2', 'Error');
+        errs.appendChild(e); fill(e); e.textAutoResize = 'HEIGHT';
+      } else {
+        await head(c, 'Copied 48 files to Art', [small('Close', 'Close')]);
+        const r = await line('48 copied', 'text/2', 'Result'); c.appendChild(r); fill(r);
+      }
+      vs.push(c);
+    }
+    const row = figma.combineAsVariants(vs, page); row.name = 'TransferRow';
+    const tk = row.addComponentProperty('Title', 'TEXT', 'Copying 48 files to Art');
+    for (const c of row.children) c.findOne(n => n.name === 'Title').componentPropertyReferences = { characters: tk };
+    row.description = 'One copy, move or import: surface/2, radius md, padding 10/8/10/10. Running: title (sm, medium), Stop, the bar, the file being copied (xs, text/3), how much of how much · % · time left · speed (xs, text/2). Asking: a taken name in warning-container with Keep both / Skip / Replace and “Do this for the rest”. Failed: the result in danger, Retry, and the reasons listed at once. Done: how it went, and a close button.';
+    column(row, 24);
+
+    // The card: its header, then the rows
+    const card = comp('VERTICAL', 'TransferCard'); card.counterAxisSizingMode = 'FIXED'; card.resize(380, 100); card.primaryAxisSizingMode = 'AUTO';
+    await radius(card, 'radius/lg'); card.fills = [await paint('surface/3')]; if (elev) await card.setEffectStyleIdAsync(elev.id);
+    const h = auto('HORIZONTAL', 'Head'); h.counterAxisAlignItems = 'CENTER'; await pad(h, 'space/8', 'space/8', 'space/8', 'space/16'); await bindNum(h, 'itemSpacing', 'space/4'); card.appendChild(h); fill(h);
+    const title = auto('HORIZONTAL', 'Title'); title.counterAxisAlignItems = 'CENTER'; await bindNum(title, 'itemSpacing', 'space/8'); h.appendChild(title); fill(title);
+    title.appendChild(await text('Transfers', 'md/SemiBold', 'text/1', 'Name'));
+    const count = auto('HORIZONTAL', 'Count'); count.primaryAxisAlignItems = 'CENTER'; count.counterAxisAlignItems = 'CENTER'; count.minWidth = 20; await pad(count, null, 'space/6', null, 'space/6');
+    await radius(count, 'radius/pill'); count.fills = [await paint('accent/container')]; count.appendChild(await text('2', 'xs/SemiBold', 'text/1', 'Count')); title.appendChild(count);
+    const clear = variantOf('TextButton', 'Tone=Default, State=Default').createInstance(); prop(clear, 'Label', 'Clear finished'); h.appendChild(clear);
+    h.appendChild(small('ChevronDown', 'Make smaller')); h.appendChild(small('Close', 'Hide'));
+    const list = auto('VERTICAL', 'List'); await pad(list, null, 'space/8', 'space/8', 'space/8'); await bindNum(list, 'itemSpacing', 'space/4'); card.appendChild(list); fill(list);
+    for (const st of ['Running', 'Asking', 'Failed']) { const r = row.children.find(x => x.name === `State=${st}`).createInstance(); list.appendChild(r); fill(r); }
+    card.description = 'Transfers under way, in a card over the window’s bottom-right corner (16 from the edges, 380 wide, up to 520 tall): surface/3, radius lg, elevation/overlay. The header: “Transfers”, how many are going on accent-container, Clear finished, fold, hide. Folding or hiding never stops a transfer.';
+
+    // The top bar's button: a ring of progress around the count
+    const ivs = [];
+    for (const attention of [false, true]) {
+      const b = comp('HORIZONTAL', `Attention=${attention ? 'True' : 'False'}`); b.primaryAxisAlignItems = 'CENTER'; b.counterAxisAlignItems = 'CENTER';
+      b.primaryAxisSizingMode = 'FIXED'; b.counterAxisSizingMode = 'FIXED'; b.resize(40, 40); await bindNum(b, 'width', 'size/icon-button-size'); await bindNum(b, 'height', 'size/icon-button-size'); await radius(b, 'radius/pill');
+      const ring = figma.createFrame(); ring.name = 'Ring'; ring.resize(28, 28); ring.fills = []; b.appendChild(ring);
+      const track = figma.createEllipse(); track.name = 'Track'; track.resize(28, 28); track.fills = []; track.strokes = [await paint('surface/4')]; track.strokeWeight = 2.5; track.strokeAlign = 'INSIDE'; ring.appendChild(track);
+      const arc = figma.createEllipse(); arc.name = 'Progress'; arc.resize(28, 28); arc.fills = [await paint(attention ? 'status/warning' : 'accent/accent')];
+      arc.arcData = { startingAngle: -Math.PI / 2, endingAngle: -Math.PI / 2 + Math.PI * 2 * 0.62, innerRadius: 0.82 }; ring.appendChild(arc);
+      const n = await text('2', 'xs/SemiBold', 'text/1', 'Count'); b.appendChild(n); n.layoutPositioning = 'ABSOLUTE'; n.x = (40 - n.width) / 2; n.y = (40 - n.height) / 2;
+      ivs.push(b);
+    }
+    const ind = figma.combineAsVariants(ivs, page); ind.name = 'TransferIndicator';
+    const ck = ind.addComponentProperty('Count', 'TEXT', '2');
+    for (const c of ind.children) c.findOne(n => n.name === 'Count').componentPropertyReferences = { characters: ck };
+    ind.description = 'The top bar’s button for transfers: the count inside a ring of overall progress (track surface/4, progress in the accent; warning while a name waits for an answer). Shown while anything is going.';
+    grid(ind, 2, 72, 64);
+    await section('TransferCard', [card, row, ind], 'surface/bg');
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
 async function main() {
@@ -1803,6 +1983,8 @@ async function main() {
   await buildLayouts();
   progress('Building music pieces…');
   await buildMusic();
+  progress('Building suggestions, tooltips and transfers…');
+  await buildSuggestAndTransfer();
   await buildSample();
   progress('Writing the cover and the foundations…');
   await buildCover(); await buildGettingStarted(); await buildColorPage(); await buildTypePage(); await buildSpacingPage(); await buildElevationPage();
