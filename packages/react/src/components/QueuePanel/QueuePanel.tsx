@@ -7,6 +7,7 @@ import { Card, PanelHeader } from '../Card';
 import { EmptyState } from '../EmptyState';
 import { IconButton } from '../IconButton';
 import type { SortableItemProps } from '../SortableList';
+import { Tooltip } from '../Tooltip';
 
 export interface QueuePanelProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'children'> {
   title: React.ReactNode;
@@ -148,7 +149,9 @@ export const QueueItem = ({
 
       <div className="ps-queue-item-name-row">
         {leading}
-        <span className="ps-queue-item-name" title={title}>{title}</span>
+        <Tooltip label={title} onlyWhenClipped>
+          <span className="ps-queue-item-name">{title}</span>
+        </Tooltip>
         {trailing && <span className="ps-queue-item-trailing">{trailing}</span>}
         {!meta && tools}
       </div>

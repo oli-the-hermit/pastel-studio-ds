@@ -1,5 +1,6 @@
 // @pastel-studio/react: public API. Components are exported here as they are promoted.
 export { cx } from './lib/cx';
+export { mergeRefs } from './lib/mergeRefs';
 export { defaultLabels, LabelsProvider, useLabels } from './labels';
 export type { LabelOverrides, Labels } from './labels';
 export { COMPONENT_GROUPS } from './meta';
@@ -39,6 +40,7 @@ export * from './components/Chip';
 export * from './components/IconSwap';
 export * from './components/ProgressBar';
 export * from './components/Toast';
+export * from './components/Tooltip';
 export * from './components/Switch';
 export * from './components/SegmentedControl';
 export * from './components/Field';

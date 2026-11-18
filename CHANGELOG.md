@@ -361,3 +361,12 @@ is a breaking change.
   resized window places it again instead of closing it. A submenu keeps the menu's top edge where it was. The
   placement math is in `lib/position.ts`. From Pastel Studio Pro, whose 16-row media menu came up half height and
   closed when scrolled.
+- `Tooltip`, `useTooltip` and `TruncatedText`: a themed tooltip in place of the browser's `title`. It shows after the
+  pointer rests 600 ms or on keyboard focus, then for a moment the next one shows at once; one at a time; never for
+  touch; hides on leave, a press, Escape, blur and scroll. It holds a name, an optional shortcut (`<kbd>`, also set
+  as `aria-keyshortcuts`) and an optional line about the control (added with `aria-describedby`). `IconButton`
+  shows its `label` in one and takes `shortcut`, `description` and `tooltip={false}`; `Button` takes `tooltip`;
+  `Menu` takes `triggerDescription`. The Menu trigger, NavRail (rail items, toggles, section actions and places, whose
+  `title` becomes the line), MenuBar's icon menus, WindowButton, PlayerControl, StatusChip, AddressBar's edit button
+  and MediaTime use it, and cut-off names (MediaTile, FileView, QueueItem, MediaViewer's title) show whole in one only
+  when they are cut off. New tokens `--ps-tooltip-max-width` and `--ps-z-tooltip`; new helper `mergeRefs`.

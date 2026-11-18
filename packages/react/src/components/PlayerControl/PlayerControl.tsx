@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { cx } from '../../lib/cx';
+import { Tooltip } from '../Tooltip';
 
 export interface PlayerControlProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'aria-pressed'> {
   /** Screen-reader name, also the tooltip. */
@@ -21,24 +22,25 @@ export interface PlayerControlProps extends Omit<React.ButtonHTMLAttributes<HTML
  */
 export const PlayerControl = forwardRef<HTMLButtonElement, PlayerControlProps>(
   ({ label, variant = 'secondary', size = 'md', pressed, surface = 'default', className, title, type = 'button', children, ...rest }, ref) => (
-    <button
-      ref={ref}
-      type={type}
-      className={cx(
-        'ps-player-control',
-        variant !== 'secondary' && `ps-player-control--${variant}`,
-        size === 'sm' && 'ps-player-control--sm',
-        surface === 'overlay' && 'is-on-overlay',
-        pressed && 'is-on',
-        className
-      )}
-      aria-label={label}
-      aria-pressed={pressed}
-      title={title ?? label}
-      {...rest}
-    >
-      {children}
-    </button>
+    <Tooltip label={title ?? label}>
+      <button
+        ref={ref}
+        type={type}
+        className={cx(
+          'ps-player-control',
+          variant !== 'secondary' && `ps-player-control--${variant}`,
+          size === 'sm' && 'ps-player-control--sm',
+          surface === 'overlay' && 'is-on-overlay',
+          pressed && 'is-on',
+          className
+        )}
+        aria-label={label}
+        aria-pressed={pressed}
+        {...rest}
+      >
+        {children}
+      </button>
+    </Tooltip>
   )
 );
 PlayerControl.displayName = 'PlayerControl';

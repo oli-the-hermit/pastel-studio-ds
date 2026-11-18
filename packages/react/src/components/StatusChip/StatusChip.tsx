@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { cx } from '../../lib/cx';
+import { Tooltip } from '../Tooltip';
 
 export interface StatusChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   /** `live` something running (the dot pulses in the accent), `paused` held (amber), `idle` nothing going on. */
@@ -22,15 +23,19 @@ export interface StatusChipProps extends Omit<React.HTMLAttributes<HTMLDivElemen
  */
 export const StatusChip = forwardRef<HTMLDivElement, StatusChipProps>(({ tone, label, value, onOpen, openTitle, action, className, ...rest }, ref) => (
   <div ref={ref} className={cx('ps-status-chip', `ps-status-chip--${tone}`, className)} {...rest}>
-    <button type="button" className="ps-status-chip-main" onClick={onOpen} title={openTitle}>
-      <span className="ps-status-chip-dot" aria-hidden="true" />
-      <span className="ps-status-chip-label">{label}</span>
-      {value !== undefined && <span className="ps-status-chip-value">{value}</span>}
-    </button>
-    {action && (
-      <button type="button" className="ps-status-chip-action" onClick={action.onClick} aria-label={action.label} title={action.label}>
-        {action.icon}
+    <Tooltip label={openTitle} disabled={!openTitle}>
+      <button type="button" className="ps-status-chip-main" onClick={onOpen}>
+        <span className="ps-status-chip-dot" aria-hidden="true" />
+        <span className="ps-status-chip-label">{label}</span>
+        {value !== undefined && <span className="ps-status-chip-value">{value}</span>}
       </button>
+    </Tooltip>
+    {action && (
+      <Tooltip label={action.label}>
+        <button type="button" className="ps-status-chip-action" onClick={action.onClick} aria-label={action.label}>
+          {action.icon}
+        </button>
+      </Tooltip>
     )}
   </div>
 ));

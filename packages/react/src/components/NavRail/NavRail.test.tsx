@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { NavRail, type NavRailItem, type NavRailSection } from './NavRail';
 import { useDrawer } from './useDrawer';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 const items: NavRailItem[] = [
   { key: 'home', label: 'Home', icon: <svg /> },
@@ -28,7 +29,7 @@ describe('NavRail', () => {
     expect(screen.getByRole('navigation', { name: 'Main' })).toBeTruthy();
     const home = screen.getByRole('button', { name: 'Home' });
     expect(home.getAttribute('aria-current')).toBe('page');
-    expect(home.getAttribute('title')).toBe('Home');
+    expect(tooltipText(home)).toBe('Home');
     expect(home.querySelector('.ps-nav-rail-pill')).toBeTruthy();
     expect(screen.getByLabelText('2 ready to claim').textContent).toBe('2');
     await user.click(screen.getByRole('button', { name: /Rewards/ }));
@@ -44,7 +45,7 @@ describe('NavRail', () => {
     rerender(<NavRail label="Main" items={items} activeKey="home" onSelect={() => {}} brand={brand} onToggle={onToggle} variant="expanded" labels={{ collapseMenu: 'Contraer' }} />);
     expect(screen.getByRole('button', { name: 'Contraer' }).getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByText('Focus Space')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Home' }).getAttribute('title')).toBeNull();
+    expect(tooltipText(screen.getByRole('button', { name: 'Home' }))).toBeNull();
   });
 
   const newCollection = vi.fn();

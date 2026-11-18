@@ -3,6 +3,7 @@ import { IconCheck, IconHeart } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { FileIcon } from '../FileIcon';
+import { Tooltip } from '../Tooltip';
 
 export interface MediaTileProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   /** The file or folder name, under the thumbnail. */
@@ -90,7 +91,9 @@ export const MediaTile = forwardRef<HTMLDivElement, MediaTileProps>(({
         {actions && <div className="ps-media-tile-actions">{actions}</div>}
       </div>
       <div className="ps-media-tile-caption">
-        <span className="ps-media-tile-name" title={name}>{name}</span>
+        <Tooltip label={name} onlyWhenClipped>
+          <span className="ps-media-tile-name">{name}</span>
+        </Tooltip>
         {meta && <span className="ps-media-tile-meta">{meta}</span>}
       </div>
     </div>
