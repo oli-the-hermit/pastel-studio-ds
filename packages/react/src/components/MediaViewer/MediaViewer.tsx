@@ -5,6 +5,7 @@ import { cx } from '../../lib/cx';
 import { useBlockingOverlay } from '../../lib/overlays';
 import { useZoomPan } from '../../lib/useZoomPan';
 import { IconButton } from '../IconButton';
+import { Tooltip } from '../Tooltip';
 
 type MediaViewerWord = 'close' | 'previous' | 'next' | 'zoomIn' | 'zoomOut' | 'zoomFit' | 'detailsPane' | 'fullScreen' | 'exitFullScreen';
 
@@ -138,7 +139,9 @@ export function MediaViewer({
       >
         <div className="ps-media-viewer-main">
           <header className="ps-media-viewer-bar">
-            <h2 className="ps-media-viewer-title" id={titleId} title={title}>{title}</h2>
+            <Tooltip label={title} onlyWhenClipped>
+              <h2 className="ps-media-viewer-title" id={titleId}>{title}</h2>
+            </Tooltip>
             {position && <span className="ps-media-viewer-position">{position}</span>}
             <span className="ps-media-viewer-spacer" />
             {actions}

@@ -24,14 +24,23 @@ export interface ModalProps {
   children: React.ReactNode;
   /** Extra class on the dialog, e.g. to size a dialog built on it. */
   className?: string;
+  /**
+   * Where focus goes when the modal opens. By default the first field, or the dialog itself when
+   * there is none. A ref, or a function that finds the element (e.g. a tree's current row), sends
+   * it there instead; `'dialog'` keeps it on the dialog. Falls back to the dialog when it finds
+   * nothing.
+   */
+  initialFocus?: React.RefObject<HTMLElement | null> | (() => HTMLElement | null | undefined) | 'dialog';
   labels?: LabelOverrides<'close'>;
 }
 
 const FOCUSABLE = 'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 
 /** A dialog over the page: a title, a close button and whatever it asks or shows. */
-export function Modal({ isOpen, title, onClose, wide = false, dismissible = false, children, className, labels: ownLabels }: ModalProps) {
+export function Modal({ isOpen, title, onClose, wide = false, dismissible = false, children, className, initialFocus, labels: ownLabels }: ModalProps) {
   const labels = useLabels(ownLabels);
+  const initialFocusRef = useRef(initialFocus);
+  initialFocusRef.current = initialFocus;
   const titleId = useId();
   const modalRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -67,11 +76,21 @@ export function Modal({ isOpen, title, onClose, wide = false, dismissible = fals
     // Focus goes back to whatever opened the modal once it closes.
     const opener = deepActiveElement() as HTMLElement | null;
 
-    // Focus the first field, or the dialog itself, unless a child already claimed focus (autoFocus).
+    // Focus the first field (or what `initialFocus` names), or the dialog itself, unless a child
+    // already claimed focus (autoFocus).
     const timer = setTimeout(() => {
       const modal = modalRef.current;
       if (!modal || modal.contains(deepActiveElement())) return;
-      (modal.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select, .ps-select-trigger') ?? modal).focus();
+      const want = initialFocusRef.current;
+      const target =
+        want === 'dialog'
+          ? modal
+          : typeof want === 'function'
+            ? want()
+            : want
+              ? want.current
+              : modal.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select, .ps-select-trigger');
+      (target ?? modal).focus();
     }, 50);
 
     return () => {

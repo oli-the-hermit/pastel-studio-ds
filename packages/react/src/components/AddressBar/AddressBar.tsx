@@ -3,6 +3,7 @@ import { IconChevronRight, IconMore } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { Menu } from '../Menu';
+import { Tooltip } from '../Tooltip';
 
 export interface Crumb {
   id: string;
@@ -122,7 +123,11 @@ export const AddressBar = forwardRef<HTMLElement, AddressBarProps>(({ path, onNa
           );
         })}
       </ol>
-      {onSubmitPath && <button ref={editRef} type="button" className="ps-address-bar-edit" aria-label={labels.editPath} title={`${labels.editPath} (F4)`} onClick={startEditing} />}
+      {onSubmitPath && (
+        <Tooltip label={labels.editPath} shortcut="F4">
+          <button ref={editRef} type="button" className="ps-address-bar-edit" aria-label={labels.editPath} onClick={startEditing} />
+        </Tooltip>
+      )}
     </nav>
   );
 });

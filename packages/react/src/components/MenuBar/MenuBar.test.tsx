@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { MenuItem } from '../Menu';
 import { MenuBar, type MenuBarMenu } from './MenuBar';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 const noop = () => {};
 const items = (prefix: string, onSelect: (key: string) => void = noop): MenuItem[] => [
@@ -82,7 +83,7 @@ describe('MenuBar', () => {
   it('shows only the icon for an icon-only menu, named by its label', () => {
     render(<MenuBar menus={[{ key: 'app', label: 'Pastel Studio', iconOnly: true, icon: <svg />, items: items('App') }]} />);
     const t = trigger('Pastel Studio');
-    expect(t.getAttribute('title')).toBe('Pastel Studio');
+    expect(tooltipText(t)).toBe('Pastel Studio');
     expect(t.textContent).toBe('');
   });
 });

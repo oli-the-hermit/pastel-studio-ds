@@ -3,6 +3,7 @@ import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { handleMenuKeyDown, MenuList, type MenuItem } from '../Menu';
 import { Popover } from '../Popover';
+import { Tooltip } from '../Tooltip';
 
 export interface MenuBarMenu {
   key: string;
@@ -92,34 +93,34 @@ export const MenuBar = forwardRef<HTMLDivElement, MenuBarProps>(({ menus, labels
   return (
     <div ref={ref} role="menubar" aria-label={labels.menuBar} className={cx('ps-menubar', className)} {...rest}>
       {menus.map((menu, i) => (
-        <button
-          key={menu.key}
-          ref={(el) => {
-            triggerRefs.current[i] = el;
-          }}
-          type="button"
-          role="menuitem"
-          aria-haspopup="menu"
-          aria-expanded={openKey === menu.key}
-          aria-label={menu.iconOnly ? menu.label : undefined}
-          title={menu.iconOnly ? menu.label : undefined}
-          tabIndex={i === focusIndex ? 0 : -1}
-          className={cx(
-            'ps-menubar-trigger',
-            menu.brand && 'ps-menubar-trigger--brand',
-            menu.iconOnly && 'ps-menubar-trigger--icon',
-            openKey === menu.key && 'is-active',
-          )}
-          onClick={() => (openKey === menu.key ? close() : open(i, false))}
-          onPointerEnter={() => {
-            if (openKey && openKey !== menu.key) open(i, false);
-          }}
-          onFocus={() => setFocusIndex(i)}
-          onKeyDown={(e) => onTriggerKeyDown(e, i)}
-        >
-          {menu.icon && <span className="ps-menubar-icon">{menu.icon}</span>}
-          {!menu.iconOnly && <span className="ps-menubar-label">{menu.label}</span>}
-        </button>
+        <Tooltip key={menu.key} label={menu.label} disabled={!menu.iconOnly || openKey !== null}>
+          <button
+            ref={(el) => {
+              triggerRefs.current[i] = el;
+            }}
+            type="button"
+            role="menuitem"
+            aria-haspopup="menu"
+            aria-expanded={openKey === menu.key}
+            aria-label={menu.iconOnly ? menu.label : undefined}
+            tabIndex={i === focusIndex ? 0 : -1}
+            className={cx(
+              'ps-menubar-trigger',
+              menu.brand && 'ps-menubar-trigger--brand',
+              menu.iconOnly && 'ps-menubar-trigger--icon',
+              openKey === menu.key && 'is-active',
+            )}
+            onClick={() => (openKey === menu.key ? close() : open(i, false))}
+            onPointerEnter={() => {
+              if (openKey && openKey !== menu.key) open(i, false);
+            }}
+            onFocus={() => setFocusIndex(i)}
+            onKeyDown={(e) => onTriggerKeyDown(e, i)}
+          >
+            {menu.icon && <span className="ps-menubar-icon">{menu.icon}</span>}
+            {!menu.iconOnly && <span className="ps-menubar-label">{menu.label}</span>}
+          </button>
+        </Tooltip>
       ))}
       {openMenu && (
         <Popover

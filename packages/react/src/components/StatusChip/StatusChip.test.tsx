@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { StatusChip } from './StatusChip';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 describe('StatusChip', () => {
   it('is a button with the label and the value, carrying its tone', async () => {
@@ -11,7 +12,7 @@ describe('StatusChip', () => {
     const { container } = render(<StatusChip tone="live" label="Focusing" value="18:06" onOpen={onOpen} openTitle="Go to the timer" />);
     const main = screen.getByRole('button', { name: /Focusing/ });
     expect(main.textContent).toBe('Focusing18:06');
-    expect(main.getAttribute('title')).toBe('Go to the timer');
+    expect(tooltipText(main)).toBe('Go to the timer');
     expect(container.querySelector('.ps-status-chip--live')).toBeTruthy();
     await user.click(main);
     expect(onOpen).toHaveBeenCalled();

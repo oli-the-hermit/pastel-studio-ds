@@ -2,6 +2,7 @@ import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Card, CardHeader, PanelHeader } from './Card';
+import { tooltipText } from '../../lib/tooltipTesting';
 
 describe('Card', () => {
   it('forwards its ref, className and other attributes', () => {
@@ -27,7 +28,7 @@ describe('CardHeader', () => {
     render(<CardHeader title="Weekend errands" titleTooltip="Weekend errands, 5 tasks" />);
     const heading = screen.getByRole('heading', { level: 2, name: 'Weekend errands' });
     expect(heading.className).toBe('ps-card-title');
-    expect(heading.getAttribute('title')).toBe('Weekend errands, 5 tasks');
+    expect(tooltipText(heading)).toBe('Weekend errands, 5 tasks');
   });
 
   it('leaves out the parts it is not given', () => {

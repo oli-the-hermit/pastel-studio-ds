@@ -143,6 +143,7 @@
   --ps-modal-max-width:     520px;     /* dialogs */
   --ps-modal-max-width-wide: 620px;    /* dialogs with two columns or a long form */
   --ps-menu-max-width:      280px;     /* menus grow with their content up to here (Material 3's limit) */
+  --ps-tooltip-max-width:   260px;     /* a tooltip's line about a control wraps past this */
   --ps-list-picker-width:   300px;     /* a searchable list to check items off: tags, collections */
   --ps-list-picker-height:  360px;     /* its list, before it scrolls */
   --ps-drawer-rail:         88px;      /* the navigation drawer as a rail of icons */
@@ -211,5 +212,6 @@
   --ps-z-celebration:       800;       /* full-screen celebrations */
   --ps-z-popover:           1000;      /* menus, popovers, pickers (they can open from a dialog) */
   --ps-z-toast:             1100;      /* toasts */
+  --ps-z-tooltip:           1150;      /* tooltips: over menus and toasts, under a tour */
   --ps-z-tour:              1200;      /* guided tour spotlight */
 }

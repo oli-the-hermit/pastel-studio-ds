@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { IconClose, IconMaximize, IconMinimize, IconRestore } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
+import { Tooltip } from '../Tooltip';
 
 export interface WindowButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'aria-pressed'> {
   /** Accessible name; also the tooltip unless `title` is given. */
@@ -17,17 +18,18 @@ export interface WindowButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLB
 /** A button of a frameless window's chrome: minimize, maximize, close, pin. */
 export const WindowButton = forwardRef<HTMLButtonElement, WindowButtonProps>(
   ({ label, size = 'md', danger = false, pressed, className, title, type = 'button', children, ...rest }, ref) => (
-    <button
-      ref={ref}
-      type={type}
-      className={cx('ps-window-button', size === 'sm' && 'ps-window-button--sm', danger && 'ps-window-button--danger', pressed && 'is-active', className)}
-      aria-label={label}
-      aria-pressed={pressed}
-      title={title ?? label}
-      {...rest}
-    >
-      {children}
-    </button>
+    <Tooltip label={title ?? label}>
+      <button
+        ref={ref}
+        type={type}
+        className={cx('ps-window-button', size === 'sm' && 'ps-window-button--sm', danger && 'ps-window-button--danger', pressed && 'is-active', className)}
+        aria-label={label}
+        aria-pressed={pressed}
+        {...rest}
+      >
+        {children}
+      </button>
+    </Tooltip>
   )
 );
 WindowButton.displayName = 'WindowButton';

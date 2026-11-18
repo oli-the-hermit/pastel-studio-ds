@@ -594,6 +594,10 @@
 
   /* Overlays shown standing still in a gallery (blocks/StaticOverlay.tsx). */
   .docs-static-overlay .ps-popover { position: static; animation: none; }
+  .docs-static-overlay .ps-tooltip { position: static; animation: none; }
+  /* A TransferCard shown in the page, not in the window's corner. */
+  .docs-transfer-stage { width: 100%; max-width: 400px; }
+  .docs-transfer-stage .ps-transfer-card { position: relative; right: auto; bottom: auto; width: 100%; animation: none; }
   .docs-static-overlay:has(.ps-list-picker) { width: 100%; }
   .docs-static-overlay .ps-list-picker { width: 100%; }
   .docs-gallery-item:has(.docs-modal-stage) { grid-column: 1 / -1; }

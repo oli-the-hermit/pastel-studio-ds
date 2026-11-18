@@ -24,6 +24,7 @@
 @import url('./components/IconButton/icon-button.css') layer(ps.components);
 @import url('./components/TextButton/text-button.css') layer(ps.components);
 @import url('./components/Popover/popover.css') layer(ps.components);
+@import url('./components/Combobox/combobox.css') layer(ps.components);
 @import url('./components/Menu/menu.css') layer(ps.components);
 @import url('./components/MenuBar/menu-bar.css') layer(ps.components);
 @import url('./components/Modal/modal.css') layer(ps.components);
@@ -33,6 +34,8 @@
 @import url('./components/IconSwap/icon-swap.css') layer(ps.components);
 @import url('./components/ProgressBar/progress-bar.css') layer(ps.components);
 @import url('./components/Toast/toast.css') layer(ps.components);
+@import url('./components/TransferCard/transfer-card.css') layer(ps.components);
+@import url('./components/Tooltip/tooltip.css') layer(ps.components);
 @import url('./components/Switch/switch.css') layer(ps.components);
 @import url('./components/SegmentedControl/segmented-control.css') layer(ps.components);
 @import url('./components/Field/field.css') layer(ps.components);

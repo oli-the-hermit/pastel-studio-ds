@@ -1,23 +1,41 @@
 import React, { createRef } from 'react';
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { TOOLTIP_DELAY } from '../Tooltip';
 import { IconButton, iconButtonClass } from './IconButton';
 
 const button = () => screen.getByRole('button');
 
 describe('IconButton', () => {
-  it('takes its name and its tooltip from the label', () => {
+  it('takes its name and its tooltip from the label, with no native title', () => {
+    vi.useFakeTimers();
     render(<IconButton label="Delete task"><svg /></IconButton>);
     expect(screen.getByRole('button', { name: 'Delete task' })).toBe(button());
-    expect(button().getAttribute('title')).toBe('Delete task');
+    expect(button().hasAttribute('title')).toBe(false);
     expect(button().getAttribute('type')).toBe('button');
+    fireEvent.pointerEnter(button());
+    act(() => void vi.advanceTimersByTime(TOOLTIP_DELAY));
+    expect(screen.getByRole('tooltip').textContent).toBe('Delete task');
+    vi.useRealTimers();
   });
 
-  it('lets a title replace the tooltip without changing the name', () => {
-    render(<IconButton label="Delete task" title="Delete (Del)"><svg /></IconButton>);
+  it('lets a title replace the tooltip without changing the name, and shows a shortcut and description', () => {
+    vi.useFakeTimers();
+    render(<IconButton label="Delete task" title="Delete" shortcut="Del" description="Moves it to the Trash"><svg /></IconButton>);
     expect(button().getAttribute('aria-label')).toBe('Delete task');
-    expect(button().getAttribute('title')).toBe('Delete (Del)');
+    expect(button().getAttribute('aria-keyshortcuts')).toBe('Delete');
+    fireEvent.pointerEnter(button());
+    act(() => void vi.advanceTimersByTime(TOOLTIP_DELAY));
+    const tip = screen.getByRole('tooltip');
+    expect(tip.textContent).toBe('DeleteDelMoves it to the Trash');
+    expect(document.getElementById(button().getAttribute('aria-describedby')!)?.textContent).toBe('Moves it to the Trash');
+    vi.useRealTimers();
+  });
+
+  it('keeps the native title when its tooltip is turned off', () => {
+    render(<IconButton label="Delete" title="Delete it" tooltip={false}><svg /></IconButton>);
+    expect(button().getAttribute('title')).toBe('Delete it');
   });
 
   it('turns its props into classes', () => {

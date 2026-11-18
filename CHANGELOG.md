@@ -361,3 +361,33 @@ is a breaking change.
   resized window places it again instead of closing it. A submenu keeps the menu's top edge where it was. The
   placement math is in `lib/position.ts`. From Pastel Studio Pro, whose 16-row media menu came up half height and
   closed when scrolled.
+- `Tooltip`, `useTooltip` and `TruncatedText`: a themed tooltip in place of the browser's `title`. It shows after the
+  pointer rests 600 ms or on keyboard focus, then for a moment the next one shows at once; one at a time; never for
+  touch; hides on leave, a press, Escape, blur and scroll. It holds a name, an optional shortcut (`<kbd>`, also set
+  as `aria-keyshortcuts`) and an optional line about the control (added with `aria-describedby`). `IconButton`
+  shows its `label` in one and takes `shortcut`, `description` and `tooltip={false}`; `Button` takes `tooltip`;
+  `Menu` takes `triggerDescription`. The Menu trigger, NavRail (rail items, toggles, section actions and places, whose
+  `title` becomes the line), MenuBar's icon menus, WindowButton, PlayerControl, StatusChip, AddressBar's edit button
+  and MediaTime use it, and cut-off names (MediaTile, FileView, QueueItem, MediaViewer's title) show whole in one only
+  when they are cut off. New tokens `--ps-tooltip-max-width` and `--ps-z-tooltip`; new helper `mergeRefs`.
+- `Combobox`: a text field that suggests as you type, from `suggestions`, from `loadSuggestions` (debounced, a stale
+  answer dropped) or both, listed in groups; while empty it offers `recent` items. ↑/↓ move, Enter picks or submits
+  the text as typed, Tab completes the field and stays in it (a path's next folder), Escape closes the list and then
+  clears, never reaching a dialog around it. Variants `field` (TextInput's box) and `search` (SearchField's pill with
+  its clear button); `endAdornment` puts a button inside the field's end. The placeholder is the place for an example
+  of what to type. New word `suggestions`; new icon `IconFolderOpen`.
+- `TransferCard`, `TransferRow` and `TransferIndicator`: copies, moves and uploads under way, in a card over the
+  window's corner. A row shows a bar, how much of how much, the percent, the time left and the speed, the file being
+  copied, and Stop; a name already taken asks Replace, Skip or Keep both with "Do this for the rest (n)"; finished,
+  it says how it went and lists what went wrong on demand. The card folds to its header and hides without stopping
+  anything. TransferIndicator is the top bar's button: a ring of overall progress around the count, amber while a
+  question waits. New `formatTimeLeft` ("45 sec", "3 min"); new words for all of it.
+- `@pastel-studio/desktop`: `onWindowCloseRequested(handler)` asks before the window closes, however the close was
+  asked for, and `destroyWindow()` closes it without asking again; an app keeps the window open while it asks, for
+  example while files are still being copied. Needs `core:window:allow-destroy` in the app's capabilities.
+- `Combobox` no longer opens its list when it only gets focus (from Tab, or a dialog focusing its first field): a
+  click in the field, typing, or ↓ (Alt+↓) opens it, as the APG combobox pattern has it. `openOnFocus` brings back
+  the old behaviour. From Pastel Studio Pro, whose folder picker opened with its recent places dropped down over the
+  tree.
+- `Modal` takes `initialFocus`: a ref, a function that finds the element (a tree's current row), or `'dialog'`, in
+  place of its first field. It falls back to the dialog when it finds nothing.

@@ -5,6 +5,7 @@ import { cx } from '../../lib/cx';
 import type { Surface } from '../../lib/surface';
 import { iconButtonClass, type IconButtonLook } from '../IconButton';
 import { Popover } from '../Popover';
+import { Tooltip } from '../Tooltip';
 
 export interface MenuAction {
   key: string;
@@ -191,6 +192,8 @@ export interface MenuProps {
   items: MenuItem[];
   /** The trigger's accessible name and tooltip. Defaults to "More actions". */
   ariaLabel?: string;
+  /** A line under the name in the trigger's tooltip, for a menu whose name doesn't explain it. */
+  triggerDescription?: React.ReactNode;
   /** Custom trigger content; defaults to a vertical "more" glyph. */
   trigger?: React.ReactNode;
   /** Classes for a custom trigger; the default icon trigger uses `triggerSize` and `triggerSurface`. */
@@ -220,6 +223,7 @@ export function Menu({
   header,
   menuClassName,
   surface = 'default',
+  triggerDescription,
   labels: ownLabels,
 }: MenuProps) {
   const labels = useLabels(ownLabels);
@@ -228,21 +232,22 @@ export function Menu({
 
   return (
     <>
-      <button
-        ref={triggerRef}
-        type="button"
-        className={cx(triggerClassName ?? iconButtonClass({ size: triggerSize, surface: triggerSurface }), open && 'is-active')}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={ariaLabel ?? labels.moreActions}
-        title={ariaLabel ?? labels.moreActions}
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen((o) => !o);
-        }}
-      >
-        {trigger || <IconMore size={18} />}
-      </button>
+      <Tooltip label={ariaLabel ?? labels.moreActions} description={triggerDescription} disabled={open}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className={cx(triggerClassName ?? iconButtonClass({ size: triggerSize, surface: triggerSurface }), open && 'is-active')}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={ariaLabel ?? labels.moreActions}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen((o) => !o);
+          }}
+        >
+          {trigger || <IconMore size={18} />}
+        </button>
+      </Tooltip>
       <Popover
         open={open}
         anchorRef={triggerRef}

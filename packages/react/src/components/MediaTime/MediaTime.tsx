@@ -2,6 +2,7 @@ import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { formatTime } from '../../lib/format';
 import { useControllable } from '../../lib/useControllable';
+import { Tooltip } from '../Tooltip';
 
 export type MediaTimeMode = 'pair' | 'elapsed' | 'remaining' | 'total';
 
@@ -38,15 +39,16 @@ export function MediaTime({ current, duration, mode, defaultMode = 'pair', toggl
   if (!toggleable) return <span className={cls}>{text}</span>;
   const other: MediaTimeMode = defaultMode === 'remaining' ? 'pair' : defaultMode;
   return (
-    <button
-      type="button"
-      className={cx(cls, 'is-toggle')}
-      title={labels.showRemainingTime}
-      aria-label={`${text}. ${labels.showRemainingTime}`}
-      aria-pressed={m === 'remaining'}
-      onClick={() => setM(m === 'remaining' ? other : 'remaining')}
-    >
-      {text}
-    </button>
+    <Tooltip label={labels.showRemainingTime}>
+      <button
+        type="button"
+        className={cx(cls, 'is-toggle')}
+        aria-label={`${text}. ${labels.showRemainingTime}`}
+        aria-pressed={m === 'remaining'}
+        onClick={() => setM(m === 'remaining' ? other : 'remaining')}
+      >
+        {text}
+      </button>
+    </Tooltip>
   );
 }
