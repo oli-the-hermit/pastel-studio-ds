@@ -1,0 +1,108 @@
+/* ── TransferCard: transfers under way, in a card over the window's corner ──
+   --ps-transfer-card-bottom and --ps-transfer-card-right place it; set them on its class to clear
+   a status bar. It sits under toasts and menus, over the page. */
+.ps-transfer-card {
+  --ps-transfer-card-bottom: var(--ps-space-16);
+  --ps-transfer-card-right: var(--ps-space-16);
+  position: fixed;
+  right: var(--ps-transfer-card-right);
+  bottom: var(--ps-transfer-card-bottom);
+  z-index: var(--ps-z-sticky);
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - 2 * var(--ps-space-16)));
+  max-height: min(60vh, 520px);
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-3);
+  color: var(--ps-text-1);
+  box-shadow: var(--ps-elev-overlay);
+  animation: ps-transfer-card-in var(--ps-dur-2) var(--ps-ease-emphasized);
+}
+.ps-transfer-card-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-4);
+  padding: var(--ps-space-8) var(--ps-space-8) var(--ps-space-8) var(--ps-space-16);
+}
+.ps-transfer-card-title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--ps-space-8);
+  margin: 0;
+  font-size: var(--ps-font-size-md);
+  font-weight: var(--ps-font-weight-semibold);
+}
+.ps-transfer-card-count {
+  min-width: 20px;
+  padding: 0 var(--ps-space-6);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-accent-container);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-xs);
+  text-align: center;
+}
+.ps-transfer-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-4);
+  min-height: 0;
+  padding: 0 var(--ps-space-8) var(--ps-space-8);
+  overflow-y: auto;
+}
+
+/* One transfer. */
+.ps-transfer-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-6);
+  padding: var(--ps-space-10) var(--ps-space-8) var(--ps-space-10) var(--ps-space-10);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-surface-2);
+}
+.ps-transfer-row-head { display: flex; align-items: center; gap: var(--ps-space-6); }
+.ps-transfer-row-title { flex: 1; min-width: 0; overflow: hidden; font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-medium); white-space: nowrap; text-overflow: ellipsis; }
+.ps-transfer-row-current,
+.ps-transfer-row-facts,
+.ps-transfer-row-result { overflow: hidden; color: var(--ps-text-2); font-size: var(--ps-font-size-xs); font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
+.ps-transfer-row-current { color: var(--ps-text-3); }
+.ps-transfer-row.is-failed .ps-transfer-row-result { color: var(--ps-danger); }
+.ps-transfer-row-errors-toggle { align-self: flex-start; }
+.ps-transfer-row-errors { margin: 0; padding-left: var(--ps-space-16); color: var(--ps-text-2); font-size: var(--ps-font-size-xs); }
+
+/* A name already taken: what to do. */
+.ps-transfer-conflict {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-8);
+  padding: var(--ps-space-10);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-warning-container);
+  color: var(--ps-text-1);
+}
+.ps-transfer-conflict-title { font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-semibold); overflow-wrap: anywhere; }
+.ps-transfer-conflict-files { display: grid; grid-template-columns: auto 1fr; gap: var(--ps-space-2) var(--ps-space-10); margin: 0; font-size: var(--ps-font-size-xs); }
+.ps-transfer-conflict-files dd { margin: 0; font-variant-numeric: tabular-nums; }
+.ps-transfer-conflict-rest { display: flex; align-items: center; gap: var(--ps-space-8); font-size: var(--ps-font-size-xs); cursor: pointer; }
+.ps-transfer-conflict-actions { display: flex; flex-wrap: wrap; gap: var(--ps-space-6); }
+
+/* The top bar's button: a ring of progress around the count. */
+.ps-transfer-indicator { position: relative; }
+.ps-transfer-indicator svg { position: absolute; inset: 0; margin: auto; transform: rotate(-90deg); }
+.ps-transfer-indicator-track,
+.ps-transfer-indicator-fill { fill: none; stroke-width: 2.5; }
+.ps-transfer-indicator-track { stroke: var(--ps-surface-4); }
+.ps-transfer-indicator-fill { stroke: var(--ps-accent); stroke-linecap: round; transition: stroke-dashoffset var(--ps-dur-3) var(--ps-ease-standard); }
+.ps-transfer-indicator.is-attention .ps-transfer-indicator-fill { stroke: var(--ps-warning); }
+.ps-transfer-indicator.is-indeterminate svg { animation: ps-transfer-indicator-spin var(--ps-dur-pulse) linear infinite; }
+.ps-transfer-indicator-count { position: relative; font-size: var(--ps-font-size-xs); font-weight: var(--ps-font-weight-semibold); font-variant-numeric: tabular-nums; }
+
+@keyframes ps-transfer-card-in {
+  from { opacity: 0; transform: translateY(var(--ps-space-16)); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ps-transfer-indicator-spin {
+  from { transform: rotate(-90deg); }
+  to { transform: rotate(270deg); }
+}

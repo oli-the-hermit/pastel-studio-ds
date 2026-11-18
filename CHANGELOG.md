@@ -376,3 +376,12 @@ is a breaking change.
   clears, never reaching a dialog around it. Variants `field` (TextInput's box) and `search` (SearchField's pill with
   its clear button); `endAdornment` puts a button inside the field's end. The placeholder is the place for an example
   of what to type. New word `suggestions`; new icon `IconFolderOpen`.
+- `TransferCard`, `TransferRow` and `TransferIndicator`: copies, moves and uploads under way, in a card over the
+  window's corner. A row shows a bar, how much of how much, the percent, the time left and the speed, the file being
+  copied, and Stop; a name already taken asks Replace, Skip or Keep both with "Do this for the rest (n)"; finished,
+  it says how it went and lists what went wrong on demand. The card folds to its header and hides without stopping
+  anything. TransferIndicator is the top bar's button: a ring of overall progress around the count, amber while a
+  question waits. New `formatTimeLeft` ("45 sec", "3 min"); new words for all of it.
+- `@pastel-studio/desktop`: `onWindowCloseRequested(handler)` asks before the window closes, however the close was
+  asked for, and `destroyWindow()` closes it without asking again; an app keeps the window open while it asks, for
+  example while files are still being copied. Needs `core:window:allow-destroy` in the app's capabilities.

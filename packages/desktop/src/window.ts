@@ -42,3 +42,21 @@ export async function watchMaximized(handler: (maximized: boolean) => void): Pro
   handler(await win.isMaximized());
   return win.onResized(async () => handler(await win.isMaximized()));
 }
+
+/**
+ * Asks `handler` before the window closes, however the close was asked for (its button, Alt + F4,
+ * the taskbar). Return false to keep the window open, e.g. to ask first; close it later with
+ * `destroyWindow`. Resolves to the unsubscribe. The app's capabilities need
+ * `core:window:allow-destroy`: a window that is not kept open is closed by destroying it.
+ */
+export async function onWindowCloseRequested(handler: () => boolean | Promise<boolean>): Promise<() => void> {
+  const win = await currentWindow();
+  return win.onCloseRequested(async (event) => {
+    if (!(await handler())) event.preventDefault();
+  });
+}
+
+/** Closes the window without asking `onWindowCloseRequested` again. */
+export async function destroyWindow(): Promise<void> {
+  await (await currentWindow()).destroy();
+}
