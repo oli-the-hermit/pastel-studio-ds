@@ -6,10 +6,11 @@ import { cx } from '@pastel-studio/react';
 const inert = { inert: '' };
 
 /** A popover's panel, standing still where it is written. Give it the classes of what it shows. */
-export function StaticPopover({ className, style, children }: { className?: string; style?: React.CSSProperties; children: React.ReactNode }) {
+export function StaticPopover({ className, style, columns, children }: { className?: string; style?: React.CSSProperties; columns?: number; children: React.ReactNode }) {
+  const withColumns = columns ? ({ ...style, '--ps-popover-columns': columns } as React.CSSProperties) : style;
   return (
     <div className="docs-static-overlay" {...inert}>
-      <div className={cx('ps-popover', className)} style={style}>{children}</div>
+      <div className={cx('ps-popover', className)} style={withColumns} data-columns={columns}>{children}</div>
     </div>
   );
 }

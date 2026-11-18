@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { MenuItem } from '../Menu';
 import { ContextMenuProvider, useContextMenu } from './ContextMenu';
 
@@ -75,5 +75,34 @@ describe('ContextMenu', () => {
     const allowed = fireEvent.contextMenu(screen.getByText('A row'), { clientX: 40, clientY: 60 });
     expect(allowed).toBe(true);
     expect(names()).toEqual([]);
+  });
+});
+
+describe('ContextMenu in a short window', () => {
+  const restore: (() => void)[] = [];
+  const stub = (obj: object, key: string, value: number | ((el: HTMLElement) => number)) => {
+    const before = Object.getOwnPropertyDescriptor(obj, key);
+    Object.defineProperty(obj, key, {
+      configurable: true,
+      get(this: HTMLElement) {
+        return typeof value === 'function' ? value(this) : value;
+      },
+    });
+    restore.push(() => (before ? Object.defineProperty(obj, key, before) : delete (obj as Record<string, unknown>)[key]));
+  };
+  afterEach(() => restore.splice(0).forEach((undo) => undo()));
+
+  it('spreads into columns instead of scrolling, with each group kept whole', () => {
+    stub(window, 'innerHeight', 420);
+    stub(window, 'innerWidth', 1280);
+    // Like real layout: the rows split between the columns the panel has.
+    stub(HTMLElement.prototype, 'scrollHeight', (el) => Math.ceil(700 / Number(el.closest('[data-columns]')?.getAttribute('data-columns') || 1)));
+    stub(HTMLElement.prototype, 'offsetWidth', 240);
+    render(<App />);
+    fireEvent.contextMenu(screen.getByText('A row'), { clientX: 40, clientY: 200 });
+    const menu = screen.getByRole('menu', { name: 'Actions' });
+    expect(menu.getAttribute('data-columns')).toBe('2');
+    expect(menu.style.getPropertyValue('--ps-popover-columns')).toBe('2');
+    expect(menu.querySelectorAll('.ps-menu-group').length).toBeGreaterThan(0);
   });
 });
