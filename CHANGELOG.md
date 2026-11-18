@@ -391,3 +391,5 @@ is a breaking change.
   tree.
 - `Modal` takes `initialFocus`: a ref, a function that finds the element (a tree's current row), or `'dialog'`, in
   place of its first field. It falls back to the dialog when it finds nothing.
+- `TransferRow` takes `onRetry`: a finished row where something went wrong shows Retry beside its close button and
+  lists why at once, instead of waiting to be asked. New word `transferRetry`.

@@ -68,6 +68,26 @@ describe('TransferRow', () => {
   });
 });
 
+describe('TransferRow retry', () => {
+  it('offers Retry on a row where something went wrong, with the reason in view', async () => {
+    const onRetry = vi.fn();
+    render(<TransferRow title="Moving 3 files to Art" state="failed" result="2 moved, 1 failed" errors={['clip.mp4 is open in another program']} onRetry={onRetry} />);
+    expect(screen.getByText('clip.mp4 is open in another program')).toBeTruthy();
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  it('has no Retry while running, or when nothing went wrong', () => {
+    const { rerender } = render(<TransferRow title="Moving" state="running" errors={['x']} onRetry={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'Retry' })).toBeNull();
+    rerender(<TransferRow title="Moving" state="done" result="Done" onRetry={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'Retry' })).toBeNull();
+    rerender(<TransferRow title="Moving" state="done" result="1 failed" errors={['x: in use']} onRetry={() => {}} />);
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
+    expect(screen.getByText('x: in use')).toBeTruthy();
+  });
+});
+
 describe('TransferCard', () => {
   it('folds to its header and hides, with the count of what is going', async () => {
     const onCollapsedChange = vi.fn();
