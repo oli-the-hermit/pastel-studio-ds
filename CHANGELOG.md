@@ -370,3 +370,9 @@ is a breaking change.
   `title` becomes the line), MenuBar's icon menus, WindowButton, PlayerControl, StatusChip, AddressBar's edit button
   and MediaTime use it, and cut-off names (MediaTile, FileView, QueueItem, MediaViewer's title) show whole in one only
   when they are cut off. New tokens `--ps-tooltip-max-width` and `--ps-z-tooltip`; new helper `mergeRefs`.
+- `Combobox`: a text field that suggests as you type, from `suggestions`, from `loadSuggestions` (debounced, a stale
+  answer dropped) or both, listed in groups; while empty it offers `recent` items. ↑/↓ move, Enter picks or submits
+  the text as typed, Tab completes the field and stays in it (a path's next folder), Escape closes the list and then
+  clears, never reaching a dialog around it. Variants `field` (TextInput's box) and `search` (SearchField's pill with
+  its clear button); `endAdornment` puts a button inside the field's end. The placeholder is the place for an example
+  of what to type. New word `suggestions`; new icon `IconFolderOpen`.

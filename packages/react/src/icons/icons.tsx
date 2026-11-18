@@ -768,6 +768,14 @@ export const IconFolderPlus: React.FC<IconProps> = (p) => (
   </StrokeIcon>
 );
 
+/** An open folder: browse for a folder, e.g. with the system's own dialog. */
+export const IconFolderOpen: React.FC<IconProps> = (p) => (
+  <StrokeIcon {...p}>
+    <path d="M3 17.5V7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.2h6.4A2.5 2.5 0 0 1 20 9.7V11" />
+    <path d="M3 17.5 5.2 12.3A2 2 0 0 1 7 11h13.3a1.2 1.2 0 0 1 1.1 1.6l-2 5.6A2.5 2.5 0 0 1 17 20H5.5A2.5 2.5 0 0 1 3 17.5z" />
+  </StrokeIcon>
+);
+
 export const IconFile: React.FC<IconProps> = (p) => (
   <StrokeIcon {...p}>
     <path d="M14 2.5H7A2.5 2.5 0 0 0 4.5 5v14A2.5 2.5 0 0 0 7 21.5h10a2.5 2.5 0 0 0 2.5-2.5V8z" />

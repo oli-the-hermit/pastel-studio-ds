@@ -1,0 +1,69 @@
+/* ── Combobox: a text field that suggests as you type ─────────
+   The box looks like TextInput (`field`) or SearchField (`search`); the text, a clear button and
+   an end slot sit inside it, so the ring of focus goes round all of them. */
+.ps-combobox {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-6);
+  min-width: 0;
+  background: var(--ps-field-bg);
+  color: var(--ps-text-2);
+  cursor: text;
+  transition: background var(--ps-transition), box-shadow var(--ps-transition);
+}
+.ps-combobox:hover:not(.is-disabled) { background: var(--ps-field-hover); }
+.ps-combobox:focus-within { background: var(--ps-field-bg); box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-accent); }
+.ps-combobox:has([aria-invalid='true']) { box-shadow: inset 0 0 0 var(--ps-ring-width) var(--ps-danger); }
+.ps-combobox.is-disabled { color: var(--ps-text-3); cursor: default; }
+.ps-combobox--field {
+  height: var(--ps-field-height);
+  padding: 0 var(--ps-space-4) 0 var(--ps-space-14);
+  border-radius: var(--ps-radius-md);
+}
+.ps-combobox--search {
+  height: var(--ps-button-height);
+  padding: 0 var(--ps-space-6) 0 var(--ps-space-16);
+  border-radius: var(--ps-radius-pill);
+}
+.ps-combobox-icon { display: grid; flex: none; }
+.ps-combobox-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: none;
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-md);
+  outline: none;
+}
+.ps-combobox-input::placeholder { color: var(--ps-text-3); }
+.ps-combobox-clear,
+.ps-combobox-end { display: flex; flex: none; align-items: center; }
+
+/* The list under it. */
+.ps-combobox-popover { padding: var(--ps-space-6); overflow-y: auto; }
+.ps-combobox-group {
+  padding: var(--ps-space-8) var(--ps-space-12) var(--ps-space-4);
+  color: var(--ps-text-3);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-semibold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+}
+.ps-combobox-option {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-10);
+  min-height: var(--ps-row-height);
+  padding: var(--ps-space-4) var(--ps-space-12);
+  border-radius: var(--ps-radius-md);
+  color: var(--ps-text-1);
+  cursor: pointer;
+}
+.ps-combobox-option.is-active { background: var(--ps-surface-4); }
+.ps-combobox-option-icon { display: grid; flex: none; width: 18px; place-items: center; color: var(--ps-text-2); }
+.ps-combobox-option-text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.ps-combobox-option-label,
+.ps-combobox-option-detail { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ps-combobox-option-detail { color: var(--ps-text-3); font-size: var(--ps-font-size-xs); }
+.ps-combobox-status { padding: var(--ps-space-8) var(--ps-space-12); color: var(--ps-text-3); }
