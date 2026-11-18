@@ -7,7 +7,7 @@ export const meta: ComponentMeta = {
   status: 'beta',
   states: [
     { name: 'Empty', description: 'Its placeholder shows an example of what to type; it goes with the first character and comes back when the field is empty again.' },
-    { name: 'Recent', description: 'Focused and empty: the list offers what was used last.' },
+    { name: 'Recent', description: 'Empty and clicked (or ↓): the list offers what was used last. Focus alone, from Tab or a dialog opening, leaves it closed; `openOnFocus` opens it on focus too.' },
     { name: 'Suggesting', description: 'The list follows the text, in groups, with the highlighted suggestion filled.' },
     { name: 'Disabled', description: 'Dimmed; it can\'t be typed in.' },
   ],
@@ -16,7 +16,7 @@ export const meta: ComponentMeta = {
     { name: 'search', description: 'The pill of SearchField, with its search icon and clear button.' },
   ],
   keyboard: [
-    { keys: '↓ / ↑', action: 'Opens the list, then moves through the suggestions.' },
+    { keys: '↓ / ↑', action: 'Opens the list (also with Alt), then moves through the suggestions.' },
     { keys: 'Enter', action: 'Picks the highlighted suggestion; with none highlighted, uses the text as typed.' },
     { keys: 'Tab', action: 'Fills the field with the highlighted suggestion and stays in it, to keep typing (a path\'s next folder).' },
     { keys: 'Escape', action: 'Closes the list; with the list closed, clears the text. Neither reaches a dialog around it.' },

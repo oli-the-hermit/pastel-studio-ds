@@ -78,6 +78,37 @@ describe('Modal', () => {
     await waitFor(() => expect(document.activeElement).toBe(dialog()));
   });
 
+  it('sends first focus where initialFocus says: a function, a ref, or the dialog', async () => {
+    const Row = ({ mode }: { mode: 'fn' | 'ref' | 'dialog' }) => {
+      const ref = React.useRef<HTMLButtonElement>(null);
+      const pick = mode === 'fn' ? () => document.getElementById('row-b') : mode === 'ref' ? ref : 'dialog';
+      return (
+        <Modal isOpen title="Pick" onClose={noop} initialFocus={pick as never}>
+          <input aria-label="Search" />
+          <button id="row-a">A</button>
+          <button id="row-b" ref={ref}>B</button>
+        </Modal>
+      );
+    };
+    const { unmount } = render(<Row mode="fn" />);
+    await waitFor(() => expect(document.activeElement?.id).toBe('row-b'));
+    unmount();
+    const second = render(<Row mode="ref" />);
+    await waitFor(() => expect(document.activeElement?.id).toBe('row-b'));
+    second.unmount();
+    render(<Row mode="dialog" />);
+    await waitFor(() => expect(document.activeElement).toBe(dialog()));
+  });
+
+  it('falls back to the dialog when initialFocus finds nothing', async () => {
+    render(
+      <Modal isOpen title="Pick" onClose={noop} initialFocus={() => null}>
+        <input aria-label="Search" />
+      </Modal>
+    );
+    await waitFor(() => expect(document.activeElement).toBe(dialog()));
+  });
+
   it('keeps Tab inside the dialog, both ways', async () => {
     const user = userEvent.setup();
     render(<Opener />);

@@ -20,7 +20,7 @@ export const meta: ComponentMeta = {
   labels: ['close'],
   aria: [
     'A `dialog` with `aria-modal`, named by its title.',
-    'When it opens, focus goes to its first field, or to the dialog itself; a child with `autoFocus` wins. When it closes, focus returns to what opened it.',
+    "When it opens, focus goes to its first field, or to the dialog itself; a child with `autoFocus` wins. `initialFocus` (a ref, a function, or `'dialog'`) sends it elsewhere, e.g. to a tree's current row so a picker doesn't start in a text field. When it closes, focus returns to what opened it.",
     'Clicking the scrim never closes it, and Escape only does when `dismissible`: a form is not lost by accident.',
     'While it is open, `isBlockingOverlayOpen()` is true, so an app can pause its shortcuts.',
   ],

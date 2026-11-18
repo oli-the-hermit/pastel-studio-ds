@@ -33,6 +33,44 @@ describe('Combobox', () => {
     expect(input().value).toBe('');
   });
 
+  it('does not open on focus alone; a click, ↓ or typing opens it', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    act(() => input().focus());
+    expect(input().getAttribute('aria-expanded')).toBe('false');
+    expect(options()).toEqual([]);
+    await user.click(input());
+    expect(options()).toEqual(['D:\\Art']);
+    await user.keyboard('{Escape}');
+    expect(input().getAttribute('aria-expanded')).toBe('false');
+    await user.keyboard('{ArrowDown}');
+    expect(input().getAttribute('aria-expanded')).toBe('true');
+    await user.keyboard('{Escape}');
+    await user.type(input(), 'p');
+    expect(options()).toEqual(['PhotosD:\\Photos', 'ProjectsD:\\Projects']);
+  });
+
+  it('Tab into the field leaves the list closed', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <button>Before</button>
+        <Harness />
+      </>
+    );
+    screen.getByText('Before').focus();
+    await user.tab();
+    expect(document.activeElement).toBe(input());
+    expect(input().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('openOnFocus opens the list as soon as the field has focus', () => {
+    render(<Harness openOnFocus />);
+    act(() => input().focus());
+    expect(input().getAttribute('aria-expanded')).toBe('true');
+    expect(options()).toEqual(['D:\\Art']);
+  });
+
   it('offers recent items while empty, and suggestions in groups as you type', async () => {
     const user = userEvent.setup();
     render(<Harness />);
@@ -103,11 +141,11 @@ describe('Combobox', () => {
     vi.useFakeTimers();
     const answers: Record<string, (o: ComboboxOption[]) => void> = {};
     const load = vi.fn((text: string) => new Promise<ComboboxOption[]>((resolve) => (answers[text] = resolve)));
-    const { rerender } = render(<Combobox value="" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" />);
+    const { rerender } = render(<Combobox value="" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" openOnFocus />);
     act(() => input().focus());
-    rerender(<Combobox value="ph" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" />);
+    rerender(<Combobox value="ph" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" openOnFocus />);
     act(() => void vi.advanceTimersByTime(150));
-    rerender(<Combobox value="pho" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" />);
+    rerender(<Combobox value="pho" onChange={() => {}} loadSuggestions={load} placeholder="Search folders" variant="search" openOnFocus />);
     act(() => void vi.advanceTimersByTime(150));
     expect(load.mock.calls.map(([t]) => t)).toEqual(['ph', 'pho']);
     await act(async () => answers.ph([{ id: 'old', label: 'Old answer' }]));

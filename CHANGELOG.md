@@ -385,3 +385,9 @@ is a breaking change.
 - `@pastel-studio/desktop`: `onWindowCloseRequested(handler)` asks before the window closes, however the close was
   asked for, and `destroyWindow()` closes it without asking again; an app keeps the window open while it asks, for
   example while files are still being copied. Needs `core:window:allow-destroy` in the app's capabilities.
+- `Combobox` no longer opens its list when it only gets focus (from Tab, or a dialog focusing its first field): a
+  click in the field, typing, or ↓ (Alt+↓) opens it, as the APG combobox pattern has it. `openOnFocus` brings back
+  the old behaviour. From Pastel Studio Pro, whose folder picker opened with its recent places dropped down over the
+  tree.
+- `Modal` takes `initialFocus`: a ref, a function that finds the element (a tree's current row), or `'dialog'`, in
+  place of its first field. It falls back to the dialog when it finds nothing.

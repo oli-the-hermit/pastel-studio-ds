@@ -45,12 +45,18 @@ export interface ComboboxProps
   ariaLabel?: string;
   /** Classes on the field's box. */
   className?: string;
+  /**
+   * Open the list as soon as the field gets focus, even from Tab or from a dialog focusing it.
+   * Off by default: the list opens on a click in the field, on typing, and on ↓ or Alt+↓.
+   */
+  openOnFocus?: boolean;
   labels?: LabelOverrides<'suggestions' | 'clearSearch' | 'loading'>;
 }
 
 /**
  * A text field that suggests as you type: a list under it, grouped, with what was used recently
- * while it's empty. ↑ and ↓ move through the list, Enter picks (or submits the text), Tab
+ * while it's empty. The list opens on a click in the field, on typing, or on ↓ (not when the field
+ * only gets focus). ↑ and ↓ move through the list, Enter picks (or submits the text), Tab
  * completes the field with the highlighted suggestion, Escape closes the list and then clears.
  */
 export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
@@ -69,12 +75,14 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
       ariaLabel,
       placeholder,
       className,
+      openOnFocus = false,
       labels: ownLabels,
       id,
       disabled,
       onKeyDown,
       onFocus,
       onBlur,
+      onClick,
       ...rest
     },
     ref
@@ -190,6 +198,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             if (e.target === e.currentTarget) {
               e.preventDefault();
               inputRef.current?.focus();
+              setOpen(true);
             }
           }}
         >
@@ -220,6 +229,10 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             }}
             onFocus={(e) => {
               onFocus?.(e);
+              if (openOnFocus) setOpen(true);
+            }}
+            onClick={(e) => {
+              onClick?.(e);
               setOpen(true);
             }}
             onBlur={(e) => {
