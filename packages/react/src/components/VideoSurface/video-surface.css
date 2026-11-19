@@ -2,6 +2,7 @@
    --ps-video-surface-caption-offset on its class lifts the captions above a control dock. */
 .ps-video-surface {
   --ps-video-surface-caption-offset: var(--ps-space-24);
+  --ps-video-surface-ratio: 1.7778;   /* the picture's width / height, set by the component when it fills its parent */
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -10,9 +11,22 @@
   isolation: isolate;
   container: ps-video-surface / inline-size;
 }
-.ps-video-surface--fill { height: 100%; }
-.ps-video-surface-media { position: absolute; inset: 0; display: grid; place-items: center; }
+/* Filling its parent, the surface has a size of its own, so the picture's box can be worked out from it. */
+.ps-video-surface--fill { height: 100%; container-type: size; }
+/* One cell the size of the surface. Left to size itself, the cell grew to the picture's own height
+   at full width, so a tall or square video overflowed the surface and was cut off. */
+.ps-video-surface-media { position: absolute; inset: 0; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; }
 .ps-video-surface-media > :is(video, canvas, img) { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* A hairline where the picture ends, so dark footage never blends into the space around it. Drawn
+   outside the picture: where the picture reaches the surface's edge there is nothing to tell apart. */
+.ps-video-surface-frame { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.ps-video-surface-frame::before {
+  content: "";
+  width: min(100cqw, calc(100cqh * var(--ps-video-surface-ratio)));
+  aspect-ratio: var(--ps-video-surface-ratio);
+  outline: var(--ps-hairline) solid var(--ps-media-frame);
+}
 
 .ps-video-surface-layer { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 .ps-video-surface-layer > * { pointer-events: auto; }

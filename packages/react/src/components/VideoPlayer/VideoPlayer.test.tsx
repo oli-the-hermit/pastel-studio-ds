@@ -35,6 +35,30 @@ describe('VideoPlayer', () => {
     expect(m.seek).toHaveBeenCalledWith(30);
   });
 
+  it('sizes itself from the aspect ratio by default', () => {
+    const { container } = render(<VideoPlayer media={media()} title="Tidal Lines" aspectRatio={9 / 16}><canvas /></VideoPlayer>);
+    const surface = container.querySelector<HTMLElement>('.ps-video-surface')!;
+    expect(parseFloat(surface.style.aspectRatio)).toBeCloseTo(9 / 16);
+    expect(surface.className).not.toContain('ps-video-surface--fill');
+    expect(container.querySelector('.ps-video-surface-frame')).toBeNull();
+  });
+
+  it('fills its parent with `fill`: no height from the ratio, so a tall picture is fitted, not cropped', () => {
+    const { container } = render(<VideoPlayer media={media()} title="Tidal Lines" fill aspectRatio={9 / 16}><canvas /></VideoPlayer>);
+    expect(screen.getByLabelText('Tidal Lines').className).toContain('ps-video-player--fill');
+    const surface = container.querySelector<HTMLElement>('.ps-video-surface')!;
+    expect(surface.className).toContain('ps-video-surface--fill');
+    expect(surface.style.aspectRatio).toBe('');
+    // The ratio only places the hairline at the picture's edge
+    expect(surface.style.getPropertyValue('--ps-video-surface-ratio')).toBe(String(9 / 16));
+    expect(container.querySelector('.ps-video-surface-frame')).not.toBeNull();
+  });
+
+  it('takes the picture\'s edge from the video itself once its size is known', () => {
+    const { container } = render(<VideoPlayer media={media({ width: 1080, height: 1920 })} title="Tidal Lines" fill aspectRatio={16 / 9}><canvas /></VideoPlayer>);
+    expect(container.querySelector<HTMLElement>('.ps-video-surface')!.style.getPropertyValue('--ps-video-surface-ratio')).toBe(String(1080 / 1920));
+  });
+
   it('leaves the arrows to a focused control', () => {
     const m = media();
     render(<VideoPlayer media={m} title="Tidal Lines"><canvas /></VideoPlayer>);

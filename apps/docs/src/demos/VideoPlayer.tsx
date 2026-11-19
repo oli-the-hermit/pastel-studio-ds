@@ -45,10 +45,12 @@ export const demo: ComponentDemo = {
   variants: {
     Filled: <div className="docs-gallery-span"><VideoPlayer media={still()} variant="movie" title="Tidal Lines" chapters={chapters}><SimulatedVideo time={52} /></VideoPlayer></div>,
     Overlay: <div className="docs-gallery-span"><VideoPlayer media={still()} controls="overlay" variant="movie" overline="Coastlines · Episode 2" title="Tidal Lines" chapters={chapters} onBack={noop}><SimulatedVideo time={52} /></VideoPlayer></div>,
+    Fill: <div className="docs-gallery-span docs-video-pane"><VideoPlayer media={still()} controls="overlay" title="Tidal Lines" fill><SimulatedVideo time={52} /></VideoPlayer></div>,
   },
   dos: [
     'Use `overlay` for films and full-screen viewing; `filled` for a clip on a page among other content.',
     'Bind a real `<video>` with `useMediaElement` and pass the controller as `media`.',
+    'Use `fill` wherever the size of the player comes from outside (a viewer, a pane): a tall or square clip is then fitted, never cropped.',
   ],
   donts: [
     'Don\'t turn off `autoHide` for films: the picture deserves the whole screen.',

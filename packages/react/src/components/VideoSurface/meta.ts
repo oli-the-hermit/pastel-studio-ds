@@ -13,7 +13,7 @@ export const meta: ComponentMeta = {
     { name: 'Captions', description: '`caption`: the line in a pill of the dock color, read out politely.' },
   ],
   variants: [
-    { name: 'Fill', description: 'Without `aspectRatio` it fills its parent, like a picture-in-picture window.' },
+    { name: 'Fill', description: 'Without `aspectRatio`, or with `fill`, it fills its parent and the picture is fitted inside, never cropped. With both, a hairline marks where the picture ends.' },
   ],
   keyboard: [],
   labels: ['play', 'playAgain', 'buffering'],

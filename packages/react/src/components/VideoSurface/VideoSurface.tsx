@@ -10,6 +10,11 @@ export interface VideoSurfaceProps extends Omit<React.HTMLAttributes<HTMLDivElem
   children?: React.ReactNode;
   /** Width / height, e.g. 16 / 9. Leave it out to fill the parent (a picture-in-picture window). */
   aspectRatio?: number;
+  /**
+   * Fill the parent whatever the picture's shape: the picture is fitted inside, never cropped.
+   * `aspectRatio` then only says where the picture's edge is, for the hairline around it.
+   */
+  fill?: boolean;
   playing: boolean;
   /** Buffering: shows the spinner while playing. */
   waiting?: boolean;
@@ -29,16 +34,23 @@ export interface VideoSurfaceProps extends Omit<React.HTMLAttributes<HTMLDivElem
  * paused, buffering and ended. Captions sit in a pill of the dock color, never in a band.
  */
 export const VideoSurface = forwardRef<HTMLDivElement, VideoSurfaceProps>(
-  ({ children, aspectRatio, playing, waiting, ended, caption, showCenterPlay = true, onPlay, onReplay, labels: ownLabels, className, style, ...rest }, ref) => {
+  ({ children, aspectRatio, fill = false, playing, waiting, ended, caption, showCenterPlay = true, onPlay, onReplay, labels: ownLabels, className, style, ...rest }, ref) => {
     const labels = useLabels(ownLabels);
+    const fills = fill || !aspectRatio;
+    const framed = fill && !!aspectRatio;
     return (
       <div
         ref={ref}
-        className={cx('ps-video-surface', !aspectRatio && 'ps-video-surface--fill', className)}
-        style={{ ...style, aspectRatio: aspectRatio ? String(aspectRatio) : undefined }}
+        className={cx('ps-video-surface', fills && 'ps-video-surface--fill', className)}
+        style={{
+          ...style,
+          aspectRatio: fills ? undefined : String(aspectRatio),
+          ...(framed ? ({ '--ps-video-surface-ratio': String(aspectRatio) } as React.CSSProperties) : null),
+        }}
         {...rest}
       >
         <div className="ps-video-surface-media">{children}</div>
+        {framed && <div className="ps-video-surface-frame" aria-hidden="true" />}
         {caption && (
           <div className="ps-video-surface-caption" aria-live="polite">
             <span>{caption}</span>
