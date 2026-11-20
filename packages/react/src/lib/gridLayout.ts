@@ -35,3 +35,20 @@ export function visibleRows(layout: GridLayout, top: number, viewport: number, o
   const last = Math.min(layout.rows - 1, Math.ceil((top + viewport) / layout.stride) + overscan);
   return { first, last: Math.max(first - 1, last) };
 }
+
+/**
+ * The rows to draw for a grid that is drawn again once per row scrolled, not at every scroll
+ * event: `visibleRows` for the top of the row that `top` is in. The answer holds wherever in that
+ * row the scroll is: every row on screen is drawn, with at least `overscan` rows on each side.
+ * `sameTopRow` says when it still holds.
+ */
+export function rowsFromTopRow(layout: GridLayout, top: number, viewport: number, overscan: number): { first: number; last: number } {
+  if (layout.stride <= 0) return visibleRows(layout, top, viewport, overscan);
+  return visibleRows(layout, Math.floor(top / layout.stride) * layout.stride, viewport, overscan);
+}
+
+/** Whether two scroll positions have the same row at the top, so `rowsFromTopRow` gives the same rows for both. */
+export function sameTopRow(layout: GridLayout, a: number, b: number): boolean {
+  if (layout.stride <= 0) return a === b;
+  return Math.floor(a / layout.stride) === Math.floor(b / layout.stride);
+}
