@@ -12,6 +12,9 @@ export interface MediaState {
   /** Stalled while loading more data. */
   waiting: boolean;
   ended: boolean;
+  /** The picture's own size in pixels, as the element reports it (rotation applied). 0 for audio and until it is known. */
+  width: number;
+  height: number;
 }
 
 /**
@@ -41,9 +44,11 @@ export const INITIAL_MEDIA_STATE: MediaState = {
   rate: 1,
   waiting: false,
   ended: false,
+  width: 0,
+  height: 0,
 };
 
-const EVENTS = ['play', 'pause', 'timeupdate', 'durationchange', 'progress', 'volumechange', 'ratechange', 'waiting', 'playing', 'ended', 'loadedmetadata', 'seeked'];
+const EVENTS = ['play', 'pause', 'timeupdate', 'durationchange', 'progress', 'volumechange', 'ratechange', 'waiting', 'playing', 'ended', 'loadedmetadata', 'seeked', 'resize'];
 
 /** A MediaController bound to an `<audio>` or `<video>` element. */
 export function useMediaElement(ref: React.RefObject<HTMLMediaElement>): MediaController {
@@ -63,6 +68,8 @@ export function useMediaElement(ref: React.RefObject<HTMLMediaElement>): MediaCo
         rate: el.playbackRate,
         waiting: el.readyState < 3 && !el.paused,
         ended: el.ended,
+        width: 'videoWidth' in el ? (el as HTMLVideoElement).videoWidth : 0,
+        height: 'videoHeight' in el ? (el as HTMLVideoElement).videoHeight : 0,
       });
     EVENTS.forEach((e) => el.addEventListener(e, sync));
     sync();

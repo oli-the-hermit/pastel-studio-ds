@@ -17,7 +17,13 @@ export interface VideoPlayerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   variant?: 'basic' | 'movie';
   /** `filled` the controls under the picture, on a card; `overlay` a dock over it (always in full screen). */
   controls?: 'filled' | 'overlay';
+  /** Width / height of the picture. Without `fill`, the player takes its width and this sets its height. */
   aspectRatio?: number;
+  /**
+   * Fill the parent: for a viewer or a pane whose size is set from outside. The picture is fitted
+   * inside whatever its shape (a 9:16 clip in a wide pane keeps its full height) and is never cropped.
+   */
+  fill?: boolean;
   title?: string;
   /** Above the title, e.g. "Season 1 · Episode 3". */
   overline?: string;
@@ -49,6 +55,7 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
       variant = 'basic',
       controls = 'filled',
       aspectRatio = 16 / 9,
+      fill = false,
       title,
       overline,
       chapters,
@@ -70,6 +77,10 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
     const rootRef = useRef<HTMLDivElement | null>(null);
     const [isFullscreen, setFullscreen] = useState(false);
     const overlay = controls === 'overlay' || isFullscreen;
+    const fills = fill || isFullscreen;
+    // Filling, the picture's edge comes from the video itself once it is known: a file's stored
+    // size can be wrong (a phone clip filmed upright), and the element's never is.
+    const ratio = fills && media.width > 0 && media.height > 0 ? media.width / media.height : aspectRatio;
     const [idle, wake] = useIdle(overlay && autoHide && media.playing);
 
     useEffect(() => {
@@ -117,7 +128,7 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
           if (typeof forwardedRef === 'function') forwardedRef(el);
           else if (forwardedRef) forwardedRef.current = el;
         }}
-        className={cx('ps-video-player', overlay && 'ps-video-player--overlay', isFullscreen && 'is-fullscreen', idle && 'is-idle', !media.playing && 'is-paused', className)}
+        className={cx('ps-video-player', overlay && 'ps-video-player--overlay', fill && 'ps-video-player--fill', isFullscreen && 'is-fullscreen', idle && 'is-idle', !media.playing && 'is-paused', className)}
         tabIndex={0}
         aria-label={title ?? labels.videoPlayer}
         onPointerMove={wake}
@@ -127,7 +138,8 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
         {...rest}
       >
         <VideoSurface
-          aspectRatio={isFullscreen ? undefined : aspectRatio}
+          aspectRatio={ratio}
+          fill={fills}
           playing={media.playing}
           waiting={media.waiting}
           ended={media.ended}

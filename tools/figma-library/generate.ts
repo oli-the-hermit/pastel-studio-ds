@@ -58,7 +58,7 @@ const ROLE_NAMES: Record<string, string> = {
   warning: 'status/warning', 'warning-container': 'status/warning-container', success: 'status/success', 'success-container': 'status/success-container',
   live: 'status/live', 'on-live': 'status/on-live', 'grid-line': 'structure/grid-line', grip: 'structure/grip', 'focus-ring': 'structure/focus-ring',
   scrim: 'structure/scrim', 'field-bg': 'field/bg', 'field-hover': 'field/hover', 'row-bg': 'row/bg', 'row-hover': 'row/hover',
-  'media-backdrop': 'media/backdrop', 'media-overlay': 'media/overlay', 'media-overlay-hover': 'media/overlay-hover',
+  'media-backdrop': 'media/backdrop', 'media-frame': 'media/frame', 'media-overlay': 'media/overlay', 'media-overlay-hover': 'media/overlay-hover',
   'media-overlay-track': 'media/track', 'media-overlay-buffer': 'media/buffer', 'media-on-overlay': 'media/on-overlay',
   'media-on-overlay-2': 'media/on-overlay-2', 'media-focus-ring': 'media/focus-ring',
 };

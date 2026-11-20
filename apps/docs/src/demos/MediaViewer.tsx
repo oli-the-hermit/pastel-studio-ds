@@ -87,7 +87,7 @@ export const demo: ComponentDemo = {
     Video: (
       <ModalStage height={420}>
         <MediaViewer open title="Clip.mp4" onClose={noop}>
-          <VideoPlayer media={paused} controls="overlay" title="Clip.mp4"><SimulatedVideo time={52} /></VideoPlayer>
+          <VideoPlayer media={paused} controls="overlay" title="Clip.mp4" fill><SimulatedVideo time={52} /></VideoPlayer>
         </MediaViewer>
       </ModalStage>
     ),

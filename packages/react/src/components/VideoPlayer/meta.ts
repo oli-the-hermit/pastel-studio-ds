@@ -12,6 +12,7 @@ export const meta: ComponentMeta = {
   variants: [
     { name: 'Filled', description: 'The default: a card, the picture as a rounded tile and the controls under it.' },
     { name: 'Overlay', description: '`controls="overlay"`: the picture edge to edge with the dock and a header (back, title) floating over it. Full screen is always like this.' },
+    { name: 'Fill', description: '`fill`: the player takes its parent\'s size, as in a viewer. The picture is fitted inside whatever its shape, never cropped, with a hairline at its edge. Full screen is always like this too.' },
   ],
   keyboard: [
     { keys: 'Space / K', action: 'Play or pause.' },
