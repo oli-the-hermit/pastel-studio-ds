@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
-import { gridLayout, visibleRows } from '../../lib/gridLayout';
+import { gridLayout, rowsFromTopRow, sameTopRow } from '../../lib/gridLayout';
 import type { SelectMode } from '../../lib/useFileBrowser';
 import { EmptyState } from '../EmptyState';
 import type { FileCommand } from '../FileView';
@@ -90,7 +90,11 @@ function MediaGridInner<T>({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState<Box>(NO_BOX);
+  // The scroll position the rows were last worked out from. A scroll event that leaves the same
+  // row at the top doesn't change it, so the grid is drawn again once per row scrolled, not at
+  // every scroll event (one per frame, each drawing every tile on screen again).
   const [scrollTop, setScrollTop] = useState(0);
+  const drawnTop = useRef(0);
   const [focusIndex, setFocusIndex] = useState(0);
   const pendingFocus = useRef(false);
   const endCalledFor = useRef(-1);
@@ -102,6 +106,11 @@ function MediaGridInner<T>({
     if (typeof ref === 'function') ref(node);
     else if (ref) ref.current = node;
   }, [ref]);
+
+  const drawFrom = useCallback((top: number) => {
+    drawnTop.current = top;
+    setScrollTop(top);
+  }, []);
 
   const measure = useCallback(() => {
     const root = rootRef.current;
@@ -121,7 +130,9 @@ function MediaGridInner<T>({
       caption: captions === 'overlay' ? 0 : px('--ps-media-tile-caption', FALLBACK.caption),
     };
     setBox((prev) => (sameBox(prev, next) ? prev : next));
-  }, [size, tileWidth, captions]);
+    // Other sizes put other rows at the same scroll position
+    drawFrom(root.scrollTop);
+  }, [size, tileWidth, captions, drawFrom]);
 
   useLayoutEffect(() => {
     measure();
@@ -135,7 +146,7 @@ function MediaGridInner<T>({
 
   const measured = box.width > 0 && box.min > 0;
   const layout = gridLayout(box.width, box.min || 1, box.gap, box.caption, n);
-  const { first, last } = measured ? visibleRows(layout, scrollTop - box.offset, box.viewport, overscan) : { first: 0, last: -1 };
+  const { first, last } = measured ? rowsFromTopRow(layout, scrollTop - box.offset, box.viewport, overscan) : { first: 0, last: -1 };
   const start = measured ? first * layout.columns : 0;
   const end = measured ? Math.min(n, (last + 1) * layout.columns) : Math.min(n, UNMEASURED_COUNT);
 
@@ -159,7 +170,7 @@ function MediaGridInner<T>({
     const top = box.offset + Math.floor(index / layout.columns) * layout.stride;
     if (top < root.scrollTop) root.scrollTop = top;
     else if (top + layout.rowHeight > root.scrollTop + box.viewport) root.scrollTop = top + layout.rowHeight - box.viewport;
-    setScrollTop(root.scrollTop);
+    drawFrom(root.scrollTop);
   };
 
   const focusAt = (index: number) => {
@@ -236,8 +247,9 @@ function MediaGridInner<T>({
       onScroll={(e) => {
         onScroll?.(e);
         // A grid drawn before its size was known measures again as soon as it moves.
-        if (!measured) measure();
-        setScrollTop(e.currentTarget.scrollTop);
+        if (!measured) return measure();
+        const top = e.currentTarget.scrollTop;
+        if (!sameTopRow(layout, top - box.offset, drawnTop.current - box.offset)) drawFrom(top);
       }}
       onClick={(e) => onEmpty(e.target) && onClearSelection?.()}
       onContextMenu={(e) => {
