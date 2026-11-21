@@ -134,4 +134,27 @@ describe('MediaGrid', () => {
     setup({ items: [], empty: <p>Drop files to add them</p> });
     expect(screen.getByText('Drop files to add them')).toBeTruthy();
   });
+
+  // A move or a delete takes tiles out while one of the last had the focus: the grid drew the
+  // focused index of the longer list and read past the end of the shorter one.
+  it('keeps drawing when tiles leave and the focused one was past the new end', () => {
+    const { rerender, onSelect, onOpen, onCommand, onSelectAll, onClearSelection, onContextMenu } = setup();
+    fireEvent.focus(option('photo-5'));
+    expect(option('photo-5').tabIndex).toBe(0);
+    const grid = (list: Item[]) => (
+      <MediaGrid<Item>
+        items={list}
+        getKey={(item) => item.id}
+        renderTile={(item) => <MediaTile name={item.name} />}
+        selection={new Set()}
+        label="Media in Pictures"
+        {...{ onSelect, onOpen, onCommand, onSelectAll, onClearSelection, onContextMenu }}
+      />
+    );
+    rerender(grid(items.slice(0, 2)));
+    expect(screen.getAllByRole('option')).toHaveLength(2);
+    expect(option('photo-1').tabIndex).toBe(0);
+    rerender(grid([]));
+    expect(screen.queryAllByRole('option')).toHaveLength(0);
+  });
 });

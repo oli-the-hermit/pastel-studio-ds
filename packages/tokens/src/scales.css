@@ -12,6 +12,7 @@
      Eight sizes. Emphasis comes from weight and color, not from a
      size half a pixel bigger: pick the step by role, as noted. */
   --ps-font-family:         'Geist Variable', 'Segoe UI Variable', system-ui, -apple-system, sans-serif;
+  --ps-font-family-mono:    'Cascadia Mono', Consolas, ui-monospace, 'SF Mono', Menlo, monospace;  /* error details, paths, code */
   --ps-font-size-root:      15px;
   --ps-font-size-xs:        0.75rem;   /* 11.25px  overlines, captions, chips, tiny meta */
   --ps-font-size-sm:        0.85rem;   /* 12.75px  secondary text, small buttons, hints */

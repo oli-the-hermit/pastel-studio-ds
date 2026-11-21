@@ -95,7 +95,7 @@ function MediaGridInner<T>({
   // every scroll event (one per frame, each drawing every tile on screen again).
   const [scrollTop, setScrollTop] = useState(0);
   const drawnTop = useRef(0);
-  const [focusIndex, setFocusIndex] = useState(0);
+  const [focusState, setFocusIndex] = useState(0);
   const pendingFocus = useRef(false);
   const endCalledFor = useRef(-1);
   const n = items.length;
@@ -142,7 +142,10 @@ function MediaGridInner<T>({
     return () => observer.disconnect();
   }, [measure, hasHeader]);
 
-  useEffect(() => setFocusIndex((i) => Math.min(i, Math.max(0, n - 1))), [n]);
+  // The focused tile, kept inside the list. Worked out while drawing, not corrected afterwards: when
+  // tiles leave (a move, a delete) the list can be shorter than the focused index on the very draw
+  // that shows it, and drawing that tile would read past the end of the list.
+  const focusIndex = n ? Math.min(focusState, n - 1) : 0;
 
   const measured = box.width > 0 && box.min > 0;
   const layout = gridLayout(box.width, box.min || 1, box.gap, box.caption, n);

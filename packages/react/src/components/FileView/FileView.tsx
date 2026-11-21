@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import { IconArrowDown, IconArrowUp } from '../../icons';
 import { useLabels, type LabelOverrides, type Labels } from '../../labels';
 import { cx } from '../../lib/cx';
@@ -64,10 +64,11 @@ export const FileView = forwardRef<HTMLDivElement, FileViewProps>(({
 }, ref) => {
   const labels = useLabels(ownLabels);
   const listRef = useRef<HTMLDivElement>(null);
-  const [focusIndex, setFocusIndex] = useState(0);
+  const [focusState, setFocusIndex] = useState(0);
+  // Kept inside the list while drawing, so a shorter list never leaves the focus past its end.
+  const focusIndex = items.length ? Math.min(focusState, items.length - 1) : 0;
   const grid = view === 'tiles' || view === 'icons';
 
-  useEffect(() => setFocusIndex((i) => Math.min(i, Math.max(0, items.length - 1))), [items.length]);
 
   const focusAt = (i: number) => {
     setFocusIndex(i);
