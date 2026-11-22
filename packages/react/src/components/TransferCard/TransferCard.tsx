@@ -18,6 +18,8 @@ export type ConflictChoice = 'replace' | 'skip' | 'keep_both';
 export interface TransferConflict {
   /** The name taken at the destination. */
   name: string;
+  /** Where it is taken, when known: tells one question from the next, and lets the app check the answer. */
+  path?: string;
   incoming: { size: number; modified?: string };
   existing: { size: number; modified?: string };
   /** How many more clashes there are likely to be, for "Do this for the rest". */
@@ -45,7 +47,12 @@ export interface TransferRowProps {
   errors?: string[];
   conflict?: TransferConflict;
   onStop?: () => void;
-  onResolve?: (choice: ConflictChoice, forTheRest: boolean) => void;
+  /**
+   * Answers the question on screen, which is passed along so the app can make sure the answer
+   * reaches that question and not the next one. The buttons stay off until the next question
+   * arrives; return a promise to have them back if the answer couldn't be sent.
+   */
+  onResolve?: (choice: ConflictChoice, forTheRest: boolean, conflict: TransferConflict) => void | Promise<unknown>;
   /** Takes a finished row away. */
   onDismiss?: () => void;
   /**
@@ -61,6 +68,10 @@ const fill = (template: string, values: Record<string, string | number>) =>
 
 const finished = (state: TransferState) => state === 'done' || state === 'failed' || state === 'cancelled';
 
+/** One question from the next: the next clash has another path, or at least one fewer left. */
+const conflictKey = (c?: TransferConflict) =>
+  c ? [c.path ?? c.name, c.remaining ?? '', c.incoming.size, c.existing.size].join('|') : '';
+
 /**
  * One copy, move or upload: what and where, a progress bar, how much of how much with the time
  * left and the speed, and a Stop button. When a name is taken it asks what to do, with "Do this
@@ -72,6 +83,25 @@ export function TransferRow({
 }: TransferRowProps) {
   const labels = useLabels(ownLabels);
   const [forTheRest, setForTheRest] = useState(false);
+  // Each question is answered once: a second click (a double click, or a click before the row
+  // shows the next question) would otherwise answer the next one, unseen. "For the rest" starts
+  // unticked for each question.
+  const asking = conflictKey(conflict);
+  const [askingNow, setAskingNow] = useState(asking);
+  const [answered, setAnswered] = useState(false);
+  if (asking !== askingNow) {
+    setAskingNow(asking);
+    setAnswered(false);
+    setForTheRest(false);
+  }
+  const answer = (choice: ConflictChoice) => {
+    if (answered || !conflict) return;
+    setAnswered(true);
+    const sent = onResolve?.(choice, forTheRest, conflict);
+    if (sent && typeof (sent as Promise<unknown>).then === 'function') {
+      (sent as Promise<unknown>).then(undefined, () => setAnswered(false));
+    }
+  };
   const over = finished(state);
   const canRetry = over && !!onRetry && (state === 'failed' || errors.length > 0);
   // A row that can be retried shows why at once; otherwise the list waits to be asked for.
@@ -135,9 +165,9 @@ export function TransferRow({
             </label>
           )}
           <div className="ps-transfer-conflict-actions">
-            <Button size="sm" variant="tonal" onClick={() => onResolve?.('keep_both', forTheRest)}>{labels.transferKeepBoth}</Button>
-            <Button size="sm" onClick={() => onResolve?.('skip', forTheRest)}>{labels.transferSkip}</Button>
-            <Button size="sm" variant="danger" onClick={() => onResolve?.('replace', forTheRest)}>{labels.transferReplace}</Button>
+            <Button size="sm" variant="tonal" disabled={answered} onClick={() => answer('keep_both')}>{labels.transferKeepBoth}</Button>
+            <Button size="sm" disabled={answered} onClick={() => answer('skip')}>{labels.transferSkip}</Button>
+            <Button size="sm" variant="danger" disabled={answered} onClick={() => answer('replace')}>{labels.transferReplace}</Button>
           </div>
         </div>
       )}

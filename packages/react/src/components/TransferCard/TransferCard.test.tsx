@@ -39,20 +39,42 @@ describe('TransferRow', () => {
 
   it('asks about a taken name, with the choice for the rest', async () => {
     const onResolve = vi.fn();
-    render(
-      <TransferRow
-        title="Copying 10 files to Art"
-        state="waiting"
-        conflict={{ name: 'beach.png', incoming: { size: 2048 }, existing: { size: 1024 }, remaining: 4 }}
-        onResolve={onResolve}
-      />
-    );
+    const beach = { name: 'beach.png', path: 'E:/Art/beach.png', incoming: { size: 2048 }, existing: { size: 1024 }, remaining: 4 };
+    const { rerender } = render(<TransferRow title="Copying 10 files to Art" state="waiting" conflict={beach} onResolve={onResolve} />);
     expect(screen.getByRole('group', { name: '"beach.png" is already there' })).toBeTruthy();
     await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
-    expect(onResolve).toHaveBeenLastCalledWith('skip', false);
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Do this for the rest (4)' }));
+    expect(onResolve).toHaveBeenLastCalledWith('skip', false, beach);
+    const dune = { name: 'dune.png', path: 'E:/Art/dune.png', incoming: { size: 2048 }, existing: { size: 1024 }, remaining: 3 };
+    rerender(<TransferRow title="Copying 10 files to Art" state="waiting" conflict={dune} onResolve={onResolve} />);
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Do this for the rest (3)' }));
     await userEvent.click(screen.getByRole('button', { name: 'Keep both' }));
-    expect(onResolve).toHaveBeenLastCalledWith('keep_both', true);
+    expect(onResolve).toHaveBeenLastCalledWith('keep_both', true, dune);
+  });
+
+  it('answers each question once, so a double click never answers the next one unseen', async () => {
+    const onResolve = vi.fn();
+    const first = { name: 'a.png', path: 'E:/Art/a.png', incoming: { size: 2 }, existing: { size: 1 }, remaining: 2 };
+    const { rerender } = render(<TransferRow title="Moving 3 files to Art" state="waiting" conflict={first} onResolve={onResolve} />);
+    await userEvent.dblClick(screen.getByRole('button', { name: 'Replace' }));
+    expect(onResolve).toHaveBeenCalledTimes(1);
+    expect((screen.getByRole('button', { name: 'Skip' }) as HTMLButtonElement).disabled).toBe(true);
+    // The next question has its buttons back, and "for the rest" unticked.
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Do this for the rest (2)' }));
+    const second = { name: 'b.png', path: 'E:/Art/b.png', incoming: { size: 2 }, existing: { size: 1 }, remaining: 1 };
+    rerender(<TransferRow title="Moving 3 files to Art" state="waiting" conflict={second} onResolve={onResolve} />);
+    expect((screen.getByRole('button', { name: 'Skip' }) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByRole('checkbox', { name: 'Do this for the rest (1)' }) as HTMLInputElement).checked).toBe(false);
+    await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
+    expect(onResolve).toHaveBeenLastCalledWith('skip', false, second);
+  });
+
+  it('gives the buttons back when the answer could not be sent', async () => {
+    const onResolve = vi.fn(() => Promise.reject(new Error('offline')));
+    const conflict = { name: 'a.png', incoming: { size: 2 }, existing: { size: 1 } };
+    render(<TransferRow title="Moving 1 file to Art" state="waiting" conflict={conflict} onResolve={onResolve} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Replace' }));
+    expect(onResolve).toHaveBeenCalledTimes(1);
+    expect((screen.getByRole('button', { name: 'Replace' }) as HTMLButtonElement).disabled).toBe(false);
   });
 
   it('when finished, says how it went and lists what went wrong on demand', async () => {

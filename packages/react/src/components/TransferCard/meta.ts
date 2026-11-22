@@ -8,7 +8,7 @@ export const meta: ComponentMeta = {
   states: [
     { name: 'Running', description: 'A bar, how much of how much, the percent, the time left and the speed, and the file being copied.' },
     { name: 'Waiting', description: 'In line behind another transfer, or still counting what it has to do: the bar sweeps.' },
-    { name: 'Asking', description: 'A name is taken where it goes: Replace, Skip or Keep both, with "Do this for the rest".' },
+    { name: 'Asking', description: 'A name is taken where it goes: Replace, Skip or Keep both, with "Do this for the rest". Each question is answered once: the buttons stay off until the next one arrives (or come back if the answer could not be sent), and "for the rest" starts unticked each time.' },
     { name: 'Finished', description: 'How it went, with what went wrong listed on demand; a finished row can be taken away.' },
     { name: 'Failed, retryable', description: 'With `onRetry`, a row where something went wrong shows Retry and lists why at once: "clip.mp4 is open in another program".' },
     { name: 'Folded', description: 'Only its header, with the count of transfers still going.' },
