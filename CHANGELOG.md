@@ -396,3 +396,6 @@ is a breaking change.
 - The Figma library (`tools/figma-library`) builds Combobox (field and search, its open list, ComboboxOption),
   Tooltip, and TransferRow, TransferCard and TransferIndicator, in a new batch `buildSuggestAndTransfer`. Apps' screens
   plugins use them; Pastel Studio Pro's folder picker and transfer queue are made of them.
+- `MediaTile` takes `dropTarget`: an accent ring and tint (and, with overlay captions, the name showing on the tint)
+  while something dragged over the tile would be dropped into it. From Pastel Studio Pro, where media dropped on a
+  folder tile move into that folder.

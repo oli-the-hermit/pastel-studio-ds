@@ -122,6 +122,10 @@
 .ps-media-tile.is-selected .ps-media-tile-name { color: var(--ps-accent-text); }
 .ps-media-tile.is-dimmed .ps-media-tile-name,
 .ps-media-tile.is-dimmed .ps-media-tile-placeholder { color: var(--ps-text-3); }
+/* Something dragged over it would be dropped into it: an accent ring and tint, the name in the accent. */
+.ps-media-tile.is-drop-target .ps-media-tile-frame { outline-color: var(--ps-accent); background: var(--ps-accent-container); }
+.ps-media-tile.is-drop-target .ps-media-tile-name,
+.ps-media-tile.is-drop-target .ps-media-tile-placeholder { color: var(--ps-accent-text); }
 
 /* The caption over the thumbnail's lower edge, on the media dock, on hover and focus. */
 .ps-media-tile--overlay-caption { position: relative; }
@@ -148,5 +152,8 @@
 .ps-media-tile--overlay-caption:is(:hover, :focus-within) :is(.ps-media-tile-duration, .ps-media-tile-source) { opacity: 0; }
 /* A folder has no picture to keep clear: its name stays. */
 .ps-media-tile--overlay-caption.ps-media-tile--folder .ps-media-tile-caption { opacity: 1; }
+/* A drop target shows its name on the tint, so it's clear where the drop goes. */
+.ps-media-tile--overlay-caption.is-drop-target .ps-media-tile-caption { background: var(--ps-accent-container); opacity: 1; }
+.ps-media-tile--overlay-caption.is-drop-target .ps-media-tile-name { color: var(--ps-accent-text); }
 
 @keyframes ps-media-tile-pulse { 50% { background: var(--ps-surface-3); } }
