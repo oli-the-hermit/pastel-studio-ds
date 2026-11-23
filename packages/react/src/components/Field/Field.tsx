@@ -29,7 +29,10 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(
     let controlId = htmlFor;
     let content = children;
 
-    const only = React.Children.count(children) === 1 ? React.Children.only(children) : null;
+    // The one element among the children, if there is exactly one. `Children.count` also counts `false`, `null` and
+    // text, which `Children.only` then throws on: `{list.length > 0 && <List />}` crashed the whole window.
+    const items = React.Children.toArray(children);
+    const only = items.length === 1 && React.isValidElement(items[0]) ? items[0] : null;
     const wired = !group && React.isValidElement<TextInputProps>(only) && (only.type === TextInput || only.type === TextArea);
     if (wired && !htmlFor) controlId = only.props.id ?? autoId;
     const noteId = controlId ? `${controlId}-${error ? 'error' : 'hint'}` : undefined;
