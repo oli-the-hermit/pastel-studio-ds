@@ -67,6 +67,12 @@ export const demo: ComponentDemo = {
         actions={<IconButton label="Copy" size="xs" surface="overlay"><IconCopy size={14} /></IconButton>}
       />
     ),
+    'Drop target': (
+      <>
+        <MediaTile className="docs-media-tile" name="Holidays" kind="folder" meta="A drop would land here" dropTarget />
+        <MediaTile className="docs-media-tile" name="Screenshots" kind="folder" meta="Overlay caption" caption="overlay" dropTarget />
+      </>
+    ),
     Dimmed: <MediaTile className="docs-media-tile" name="Hidden folder" kind="folder" meta="Hidden" dimmed />,
   },
   variants: {
