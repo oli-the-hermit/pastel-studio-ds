@@ -46,6 +46,29 @@ describe('Field', () => {
     expect(screen.queryByText('Short and clear.')).toBeNull();
   });
 
+  // `{items.length > 0 && <List />}` passes `false` while a list loads: it crashed the window (Pastel Media Pro).
+  it('takes no control, text, or a condition that is false, without crashing', () => {
+    const shown = false as boolean;
+    render(
+      <>
+        <Field label="Folders" group>{shown && <ul />}</Field>
+        <Field label="Nothing" group>{null}</Field>
+        <Field label="Text" group>Nothing added yet</Field>
+        <Field label="Count" group>{3}</Field>
+      </>
+    );
+    expect(screen.getByText('Folders')).toBeTruthy();
+    expect(screen.getByText('Nothing added yet')).toBeTruthy();
+    expect(screen.getByText('3')).toBeTruthy();
+  });
+
+  it('still wires a TextInput that comes after a condition that is false', () => {
+    const shown = false as boolean;
+    render(<Field label="Name" hint="As people see it.">{shown && <span />}<TextInput /></Field>);
+    const input = screen.getByRole('textbox', { name: 'Name' });
+    expect(input.getAttribute('aria-describedby')).toBe(screen.getByText('As people see it.').id);
+  });
+
   it('names a group with plain text, adds a label hint, and spaces itself', () => {
     const ref = createRef<HTMLDivElement>();
     render(<Field ref={ref} label="Repeat on" labelHint="Optional" group spaced className="mine"><button>Mon</button></Field>);
