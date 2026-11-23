@@ -26,9 +26,9 @@ describe('MediaTile', () => {
   });
 
   it('turns its states into classes and keeps the check for files only', () => {
-    const { container, rerender } = render(<MediaTile name="a.png" selected selecting preview="add" loading dimmed />);
+    const { container, rerender } = render(<MediaTile name="a.png" selected selecting preview="add" loading dimmed dropTarget />);
     const tile = container.firstElementChild!;
-    for (const name of ['is-selected', 'is-selecting', 'is-preview-add', 'is-loading', 'is-dimmed']) expect(tile.classList.contains(name)).toBe(true);
+    for (const name of ['is-selected', 'is-selecting', 'is-preview-add', 'is-loading', 'is-dimmed', 'is-drop-target']) expect(tile.classList.contains(name)).toBe(true);
     expect(container.querySelector('[data-media-check]')?.getAttribute('aria-hidden')).toBe('true');
     rerender(<MediaTile name="Holidays" kind="folder" meta="12 items" />);
     expect(container.firstElementChild!.classList.contains('ps-media-tile--folder')).toBe(true);

@@ -13,6 +13,7 @@ export const meta: ComponentMeta = {
     { name: 'Marks', description: '`favorite`, `duration` (a video\'s length) and `source` (a site\'s icon) sit in the thumbnail\'s corners on the media dock.' },
     { name: 'With actions', description: '`actions` appear over the thumbnail on hover and keyboard focus; the favorite mark steps aside for them.' },
     { name: 'Dimmed', description: '`dimmed`: hidden or unavailable items, in the quiet text color.' },
+    { name: 'Drop target', description: '`dropTarget`: while something dragged over the tile would be dropped into it (files over a folder), an accent ring and tint, with the name in the accent text color. The grid\'s cell handles the drag events and sets it.' },
   ],
   variants: [
     { name: 'Folder', description: '`kind="folder"`: a folder in place of the thumbnail and no check; the meta line can count its items.' },

@@ -28,6 +28,11 @@ export interface MediaTileProps extends Omit<React.HTMLAttributes<HTMLDivElement
   loading?: boolean;
   /** Hidden or unavailable items: drawn in the quiet text color. */
   dimmed?: boolean;
+  /**
+   * Something dragged over the tile would be dropped into it, e.g. files over a folder: an accent
+   * ring and tint. The grid's cell handles the drag events; the tile only shows it.
+   */
+  dropTarget?: boolean;
   /** Quick actions on the thumbnail, shown on hover and focus. Keep them in the item's menu too. */
   actions?: React.ReactNode;
   /**
@@ -47,7 +52,7 @@ export interface MediaTileProps extends Omit<React.HTMLAttributes<HTMLDivElement
  */
 export const MediaTile = forwardRef<HTMLDivElement, MediaTileProps>(({
   name, src, kind = 'file', meta, duration, favorite = false, source, selected = false, selecting = false, preview, loading = false,
-  dimmed = false, actions, caption = 'below', labels: ownLabels, className, ...rest
+  dimmed = false, dropTarget = false, actions, caption = 'below', labels: ownLabels, className, ...rest
 }, ref) => {
   const labels = useLabels(ownLabels);
   const [failed, setFailed] = useState<string | null>(null);
@@ -64,6 +69,7 @@ export const MediaTile = forwardRef<HTMLDivElement, MediaTileProps>(({
         preview && `is-preview-${preview}`,
         loading && 'is-loading',
         dimmed && 'is-dimmed',
+        dropTarget && 'is-drop-target',
         className
       )}
       {...rest}
