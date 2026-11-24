@@ -47,4 +47,28 @@ describe('CrashBoundary', () => {
     expect(writeText).toHaveBeenCalledWith('v1.4.0 · Boom');
     await waitFor(() => expect(screen.getByRole('button', { name: 'Details copied' })).toBeTruthy());
   });
+
+  it('says what failed, when, and the reference it was logged under, with the stack folded', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const user = userEvent.setup();
+    const onError = vi.fn(() => ({ reference: 'ERR-20261121-141825-ab12', logged: true }));
+    render(<CrashBoundary onError={onError}><Broken /></CrashBoundary>);
+    expect(screen.getByText('What went wrong')).toBeTruthy();
+    expect(screen.getByText('Error: Boom')).toBeTruthy();
+    expect(screen.getByText(/Reference ERR-20261121-141825-ab12/)).toBeTruthy();
+    expect(screen.getByText(/saved in the app's log/)).toBeTruthy();
+    const summary = screen.getByText('Technical details');
+    const details = summary.closest('details')!;
+    expect(details.open).toBe(false);
+    await user.click(summary);
+    expect(details.open).toBe(true);
+    expect(details.querySelector('pre')!.textContent).toMatch(/Reference: ERR-20261121-141825-ab12[\s\S]*Component stack:/);
+  });
+
+  it('still shows the screen when reporting the error fails', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<CrashBoundary onError={() => { throw new Error('no log'); }}><Broken /></CrashBoundary>);
+    expect(screen.getByText('Error: Boom')).toBeTruthy();
+    expect(screen.queryByText(/saved in the app's log/)).toBeNull();
+  });
 });

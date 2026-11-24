@@ -31,3 +31,35 @@
 .ps-crash-screen-body { color: var(--ps-text-2); font-size: var(--ps-font-size-md); }
 .ps-crash-screen-actions { display: flex; flex-wrap: wrap; gap: var(--ps-space-10); margin-top: var(--ps-space-22); }
 .ps-crash-screen-hint { margin-top: var(--ps-space-14); color: var(--ps-text-3); font-size: var(--ps-font-size-sm); }
+
+/* What failed and when: the error in its own words, with the time and the log's reference under it. */
+.ps-crash-screen-problem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-4);
+  margin-top: var(--ps-space-18);
+  padding: var(--ps-space-12) var(--ps-space-14);
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-2);
+}
+.ps-crash-screen-problem-label { color: var(--ps-text-3); font-size: var(--ps-font-size-xs); font-weight: var(--ps-font-weight-heavy); }
+.ps-crash-screen-problem-text { color: var(--ps-text-1); font-family: var(--ps-font-family-mono); font-size: var(--ps-font-size-sm); overflow-wrap: anywhere; }
+.ps-crash-screen-facts { color: var(--ps-text-2); font-size: var(--ps-font-size-sm); }
+.ps-crash-screen-fact { white-space: nowrap; }
+
+/* The full stack, folded: there for a report, out of the way of reading the screen. */
+.ps-crash-screen-details { margin-top: var(--ps-space-10); color: var(--ps-text-2); font-size: var(--ps-font-size-sm); }
+.ps-crash-screen-details > summary { width: fit-content; cursor: pointer; border-radius: var(--ps-radius-md); }
+.ps-crash-screen-details > pre {
+  max-height: 14rem;
+  margin-top: var(--ps-space-8);
+  padding: var(--ps-space-10) var(--ps-space-12);
+  overflow: auto;
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-surface-2);
+  color: var(--ps-text-2);
+  font-family: var(--ps-font-family-mono);
+  font-size: var(--ps-font-size-xs);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
