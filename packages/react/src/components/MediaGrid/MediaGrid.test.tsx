@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MediaTile } from '../MediaTile';
 import { MediaGrid, type MediaGridProps } from './MediaGrid';
@@ -156,5 +156,90 @@ describe('MediaGrid', () => {
     expect(option('photo-1').tabIndex).toBe(0);
     rerender(grid([]));
     expect(screen.queryAllByRole('option')).toHaveLength(0);
+  });
+
+  describe('when the list changes', () => {
+    const others: Item[] = Array.from({ length: 6 }, (_, i) => ({ id: `n${i}`, name: `other-${i}.png` }));
+    const handlers = () => ({ onSelect: vi.fn(), onOpen: vi.fn(), onCommand: vi.fn() });
+    const grid = (list: Item[], h: ReturnType<typeof handlers>) => (
+      <MediaGrid<Item>
+        items={list}
+        getKey={(item) => item.id}
+        renderTile={(item) => <MediaTile name={item.name} />}
+        selection={new Set()}
+        label="Media in Pictures"
+        {...h}
+      />
+    );
+    const tabStop = () => screen.getAllByRole('option').filter((o) => o.tabIndex === 0);
+
+    it('starts at the first tile of another folder, not at the place it had in the last one', () => {
+      const h = handlers();
+      const { rerender } = render(grid(items, h));
+      fireEvent.click(option('photo-5'));
+      rerender(grid(others, h));
+      expect(tabStop()).toEqual([option('other-0')]);
+      fireEvent.keyDown(screen.getByRole('listbox'), { key: 'Enter' });
+      expect(h.onOpen.mock.calls.map(([item]) => item.id)).toEqual(['n0']);
+      // A folder that loads empty first, then fills.
+      fireEvent.click(option('other-4'));
+      rerender(grid([], h));
+      rerender(grid(items.slice(0, 5), h));
+      expect(tabStop()).toEqual([option('photo-0')]);
+    });
+
+    it('keeps the focus on the same file when tiles come, go or move above it', () => {
+      const h = handlers();
+      const { rerender } = render(grid(items, h));
+      fireEvent.click(option('photo-2'));
+      h.onSelect.mockClear();
+      const list = () => screen.getByRole('listbox');
+      rerender(grid([{ id: 'new', name: 'new.png' }, ...items], h));
+      fireEvent.keyDown(list(), { key: 'Enter' });
+      rerender(grid(items.filter((item) => item.id !== 'm0' && item.id !== 'm1'), h));
+      fireEvent.keyDown(list(), { key: ' ' });
+      rerender(grid([...items].reverse(), h));
+      fireEvent.keyDown(list(), { key: 'Enter' });
+      expect(h.onOpen.mock.calls.map(([item]) => item.id)).toEqual(['m2', 'm2']);
+      expect(h.onSelect.mock.calls).toEqual([['m2', 'replace']]);
+      expect(tabStop()).toEqual([option('photo-2')]);
+      // The arrows go on from where that file is now.
+      fireEvent.keyDown(list(), { key: 'ArrowRight' });
+      expect(h.onSelect).toHaveBeenLastCalledWith('m1', 'replace');
+    });
+
+    it('moves the focus to the tile now in the place of one that left, and keeps it in the grid', () => {
+      const h = handlers();
+      const { rerender } = render(grid(items, h));
+      option('photo-2').focus();
+      rerender(grid(items.filter((item) => item.id !== 'm2'), h));
+      expect(document.activeElement).toBe(option('photo-3'));
+      option('photo-5').focus();
+      rerender(grid(items.slice(0, 4), h));
+      expect(document.activeElement).toBe(option('photo-3'));
+      fireEvent.keyDown(document.activeElement!, { key: 'Enter' });
+      expect(h.onOpen.mock.calls.map(([item]) => item.id)).toEqual(['m3']);
+      // Enter on a folder: another list.
+      rerender(grid(others, h));
+      expect(document.activeElement).toBe(option('other-0'));
+      rerender(grid([], h));
+      expect(document.activeElement).toBe(screen.getByRole('listbox'));
+    });
+
+    it('leaves the focus alone when it was somewhere else', async () => {
+      const h = handlers();
+      const page = (list: Item[]) => <>{grid(list, h)}<button type="button">Elsewhere</button></>;
+      const { rerender } = render(page(items));
+      option('photo-2').focus();
+      screen.getByRole('button', { name: 'Elsewhere' }).focus();
+      await act(async () => {});
+      rerender(page(items.filter((item) => item.id !== 'm2')));
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Elsewhere' }));
+      option('photo-3').focus();
+      (document.activeElement as HTMLElement).blur();
+      await act(async () => {});
+      rerender(page(items.filter((item) => item.id !== 'm2' && item.id !== 'm3')));
+      expect(document.activeElement).toBe(document.body);
+    });
   });
 });
