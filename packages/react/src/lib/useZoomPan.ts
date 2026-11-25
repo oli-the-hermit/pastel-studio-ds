@@ -52,6 +52,7 @@ export function useZoomPan({ content, min = 1, max = 12, step = 1.25, resetKey }
   const [stage, setStage] = useState<HTMLElement | null>(null);
   const [box, setBox] = useState({ width: 0, height: 0, left: 0, top: 0 });
   const [state, setState] = useState<ZoomPanState>(FITTED);
+  const [stateKey, setStateKey] = useState(resetKey);
   const [dragging, setDragging] = useState(false);
   const drag = useRef<{ id: number; x: number; y: number; from: ZoomPanState } | null>(null);
 
@@ -72,7 +73,12 @@ export function useZoomPan({ content, min = 1, max = 12, step = 1.25, resetKey }
     };
   }, [stage]);
 
-  useEffect(() => setState(FITTED), [resetKey]);
+  // New content starts fitted on the very draw that shows it. Reset after drawing, the next image
+  // flashed for a frame at the last one's zoom.
+  if (!Object.is(stateKey, resetKey)) {
+    setStateKey(resetKey);
+    setState(FITTED);
+  }
 
   // The content's size on screen when fitted.
   const fit = content && content.width > 0 && content.height > 0 && box.width > 0
