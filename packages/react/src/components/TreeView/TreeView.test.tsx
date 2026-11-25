@@ -61,4 +61,42 @@ describe('TreeView', () => {
     await user.keyboard('*');
     expect([...onExpandedChange.mock.lastCall![0]].sort()).toEqual(['drive', 'home']);
   });
+
+  describe('when the selection or the rows change', () => {
+    const tabStop = () => screen.getAllByRole('treeitem').filter((el) => el.tabIndex === 0);
+    const tree = (props: { nodes?: TreeNode[]; selectedId?: string }) => (
+      <TreeView label="Folders" nodes={nodes} defaultExpanded={['home']} onSelect={() => {}} {...props} />
+    );
+
+    it('moves the tab stop to a selection made later, by the app or here', async () => {
+      const user = userEvent.setup();
+      const { rerender } = render(tree({ selectedId: 'music' }));
+      rerender(tree({ selectedId: 'docs' }));
+      expect(tabStop()).toEqual([item('Documents')]);
+      // The arrows move it without selecting; the next selection takes it back.
+      item('Documents').focus();
+      await user.keyboard('{ArrowUp}');
+      await flush();
+      expect(tabStop()).toEqual([item('Music')]);
+      rerender(tree({ selectedId: 'drive' }));
+      expect(tabStop()).toEqual([item('Backup')]);
+    });
+
+    it('goes to the selected row, not the first, when the focused one leaves, and keeps the focus in the tree', async () => {
+      const user = userEvent.setup();
+      const { rerender } = render(tree({ selectedId: 'music' }));
+      item('Music').focus();
+      await user.keyboard('{ArrowDown}{ArrowDown}');
+      await flush();
+      expect(document.activeElement).toBe(item('Documents'));
+      const withoutDocs = nodes.map((n) => (n.id === 'home' ? { ...n, children: n.children!.filter((c) => c.id !== 'docs') } : n));
+      rerender(tree({ nodes: withoutDocs, selectedId: 'music' }));
+      expect(tabStop()).toEqual([item('Music')]);
+      expect(document.activeElement).toBe(item('Music'));
+      // With no selection, the first row.
+      rerender(tree({ nodes: withoutDocs.filter((n) => n.id !== 'home') }));
+      expect(tabStop()).toEqual([item('Backup')]);
+      expect(document.activeElement).toBe(item('Backup'));
+    });
+  });
 });

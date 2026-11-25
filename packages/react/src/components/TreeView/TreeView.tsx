@@ -2,6 +2,7 @@ import React, { forwardRef, useMemo, useRef, useState } from 'react';
 import { IconChevronRight } from '../../icons';
 import { cx } from '../../lib/cx';
 import { useControllable } from '../../lib/useControllable';
+import { useKeepFocus } from '../../lib/useListFocus';
 
 export interface TreeNode {
   id: string;
@@ -48,7 +49,13 @@ const expandable = (n: TreeNode) => !!(n.children?.length || n.hasChildren);
  */
 export const TreeView = forwardRef<HTMLUListElement, TreeViewProps>(({ nodes, selectedId, onSelect, expanded, defaultExpanded, onExpandedChange, onExpand, label, size = 'md', className, ...rest }, ref) => {
   const [open, setOpen] = useControllable<ReadonlySet<string>>(expanded, new Set(defaultExpanded ?? []), (v) => onExpandedChange?.(new Set(v)));
-  const [focusId, setFocusId] = useState(selectedId);
+  // The row the arrows last reached; a new selection (from here or from the app) takes over.
+  const [focusId, setFocusId] = useState<string | undefined>(undefined);
+  const [focusFor, setFocusFor] = useState(selectedId);
+  if (focusFor !== selectedId) {
+    setFocusFor(selectedId);
+    setFocusId(undefined);
+  }
   const listRef = useRef<HTMLUListElement | null>(null);
 
   const flat = useMemo(() => {
@@ -63,7 +70,13 @@ export const TreeView = forwardRef<HTMLUListElement, TreeViewProps>(({ nodes, se
     return out;
   }, [nodes, open]);
   const focusable = flat.filter((f) => !f.node.heading && !f.node.separator);
-  const tabStop = focusable.find((f) => f.node.id === (focusId ?? selectedId))?.node.id ?? focusable[0]?.node.id;
+  // The tab stop: the row with the focus, else the selected one (the focused row has gone, e.g.
+  // its folder was removed or closed), else the first.
+  const stopAt = (id: string | undefined) => (id === undefined ? -1 : focusable.findIndex((f) => f.node.id === id));
+  const stopIndex = [stopAt(focusId), stopAt(selectedId), focusable.length ? 0 : -1].find((i) => i >= 0) ?? -1;
+  const tabStop = focusable[stopIndex]?.node.id;
+  // When the focused row leaves, the focus goes to the tab stop instead of falling to the page.
+  const keepFocus = useKeepFocus(listRef, stopIndex, (list, i) => list.querySelectorAll<HTMLElement>('[role="treeitem"]')[i]);
 
   const toggle = (id: string, to?: boolean) => {
     const next = new Set(open);
@@ -120,6 +133,14 @@ export const TreeView = forwardRef<HTMLUListElement, TreeViewProps>(({ nodes, se
       aria-label={label}
       className={cx('ps-tree-view', size === 'sm' && 'ps-tree-view--sm', className)}
       {...rest}
+      onFocus={(e) => {
+        rest.onFocus?.(e);
+        keepFocus.onFocus();
+      }}
+      onBlur={(e) => {
+        rest.onBlur?.(e);
+        keepFocus.onBlur(e);
+      }}
     >
       {flat.map((f) => {
         const n = f.node;
