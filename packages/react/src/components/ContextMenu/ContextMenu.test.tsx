@@ -70,6 +70,34 @@ describe('ContextMenu', () => {
     expect(document.activeElement).toBe(row);
   });
 
+  // Right-click A, open "Export as", then right-click B: the menu is B's, from the top.
+  it('starts every right-click at the top level, acting on what was right-clicked', async () => {
+    const user = userEvent.setup();
+    const exported = vi.fn();
+    function File({ name }: { name: string }) {
+      const menu = useContextMenu();
+      return (
+        <button onContextMenu={(e) => menu(e, [{ key: 'export', label: 'Export as', items: [{ key: 'png', label: 'PNG', onSelect: () => exported(name) }] }])}>
+          {name}
+        </button>
+      );
+    }
+    render(
+      <ContextMenuProvider getGlobalItems={() => globalItems}>
+        <File name="a.psd" />
+        <File name="b.psd" />
+      </ContextMenuProvider>
+    );
+    fireEvent.contextMenu(screen.getByText('a.psd'), { clientX: 40, clientY: 60 });
+    await user.click(screen.getByRole('menuitem', { name: 'Export as' }));
+    expect(names()).toContain('PNG');
+    fireEvent.contextMenu(screen.getByText('b.psd'), { clientX: 40, clientY: 90 });
+    expect(names()).toEqual(['Export as']);
+    await user.click(screen.getByRole('menuitem', { name: 'Export as' }));
+    await user.click(screen.getByRole('menuitem', { name: 'PNG' }));
+    expect(exported.mock.calls).toEqual([['b.psd']]);
+  });
+
   it('does nothing outside a provider, so the browser behaves as usual', () => {
     render(<Row />);
     const allowed = fireEvent.contextMenu(screen.getByText('A row'), { clientX: 40, clientY: 60 });

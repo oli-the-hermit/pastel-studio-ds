@@ -13,6 +13,8 @@ export type OpenContextMenu = (e: React.MouseEvent | MouseEvent, items: MaybeIte
 type ContextMenuLabels = LabelOverrides<'copy' | 'actions'>;
 
 interface MenuState {
+  /** One per right-click: each starts a fresh list, at the top level. */
+  id: number;
   point: AnchorPoint;
   items: MenuItem[];
   returnFocus: HTMLElement | null;
@@ -73,7 +75,7 @@ export function useContextMenuState(ownLabels?: ContextMenuLabels) {
     ]);
     if (!items.length) return;
     const doc = point.doc || document;
-    setMenu({ point, items, returnFocus: deepActiveElement(doc) as HTMLElement | null });
+    setMenu((prev) => ({ id: (prev?.id ?? 0) + 1, point, items, returnFocus: deepActiveElement(doc) as HTMLElement | null }));
     setOpen(true);
   }, []);
 
@@ -105,7 +107,7 @@ export function useContextMenuState(ownLabels?: ContextMenuLabels) {
       columns
     >
       <div ref={panelRef} onKeyDown={handleMenuKeyDown}>
-        <MenuList items={menu.items} onPicked={close} />
+        <MenuList key={menu.id} items={menu.items} onPicked={close} />
       </div>
     </Popover>
   ) : null;
