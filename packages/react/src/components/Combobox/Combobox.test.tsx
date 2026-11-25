@@ -155,6 +155,53 @@ describe('Combobox', () => {
     vi.useRealTimers();
   });
 
+  describe('when the suggestions change', () => {
+    const field = (props: Partial<ComboboxProps>) => (
+      <Combobox value="" onChange={() => {}} placeholder="Folder" onPick={props.onPick} onSubmit={props.onSubmit} {...props} />
+    );
+
+    // A dialog that draws again (a clock, a load finishing) passes a new `recent` with the same places.
+    it('keeps the highlight when the parent passes the same recent places again', async () => {
+      const user = userEvent.setup();
+      const onPick = vi.fn();
+      const onSubmit = vi.fn();
+      const places = () => ({ label: 'Recent', items: [{ id: 'r1', label: 'D:\\Art' }, { id: 'r2', label: 'D:\\Music' }] });
+      const { rerender } = render(field({ recent: places(), onPick, onSubmit }));
+      await user.click(input());
+      await user.keyboard('{ArrowDown}{ArrowDown}');
+      rerender(field({ recent: places(), onPick, onSubmit }));
+      expect(screen.getAllByRole('option')[1].getAttribute('aria-selected')).toBe('true');
+      await user.keyboard('{Enter}');
+      expect(onPick.mock.calls.map(([o]) => o.id)).toEqual(['r2']);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('keeps the highlight on its suggestion through a new order or a new one above, and drops it when it goes', async () => {
+      const user = userEvent.setup();
+      const onPick = vi.fn();
+      const onSubmit = vi.fn();
+      const show = (list: ComboboxOption[]) => field({ value: 'p', suggestions: list, onPick, onSubmit });
+      const { rerender } = render(show(folders));
+      await user.click(input());
+      await user.keyboard('{ArrowDown}{ArrowDown}');
+      rerender(show([...folders].reverse()));
+      rerender(show([{ id: 'n', label: 'New' }, ...folders]));
+      expect(screen.getByRole('option', { selected: true }).textContent).toContain('Projects');
+      await user.keyboard('{ArrowDown}');
+      expect(screen.getByRole('option', { selected: true }).textContent).toContain('Music');
+      await user.keyboard('{ArrowUp}{Enter}');
+      expect(onPick.mock.calls.map(([o]) => o.id)).toEqual(['pr']);
+      await user.click(input());
+      await user.keyboard('{ArrowDown}');
+      rerender(show(folders.slice(1)));
+      rerender(show([]));
+      rerender(show(folders.slice(1)));
+      expect(screen.queryByRole('option', { selected: true })).toBeNull();
+      await user.keyboard('{Enter}');
+      expect(onSubmit).toHaveBeenCalledWith('p');
+    });
+  });
+
   it('holds a button at its end, and the search pill clears', async () => {
     const user = userEvent.setup();
     const onBrowse = vi.fn();

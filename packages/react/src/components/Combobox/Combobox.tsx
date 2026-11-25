@@ -95,7 +95,9 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const setRefs = useMemo(() => mergeRefs(ref, inputRef), [ref]);
     const [open, setOpen] = useState(false);
-    const [active, setActive] = useState(-1);
+    // The highlighted suggestion, by id: options worked out again with the same content (an
+    // inline `recent`, fetched suggestions arriving) keep it.
+    const [activeId, setActiveId] = useState<string | null>(null);
     const [loaded, setLoaded] = useState<{ text: string; options: ComboboxOption[] } | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -126,18 +128,23 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
       };
     }, [value, loadSuggestions, debounce]);
 
-    const showingRecent = !value && !!recent?.items.length;
+    const recentLabel = recent?.label;
+    const recentItems = recent?.items;
+    const showingRecent = !value && !!recentItems?.length;
     const options = useMemo(() => {
-      if (!value) return recent?.items.map((o) => ({ ...o, group: o.group ?? recent.label })) ?? [];
+      if (!value) return recentItems?.map((o) => ({ ...o, group: o.group ?? recentLabel })) ?? [];
       const own = suggestions ?? [];
       const fetched = loaded && loaded.text === value ? loaded.options : [];
       const seen = new Set(own.map((o) => o.id));
       return [...own, ...fetched.filter((o) => !seen.has(o.id))];
-    }, [value, suggestions, loaded, recent]);
+    }, [value, suggestions, loaded, recentLabel, recentItems]);
 
-    // The list follows what there is to show; the highlight starts over when the options change.
-    useEffect(() => setActive(-1), [options]);
     const listShown = open && !disabled && (options.length > 0 || (loading && !!value));
+    // The highlight goes when its suggestion does, and starts over when the text changes or the
+    // list closes.
+    useEffect(() => setActiveId(null), [value, listShown]);
+    const active = activeId === null ? -1 : options.findIndex((o) => o.id === activeId);
+    const setActive = (index: number) => setActiveId(options[index]?.id ?? null);
 
     const pick = (option: ComboboxOption) => {
       setOpen(false);
@@ -156,7 +163,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
           return;
         }
         if (!n) return;
-        setActive((i) => (e.key === 'ArrowDown' ? (i + 1) % n : i <= 0 ? n - 1 : i - 1));
+        setActive(e.key === 'ArrowDown' ? (active + 1) % n : active <= 0 ? n - 1 : active - 1);
       } else if (e.key === 'Enter') {
         if (listShown && active >= 0 && options[active]) {
           e.preventDefault();
