@@ -104,6 +104,45 @@ describe('MediaGrid, scrolling', () => {
     expect(onEndReached).toHaveBeenCalledTimes(1);
   });
 
+  it('asks again after the end left the screen, the list emptied or the grid stopped asking', () => {
+    const onEndReached = vi.fn();
+    const few = items.slice(0, 200);
+    const { scrollTo, rerender } = setup({ items: few, onEndReached });
+    const show = (list: Item[], asking = true) =>
+      rerender(<MediaGrid<Item> items={list} getKey={(item) => item.id} renderTile={(item) => <span>{item.id}</span>} selection={new Set()} onSelect={() => {}} onOpen={() => {}} label="Media" onEndReached={asking ? onEndReached : undefined} />);
+    const end = 50 * STRIDE - VIEWPORT;
+    scrollTo(end);
+    expect(onEndReached).toHaveBeenCalledTimes(1);
+    // The page failed: the same list, the end still on screen. Once is enough...
+    show(few);
+    scrollTo(end - 3 * STRIDE);
+    expect(onEndReached).toHaveBeenCalledTimes(1);
+    // ...until the end has left the screen and comes back.
+    scrollTo(0);
+    scrollTo(end);
+    expect(onEndReached).toHaveBeenCalledTimes(2);
+    // Away from the feed and back, the length unchanged.
+    show(few, false);
+    show(few);
+    expect(onEndReached).toHaveBeenCalledTimes(3);
+    show([]);
+    show(few);
+    expect(onEndReached).toHaveBeenCalledTimes(4);
+    // A longer list, its end on screen too, asks once for its own length.
+    show(items.slice(0, 201));
+    expect(onEndReached).toHaveBeenCalledTimes(5);
+  });
+
+  // A move or a filter takes most tiles out while the grid is scrolled far down: the old scroll
+  // position is past the end of the new list until the browser pulls it back.
+  it('draws the tiles of a much shorter list at once, not the rows of the old scroll position', () => {
+    const { scrollTo, drawn, rerender } = setup();
+    scrollTo(3_724_000);
+    expect(drawn()).toContain(items.length - 1);
+    rerender(<MediaGrid<Item> items={items.slice(0, 10)} getKey={(item) => item.id} renderTile={(item) => <span>{item.id}</span>} selection={new Set()} onSelect={() => {}} onOpen={() => {}} label="Media" />);
+    expect(drawn()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
   it('brings the tile the arrows reach into view', () => {
     const { grid, drawn } = setup();
     fireEvent.keyDown(screen.getByRole('listbox'), { key: 'End' });

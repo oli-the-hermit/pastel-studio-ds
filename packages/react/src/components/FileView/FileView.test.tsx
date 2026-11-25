@@ -83,6 +83,59 @@ describe('FileView', () => {
     expect(p.onOpen).not.toHaveBeenCalled();
   });
 
+  describe('when the list changes', () => {
+    const other: FsEntry[] = [
+      { id: 'live', name: 'Live', kind: 'folder', children: [] },
+      { id: 'demo', name: 'Demo.wav', kind: 'file', size: 4096 },
+      { id: 'mix', name: 'Mix.wav', kind: 'file', size: 4096 },
+    ];
+    const setup = () => {
+      const p = { onSelect: vi.fn(), onOpen: vi.fn() };
+      const el = (list: FsEntry[]) => <FileView label="Files in Music" items={list} view="details" selection={new Set()} {...p} />;
+      const { rerender } = render(el(items));
+      return { p, show: (list: FsEntry[]) => rerender(el(list)) };
+    };
+    const tabStop = () => screen.getAllByRole('option').filter((o) => o.tabIndex === 0);
+
+    it('starts at the first entry of another folder', async () => {
+      const user = userEvent.setup();
+      const { p, show } = setup();
+      await user.click(option(/Media/));
+      show(other);
+      expect(tabStop()).toEqual([option(/Live/)]);
+      await user.click(option(/Mix/));
+      show([]);
+      show(items);
+      expect(tabStop()).toEqual([option(/Albums/)]);
+      expect(p.onOpen).not.toHaveBeenCalled();
+    });
+
+    it('keeps the focus on the same entry when entries come, go or move above it', async () => {
+      const user = userEvent.setup();
+      const { p, show } = setup();
+      await user.click(option(/Notes/));
+      show([other[1], ...items]);
+      await user.keyboard('{Enter}');
+      show(items.slice(2));
+      await user.keyboard('{Enter}');
+      show([...items].reverse());
+      await user.keyboard('{Enter}');
+      expect(vi.mocked(p.onOpen).mock.calls.map(([e]) => e.id)).toEqual(['notes', 'notes', 'notes']);
+      expect(tabStop()).toEqual([option(/Notes/)]);
+    });
+
+    it('moves the focus to the entry now in the place of one that left, and keeps it in the list', () => {
+      const { show } = setup();
+      option(/Cover/).focus();
+      show(items.filter((e) => e.id !== 'cover'));
+      expect(document.activeElement).toBe(option(/Notes/));
+      show(other);
+      expect(document.activeElement).toBe(option(/Live/));
+      show([]);
+      expect(document.activeElement).toBe(screen.getByRole('listbox'));
+    });
+  });
+
   it('shows the empty text', () => {
     render(<FileView label="Files" items={[]} view="tiles" selection={new Set()} onSelect={() => {}} onOpen={() => {}} labels={{ folderEmpty: 'Vacía' }} />);
     expect(screen.getByText('Vacía')).toBeTruthy();

@@ -3,6 +3,7 @@ import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { gridLayout, rowsFromTopRow, sameTopRow } from '../../lib/gridLayout';
 import type { SelectMode } from '../../lib/useFileBrowser';
+import { useFocusKey, useKeepFocus } from '../../lib/useListFocus';
 import { EmptyState } from '../EmptyState';
 import type { FileCommand } from '../FileView';
 
@@ -40,7 +41,11 @@ export interface MediaGridProps<T> extends Omit<React.HTMLAttributes<HTMLDivElem
   onFocusItem?: (item: T) => void;
   /** Extra attributes for a tile's cell: drag and drop, pointer handlers. */
   itemProps?: (item: T) => React.HTMLAttributes<HTMLDivElement>;
-  /** Called once per length of `items` when the last rows come into view, to load the next page. */
+  /**
+   * Called when the last rows come into view, to load the next page: once per length of `items`,
+   * and again after the last rows have left the screen and come back (a page that failed to load
+   * is asked for again) or after `onEndReached` was left out for a while.
+   */
   onEndReached?: () => void;
   /** The narrowest tile: s 150px, m 200px, l 280px, xl 380px; tiles stretch to fill each row. */
   size?: 's' | 'm' | 'l' | 'xl';
@@ -95,7 +100,7 @@ function MediaGridInner<T>({
   // every scroll event (one per frame, each drawing every tile on screen again).
   const [scrollTop, setScrollTop] = useState(0);
   const drawnTop = useRef(0);
-  const [focusState, setFocusIndex] = useState(0);
+  const [focusIndex, setFocusIndex] = useFocusKey(items, getKey);
   const pendingFocus = useRef(false);
   const endCalledFor = useRef(-1);
   const n = items.length;
@@ -142,23 +147,33 @@ function MediaGridInner<T>({
     return () => observer.disconnect();
   }, [measure, hasHeader]);
 
-  // The focused tile, kept inside the list. Worked out while drawing, not corrected afterwards: when
-  // tiles leave (a move, a delete) the list can be shorter than the focused index on the very draw
-  // that shows it, and drawing that tile would read past the end of the list.
-  const focusIndex = n ? Math.min(focusState, n - 1) : 0;
+  // The focused tile is kept by its key and found while drawing (useFocusKey): when tiles leave
+  // (a move, a delete) the list can be shorter than the focused index on the very draw that shows
+  // it, and when tiles come or go above it the same index is another file.
+  const keepFocus = useKeepFocus(listRef, focusIndex, (list, i) => list.querySelector<HTMLElement>(`[data-index="${i}"]`));
 
   const measured = box.width > 0 && box.min > 0;
   const layout = gridLayout(box.width, box.min || 1, box.gap, box.caption, n);
-  const { first, last } = measured ? rowsFromTopRow(layout, scrollTop - box.offset, box.viewport, overscan) : { first: 0, last: -1 };
+  // A scroll position from a longer list (a big shrink) is past the end of this one until the
+  // browser pulls it back: draw the rows it will show, not none.
+  const top = Math.max(0, Math.min(scrollTop - box.offset, layout.height - box.viewport));
+  const { first, last } = measured ? rowsFromTopRow(layout, top, box.viewport, overscan) : { first: 0, last: -1 };
   const start = measured ? first * layout.columns : 0;
   const end = measured ? Math.min(n, (last + 1) * layout.columns) : Math.min(n, UNMEASURED_COUNT);
 
-  // Load the next page once the last rows are on screen.
+  // Load the next page once the last rows are on screen. Once per length, until the last rows
+  // leave the screen (or the list empties, or the grid stops asking): then it may ask again.
+  const atEnd = measured && n > 0 && last >= layout.rows - 2;
+  const wantsMore = onEndReached !== undefined;
   useEffect(() => {
-    if (!onEndReached || !measured || !n || last < layout.rows - 2 || endCalledFor.current === n) return;
+    if (!atEnd || !wantsMore) {
+      endCalledFor.current = -1;
+      return;
+    }
+    if (endCalledFor.current === n) return;
     endCalledFor.current = n;
-    onEndReached();
-  }, [onEndReached, measured, n, last, layout.rows]);
+    onEndReached?.();
+  }, [onEndReached, wantsMore, atEnd, n]);
 
   // Moves the keyboard focus after the tile it goes to has been drawn.
   useEffect(() => {
@@ -274,6 +289,7 @@ function MediaGridInner<T>({
         style={measured ? { height: layout.height } : undefined}
         tabIndex={n ? -1 : 0}
         onKeyDown={onKeyDown}
+        {...keepFocus}
       >
         {indices.map((i) => {
           const item = items[i];

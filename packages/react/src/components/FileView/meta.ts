@@ -32,6 +32,7 @@ export const meta: ComponentMeta = {
   labels: ['fileName', 'dateModified', 'fileType', 'fileSize', 'location', 'folderEmpty', 'sortBy', 'renameItem', 'freeOf', 'driveUsed', 'typeFolder', 'typeDrive', 'typeFile', 'typeImage', 'typeVideo', 'typeAudio', 'typeText', 'typeDocument', 'typePdf', 'typeSpreadsheet', 'typePresentation', 'typeCode', 'typeArchive', 'typeApp', 'typeFont', 'typeModel', 'typeOther'],
   aria: [
     'One `listbox` named by `label` ("Files in Music"), multi-selectable, with one tab stop; entries are `option`s with `aria-selected`.',
+    'The focus follows its entry when entries come, go or move above it. When the focused entry leaves (a delete, Enter on a folder), the focus goes to the entry now in its place, or the first of the new folder.',
     'Column headers are buttons named "Sort by …", pressed while their column sorts.',
     'It never deletes or moves anything itself: commands go to `onCommand` for the app to confirm and carry out.',
   ],

@@ -32,6 +32,7 @@ export const meta: ComponentMeta = {
     'A listbox with multiple selection; each cell is an option with `aria-selected` and, because only some are drawn, `aria-posinset` and `aria-setsize`.',
     'The caller names the grid with `label`: "Media in Pictures".',
     'One tile is in the tab order (roving focus); it stays drawn while scrolled away, so the focus is never lost.',
+    'The focus follows its file when tiles come, go or move above it. When the focused tile leaves (a delete, a move), the focus goes to the tile now in its place; in another folder it starts at the first tile.',
   ],
   related: ['MediaTile', 'FileView', 'EmptyState'],
 };

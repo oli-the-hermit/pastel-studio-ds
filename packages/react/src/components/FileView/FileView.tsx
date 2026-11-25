@@ -1,10 +1,11 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { IconArrowDown, IconArrowUp } from '../../icons';
 import { useLabels, type LabelOverrides, type Labels } from '../../labels';
 import { cx } from '../../lib/cx';
 import { formatBytes, formatDateTime } from '../../lib/format';
 import { typeLabel, type FsEntry } from '../../lib/fs';
 import type { FileViewMode, SelectMode, SortKey, SortState } from '../../lib/useFileBrowser';
+import { useFocusKey, useKeepFocus } from '../../lib/useListFocus';
 import { FileIcon } from '../FileIcon';
 import { ProgressBar } from '../ProgressBar';
 import { Tooltip } from '../Tooltip';
@@ -46,6 +47,8 @@ export interface FileViewProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   labels?: LabelOverrides<FileViewWord>;
 }
 
+const entryId = (entry: FsEntry) => entry.id;
+
 const COLUMNS: { key: SortKey; word: keyof Labels }[] = [
   { key: 'name', word: 'fileName' },
   { key: 'modified', word: 'dateModified' },
@@ -64,11 +67,11 @@ export const FileView = forwardRef<HTMLDivElement, FileViewProps>(({
 }, ref) => {
   const labels = useLabels(ownLabels);
   const listRef = useRef<HTMLDivElement>(null);
-  const [focusState, setFocusIndex] = useState(0);
-  // Kept inside the list while drawing, so a shorter list never leaves the focus past its end.
-  const focusIndex = items.length ? Math.min(focusState, items.length - 1) : 0;
+  // The focused entry is kept by its id and found while drawing: a shorter list never leaves the
+  // focus past its end, and entries coming or going above it leave it on the same entry.
+  const [focusIndex, setFocusIndex] = useFocusKey(items, entryId);
+  const keepFocus = useKeepFocus(listRef, focusIndex, (list, i) => list.querySelectorAll<HTMLElement>('[role="option"]')[i]);
   const grid = view === 'tiles' || view === 'icons';
-
 
   const focusAt = (i: number) => {
     setFocusIndex(i);
@@ -194,6 +197,7 @@ export const FileView = forwardRef<HTMLDivElement, FileViewProps>(({
         className="ps-file-view-items"
         tabIndex={items.length ? -1 : 0}
         onKeyDown={onKeyDown}
+        {...keepFocus}
         onClick={(e) => e.target === e.currentTarget && onClearSelection?.()}
         onContextMenu={(e) => {
           if (e.target !== e.currentTarget || !onContextMenu) return;
@@ -214,6 +218,7 @@ export const FileView = forwardRef<HTMLDivElement, FileViewProps>(({
               aria-disabled={disabled || undefined}
               tabIndex={i === focusIndex ? 0 : -1}
               className={cx('ps-file-view-item', selected && 'is-selected', disabled && 'is-disabled', entry.hidden && 'is-hidden')}
+              onFocus={(e) => e.target === e.currentTarget && i !== focusIndex && setFocusIndex(i)}
               onClick={(e) => {
                 setFocusIndex(i);
                 onSelect(entry.id, e.shiftKey ? 'range' : e.ctrlKey || e.metaKey ? 'toggle' : 'replace');

@@ -80,15 +80,31 @@ export interface MenuListProps {
   labels?: LabelOverrides<'back'>;
 }
 
+/** The submenus that `keys` name, one inside the other, as far as they are still in `items`. */
+function openSubmenus(items: MenuItem[], keys: readonly string[]): MenuSubmenu[] {
+  const out: MenuSubmenu[] = [];
+  let level = items;
+  for (const key of keys) {
+    const sub = level.find((item): item is MenuSubmenu => isSubmenu(item) && item.key === key);
+    if (!sub) break;
+    out.push(sub);
+    level = sub.items;
+  }
+  return out;
+}
+
 /**
  * The rows of a menu; shared by the overflow Menu and the right-click ContextMenu. A submenu row
- * opens its items in place: → or Enter opens it, ← or its Back row goes back.
+ * opens its items in place: → or Enter opens it, ← or its Back row goes back. The open submenu is
+ * kept by its key and found in `items` at every draw, so it always shows (and acts on) the items
+ * passed now.
  */
 export function MenuList({ items, onPicked, labels: ownLabels }: MenuListProps) {
   const labels = useLabels(ownLabels);
-  const [path, setPath] = useState<MenuSubmenu[]>([]);
+  const [keys, setKeys] = useState<string[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
   const moved = useRef(false);
+  const path = openSubmenus(items, keys);
   const open = path[path.length - 1];
   const shown = open ? open.items : items;
 
@@ -97,11 +113,11 @@ export function MenuList({ items, onPicked, labels: ownLabels }: MenuListProps) 
     if (!moved.current) return;
     moved.current = false;
     listRef.current?.querySelector<HTMLButtonElement>('.ps-menu-item:not(:disabled)')?.focus();
-  }, [path]);
+  }, [keys]);
 
   const go = (next: MenuSubmenu[]) => {
     moved.current = true;
-    setPath(next);
+    setKeys(next.map((sub) => sub.key));
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -228,6 +244,8 @@ export function Menu({
 }: MenuProps) {
   const labels = useLabels(ownLabels);
   const [open, setOpen] = useState(false);
+  // Counts the openings: each starts a fresh list, at the top level.
+  const [opening, setOpening] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -242,7 +260,8 @@ export function Menu({
           aria-label={ariaLabel ?? labels.moreActions}
           onClick={(e) => {
             e.stopPropagation();
-            setOpen((o) => !o);
+            if (!open) setOpening((n) => n + 1);
+            setOpen(!open);
           }}
         >
           {trigger || <IconMore size={18} />}
@@ -264,7 +283,7 @@ export function Menu({
       >
         {header && <div className="ps-menu-header">{header}</div>}
         <div onKeyDown={handleMenuKeyDown}>
-          <MenuList items={items} onPicked={() => setOpen(false)} labels={ownLabels} />
+          <MenuList key={opening} items={items} onPicked={() => setOpen(false)} labels={ownLabels} />
         </div>
       </Popover>
     </>

@@ -141,6 +141,30 @@ describe('tidyMenuItems', () => {
     expect(screen.queryByRole('menu')).toBeNull();
   });
 
+  it('shows the submenu of the items passed now, and goes back to the top when it is gone', async () => {
+    const user = userEvent.setup();
+    const picked = vi.fn();
+    const menu = (version: number, withSpeed = true) => (
+      <Menu
+        items={tidyMenuItems([
+          withSpeed && { key: 'speed', label: 'Playback speed', items: [{ key: '2', label: '2×', onSelect: () => picked(version) }] },
+          { key: 'loop', label: 'Loop', onSelect: noop },
+        ])}
+      />
+    );
+    const { rerender } = render(menu(1));
+    await user.click(trigger());
+    await user.click(screen.getByRole('menuitem', { name: /Playback speed/ }));
+    rerender(menu(2));
+    await user.click(screen.getByRole('menuitem', { name: '2×' }));
+    expect(picked.mock.calls).toEqual([[2]]);
+    await user.click(trigger());
+    expect(screen.queryByRole('menuitem', { name: '2×' })).toBeNull();
+    await user.click(screen.getByRole('menuitem', { name: /Playback speed/ }));
+    rerender(menu(3, false));
+    expect(screen.getAllByRole('menuitem').map((el) => el.textContent)).toEqual(['Loop']);
+  });
+
   it('takes the dock color over video', async () => {
     const user = userEvent.setup();
     render(<Menu items={items()} surface="overlay" />);
