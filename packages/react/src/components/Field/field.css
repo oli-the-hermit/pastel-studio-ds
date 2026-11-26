@@ -10,6 +10,9 @@
   font-weight: var(--ps-font-weight-semibold);
   color: var(--ps-text-2);
 }
+.ps-field-head { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-8); min-width: 0; }
+.ps-field-head .ps-field-label { min-width: 0; }
+.ps-field-action { display: flex; flex: none; align-items: center; gap: var(--ps-space-6); color: var(--ps-text-3); font-size: var(--ps-font-size-xs); }
 .ps-field-label-hint { font-weight: var(--ps-font-weight-medium); color: var(--ps-text-3); }
 .ps-field-hint { font-size: var(--ps-font-size-sm); color: var(--ps-text-3); }
 .ps-field-error { font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-medium); color: var(--ps-danger); }

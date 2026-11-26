@@ -79,6 +79,14 @@ describe('Field', () => {
 });
 
 describe('TextInput, TextArea, FormHint, FormError', () => {
+  it('puts its action at the far end of the label row, still wiring the control', () => {
+    const { container } = render(<Field label="Note" action={<button type="button">Copy</button>}><TextArea /></Field>);
+    const head = container.querySelector('.ps-field-head')!;
+    expect(head.firstElementChild?.textContent).toBe('Note');
+    expect(head.querySelector('.ps-field-action button')?.textContent).toBe('Copy');
+    expect(screen.getByLabelText('Note').tagName).toBe('TEXTAREA');
+  });
+
   it('forward their refs and attributes', () => {
     const input = createRef<HTMLInputElement>();
     const area = createRef<HTMLTextAreaElement>();
