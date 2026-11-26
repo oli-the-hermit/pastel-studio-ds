@@ -291,6 +291,7 @@ export const defaultLabels = {
   collapseMenu: 'Collapse menu',
   favorite: 'Favorite',
   watched: 'Watched',
+  seeAll: 'See all',
   mediaEmpty: 'Nothing to show here.',
   zoomIn: 'Zoom in',
   zoomOut: 'Zoom out',

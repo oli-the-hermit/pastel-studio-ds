@@ -410,3 +410,8 @@ is a breaking change.
   screen are not drawn (`content-visibility`), so thousands stay cheap. `TitleGrid` is a list that fits as many columns
   as it can, each at least `--ps-title-tile-min` wide (160px, 256px for `wide`; the component's own token for now),
   16px apart and 24px between rows. New word `watched`. Replaces Pastel Media Pro's own tile.
+- `MediaRow`: a heading over one row of items that scrolls sideways ("Continue watching"), with "See all" (with
+  `onSeeAll`) and Previous / Next at the heading's end. No scrollbar shows and the row comes to rest on an item; the
+  arrows scroll about one page, are disabled at the ends and are not shown when everything fits. A `region` named by
+  its heading (`headingLevel`, default 2) with its items in a list; one tab stop for the row, with the arrow keys, Home
+  and End moving between items and scrolling them into view. New word `seeAll`.
