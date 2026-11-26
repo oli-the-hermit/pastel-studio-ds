@@ -399,3 +399,7 @@ is a breaking change.
 - `MediaTile` takes `dropTarget`: an accent ring and tint (and, with overlay captions, the name showing on the tint)
   while something dragged over the tile would be dropped into it. From Pastel Studio Pro, where media dropped on a
   folder tile move into that folder.
+- `FilterChips`: a row of separate chips that filter what a list or a grid shows, one always chosen, each with an
+  optional `count` after its label. A radio group like SegmentedControl (one tab stop, the arrows, Home and End), but
+  each chip is its own surface and the row wraps to more lines when short of room. Sizes `md` and `lg`. For Pastel
+  Media Pro's library filters.

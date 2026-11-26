@@ -38,6 +38,7 @@
 @import url('./components/Tooltip/tooltip.css') layer(ps.components);
 @import url('./components/Switch/switch.css') layer(ps.components);
 @import url('./components/SegmentedControl/segmented-control.css') layer(ps.components);
+@import url('./components/FilterChips/filter-chips.css') layer(ps.components);
 @import url('./components/Field/field.css') layer(ps.components);
 @import url('./components/PasswordField/password-field.css') layer(ps.components);
 @import url('./components/Select/select.css') layer(ps.components);

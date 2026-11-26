@@ -45,6 +45,7 @@ export * from './components/Tooltip';
 export * from './components/TransferCard';
 export * from './components/Switch';
 export * from './components/SegmentedControl';
+export * from './components/FilterChips';
 export * from './components/Field';
 export * from './components/PasswordField';
 export * from './components/Select';

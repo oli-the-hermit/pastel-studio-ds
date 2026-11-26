@@ -1,0 +1,36 @@
+/* ── FilterChips: separate chips, one chosen ────────────────────
+   Each chip is its own surface (no shared track), one step above a card; the chosen one takes
+   the accent container. They wrap to more lines when the row is short of room. */
+.ps-filter-chips {
+  --ps-filter-chips-bg: var(--ps-surface-2);
+  --ps-filter-chips-hover: var(--ps-surface-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ps-space-8);
+}
+.ps-filter-chips-option {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ps-space-6);
+  height: var(--ps-icon-button-size-sm);
+  padding: 0 var(--ps-space-14);
+  border-radius: var(--ps-radius-md);
+  background: var(--ps-filter-chips-bg);
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+  white-space: nowrap;
+  transition: background var(--ps-transition), color var(--ps-transition);
+}
+.ps-filter-chips--lg .ps-filter-chips-option {
+  height: var(--ps-button-height-sm);
+  padding: 0 var(--ps-space-16);
+  font-size: var(--ps-font-size-md);
+}
+.ps-filter-chips-option:hover { background: var(--ps-filter-chips-hover); }
+.ps-filter-chips-option.is-selected { background: var(--ps-accent-container); color: var(--ps-on-accent-container); }
+
+/* The count: quieter than the label by color and weight; on the chosen chip it keeps the chip's color. */
+.ps-filter-chips-count { color: var(--ps-text-2); font-weight: var(--ps-font-weight-medium); font-variant-numeric: tabular-nums; }
+.ps-filter-chips-option.is-selected .ps-filter-chips-count { color: inherit; }
