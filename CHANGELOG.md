@@ -415,3 +415,9 @@ is a breaking change.
   arrows scroll about one page, are disabled at the ends and are not shown when everything fits. A `region` named by
   its heading (`headingLevel`, default 2) with its items in a list; one tab stop for the row, with the arrow keys, Home
   and End moving between items and scrolling them into view. New word `seeAll`.
+- `HeroBanner`: a large banner that suggests one title at a time (`items`: an overline, a title, facts joined with a
+  middle dot, a summary of at most three lines, a picture and its buttons). The picture covers the banner and fades
+  out behind the text, which stays on the banner's surface. With several items (six at most) it is a carousel: dots,
+  Previous and Next at the lower right, and the arrow keys while the focus is in it, round and round. Controlled with
+  `index` and `onIndexChange`, or on its own. `autoAdvance` (off by default) moves on every n ms, waits for the pointer
+  and the focus, and never runs with reduced motion. New words `carousel` and `slideOf`.

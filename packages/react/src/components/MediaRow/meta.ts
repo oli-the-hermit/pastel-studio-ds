@@ -30,5 +30,5 @@ export const meta: ComponentMeta = {
     'An arrow pressed at the last page hands the focus to the other one before it is disabled.',
     'The row scrolls smoothly, and at once with reduced motion.',
   ],
-  related: ['TitleTile', 'TextButton', 'IconButton'],
+  related: ['TitleTile', 'HeroBanner', 'TextButton', 'IconButton'],
 };

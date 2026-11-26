@@ -107,6 +107,7 @@ export * from './components/MediaGrid';
 export * from './components/MediaViewer';
 export * from './components/TitleTile';
 export * from './components/MediaRow';
+export * from './components/HeroBanner';
 export * from './components/ListPicker';
 export * from './components/ListRow';
 export * from './theme';

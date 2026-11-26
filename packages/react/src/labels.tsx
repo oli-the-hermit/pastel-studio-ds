@@ -292,6 +292,8 @@ export const defaultLabels = {
   favorite: 'Favorite',
   watched: 'Watched',
   seeAll: 'See all',
+  carousel: 'carousel',
+  slideOf: '{current} of {total}',
   mediaEmpty: 'Nothing to show here.',
   zoomIn: 'Zoom in',
   zoomOut: 'Zoom out',
