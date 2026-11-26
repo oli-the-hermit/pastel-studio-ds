@@ -1,8 +1,9 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useContext, useEffect, useId, useRef, useState } from 'react';
 import { IconChevronLeft, IconChevronRight, IconClose, IconFullscreen, IconFullscreenExit, IconMinus, IconPanelRight, IconPlus } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
-import { useBlockingOverlay } from '../../lib/overlays';
+import { OverlayDepth, useBlockingOverlay } from '../../lib/overlays';
+import { useIdle } from '../../lib/useIdle';
 import { useZoomPan } from '../../lib/useZoomPan';
 import { IconButton } from '../IconButton';
 import { Tooltip } from '../Tooltip';
@@ -14,8 +15,10 @@ export interface MediaViewerProps {
   onClose: () => void;
   /** The item's name, the dialog's title. */
   title: string;
-  /** Where the item sits in its list: "12 of 340". */
+  /** Where the item sits in its list: "12 of 340", at the far end of the title's row. */
   position?: string;
+  /** Before the title: what kind of item it is (an image or a video icon, 16px). */
+  icon?: React.ReactNode;
   /** Each one shows its button and its arrow key. */
   onPrevious?: () => void;
   onNext?: () => void;
@@ -35,29 +38,45 @@ export interface MediaViewerProps {
   panelOpen?: boolean;
   /** Shows the details button and lets I toggle the panel. */
   onPanelOpenChange?: (open: boolean) => void;
-  /** More tools in the bar, before zoom: favorite, share. */
+  /**
+   * The item's own tools (favorite, copy, a menu): one group, at the head of the panel while it is
+   * open and in the bar while it is closed.
+   */
   actions?: React.ReactNode;
+  /**
+   * Shortcuts to what the panel holds (labels, collections): one group in the bar, only while the
+   * panel is closed.
+   */
+  panelTools?: React.ReactNode;
   className?: string;
   labels?: LabelOverrides<MediaViewerWord>;
 }
 
+// How long the pointer and the keys rest before the zoom box fades away.
+const ZOOM_IDLE_MS = 2000;
 const FOCUSABLE = 'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 const isTyping = (el: EventTarget | null) => el instanceof HTMLElement && el.closest('input, textarea, select, [contenteditable="true"]') !== null;
 
 /**
- * The full view of one item, over the app: the media as large as the window allows, with a margin
- * that grows with the window, a bar with its name and tools, previous and next on the stage's
- * edges and the item's details in a panel beside it. Images zoom toward the pointer and pan.
+ * The full view of one item, over the app: the media as large as the window allows, in a rounded
+ * stage inside a card with a margin that grows with the window. The bar holds the item's kind, name
+ * and place in its list; the tools sit at the head of the details panel while it is open and move
+ * into the bar, in groups, while it is closed. Previous and next sit on the stage's edges, and
+ * images zoom toward the pointer and pan, with a see-through zoom box that fades when idle.
  */
 export function MediaViewer({
-  open, onClose, title, position, onPrevious, onNext, children, zoomable = false, naturalSize, itemKey, panel, panelOpen = false,
-  onPanelOpenChange, actions, className, labels: ownLabels,
+  open, onClose, title, position, icon, onPrevious, onNext, children, zoomable = false, naturalSize, itemKey, panel, panelOpen = false,
+  onPanelOpenChange, actions, panelTools, className, labels: ownLabels,
 }: MediaViewerProps) {
   const labels = useLabels(ownLabels);
   const titleId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const zoom = useZoomPan({ content: naturalSize, resetKey: itemKey ?? title });
+  // The zoom box fades away when the pointer rests and no key is pressed, and comes back with either.
+  // The viewer is itself a blocking overlay: what it holds (a video player) may go idle inside it.
+  const depth = useContext(OverlayDepth);
+  const [idle, wake] = useIdle(open && zoomable, ZOOM_IDLE_MS, 1);
   useBlockingOverlay(open);
 
   // Focus moves in on open and back to whatever opened it on close.
@@ -83,9 +102,11 @@ export function MediaViewer({
     else void rootRef.current?.requestFullscreen?.();
   };
 
+  const hasPanel = panel !== undefined && onPanelOpenChange !== undefined;
   const showPanel = panel !== undefined && panelOpen;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    wake();
     if (e.key === 'Tab') {
       const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE));
       const first = items[0];
@@ -126,74 +147,105 @@ export function MediaViewer({
 
   const percent = zoom.pixelRatio !== undefined ? `${Math.round(zoom.pixelRatio * 100)}%` : `${Math.round(zoom.state.scale * 100)}%`;
 
-  return (
-    <div className="ps-media-viewer-backdrop">
-      <div
-        ref={rootRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-        className={cx('ps-media-viewer', showPanel && 'is-panel-open', fullscreen && 'is-fullscreen', className)}
-        onKeyDown={onKeyDown}
-      >
-        <div className="ps-media-viewer-main">
-          <header className="ps-media-viewer-bar">
-            <Tooltip label={title} onlyWhenClipped>
-              <h2 className="ps-media-viewer-title" id={titleId}>{title}</h2>
-            </Tooltip>
-            {position && <span className="ps-media-viewer-position">{position}</span>}
-            <span className="ps-media-viewer-spacer" />
-            {actions}
-            {zoomable && (
-              <div className="ps-media-viewer-zoom">
-                <IconButton label={labels.zoomOut} size="sm" onClick={() => zoom.zoomBy(1 / 1.25)} disabled={!zoom.zoomed}>
-                  <IconMinus size={16} />
-                </IconButton>
-                <button type="button" className="ps-media-viewer-percent" title={labels.zoomFit} aria-label={`${labels.zoomFit} (${percent})`} onClick={zoom.reset}>
-                  {percent}
-                </button>
-                <IconButton label={labels.zoomIn} size="sm" onClick={() => zoom.zoomBy(1.25)}>
-                  <IconPlus size={16} />
-                </IconButton>
-              </div>
-            )}
-            {onPanelOpenChange && panel !== undefined && (
-              <IconButton label={labels.detailsPane} size="sm" pressed={panelOpen} onClick={() => onPanelOpenChange(!panelOpen)}>
-                <IconPanelRight size={16} />
-              </IconButton>
-            )}
-            <IconButton label={fullscreen ? labels.exitFullScreen : labels.fullScreen} size="sm" onClick={toggleFullscreen}>
-              {fullscreen ? <IconFullscreenExit size={16} /> : <IconFullscreen size={16} />}
-            </IconButton>
-            <IconButton label={labels.close} size="sm" onClick={onClose}>
-              <IconClose size={16} strokeWidth={2.2} />
-            </IconButton>
-          </header>
-          <div
-            ref={zoomable ? zoom.stageRef : undefined}
-            className={cx('ps-media-viewer-stage', zoomable && 'is-zoomable', zoom.zoomed && 'is-zoomed', zoom.dragging && 'is-dragging')}
-            onDoubleClick={zoomable ? (e) => !(e.target as HTMLElement).closest('button') && zoom.toggle({ x: e.clientX, y: e.clientY }) : undefined}
-            {...(zoomable ? zoom.panHandlers : {})}
-            onPointerDown={zoomable ? (e) => !(e.target as HTMLElement).closest('button') && zoom.panHandlers.onPointerDown?.(e) : undefined}
-          >
-            <div className="ps-media-viewer-canvas" style={zoomable ? zoom.style : undefined}>
-              {children}
-            </div>
-            {onPrevious && (
-              <IconButton className="ps-media-viewer-nav is-previous" label={labels.previous} surface="overlay" onClick={onPrevious}>
-                <IconChevronLeft size={20} />
-              </IconButton>
-            )}
-            {onNext && (
-              <IconButton className="ps-media-viewer-nav is-next" label={labels.next} surface="overlay" onClick={onNext}>
-                <IconChevronRight size={20} />
-              </IconButton>
-            )}
-          </div>
-        </div>
-        {showPanel && <aside className="ps-media-viewer-panel" aria-label={labels.detailsPane}>{panel}</aside>}
+  const panelToggle = hasPanel && (
+    <IconButton label={labels.detailsPane} size="sm" pressed={panelOpen} onClick={() => onPanelOpenChange(!panelOpen)}>
+      <IconPanelRight size={16} />
+    </IconButton>
+  );
+  // The item's tools, then the window's: groups that keep together wherever they sit.
+  const tools = (
+    <>
+      {actions && <div className="ps-media-viewer-group">{actions}</div>}
+      <div className="ps-media-viewer-group">
+        <IconButton label={fullscreen ? labels.exitFullScreen : labels.fullScreen} size="sm" onClick={toggleFullscreen}>
+          {fullscreen ? <IconFullscreenExit size={16} /> : <IconFullscreen size={16} />}
+        </IconButton>
+        <IconButton label={labels.close} size="sm" onClick={onClose}>
+          <IconClose size={16} strokeWidth={2.2} />
+        </IconButton>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <OverlayDepth.Provider value={depth + 1}>
+      <div className="ps-media-viewer-backdrop">
+        <div
+          ref={rootRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
+          className={cx('ps-media-viewer', showPanel && 'is-panel-open', fullscreen && 'is-fullscreen', idle && 'is-idle', className)}
+          onKeyDown={onKeyDown}
+          onPointerMove={wake}
+          onPointerDown={wake}
+          onWheel={wake}
+        >
+          <div className="ps-media-viewer-main">
+            <header className="ps-media-viewer-bar">
+              <div className="ps-media-viewer-heading">
+                {icon && <span className="ps-media-viewer-icon" aria-hidden="true">{icon}</span>}
+                <Tooltip label={title} onlyWhenClipped>
+                  <h2 className="ps-media-viewer-title" id={titleId}>{title}</h2>
+                </Tooltip>
+                {position && <span className="ps-media-viewer-position">{position}</span>}
+              </div>
+              {!showPanel && (
+                <>
+                  {panelToggle && <div className="ps-media-viewer-group">{panelToggle}</div>}
+                  {panelTools && <div className="ps-media-viewer-group">{panelTools}</div>}
+                  {tools}
+                </>
+              )}
+            </header>
+            <div
+              ref={zoomable ? zoom.stageRef : undefined}
+              className={cx('ps-media-viewer-stage', zoomable && 'is-zoomable', zoom.zoomed && 'is-zoomed', zoom.dragging && 'is-dragging')}
+              onDoubleClick={zoomable ? (e) => !(e.target as HTMLElement).closest('button') && zoom.toggle({ x: e.clientX, y: e.clientY }) : undefined}
+              {...(zoomable ? zoom.panHandlers : {})}
+              onPointerDown={zoomable ? (e) => !(e.target as HTMLElement).closest('button') && zoom.panHandlers.onPointerDown?.(e) : undefined}
+            >
+              <div className="ps-media-viewer-canvas" style={zoomable ? zoom.style : undefined}>
+                {children}
+              </div>
+              {onPrevious && (
+                <IconButton className="ps-media-viewer-nav is-previous" label={labels.previous} surface="overlay" onClick={onPrevious}>
+                  <IconChevronLeft size={20} />
+                </IconButton>
+              )}
+              {onNext && (
+                <IconButton className="ps-media-viewer-nav is-next" label={labels.next} surface="overlay" onClick={onNext}>
+                  <IconChevronRight size={20} />
+                </IconButton>
+              )}
+              {zoomable && (
+                <div className="ps-media-viewer-zoom">
+                  <IconButton label={labels.zoomOut} size="sm" surface="overlay" onClick={() => zoom.zoomBy(1 / 1.25)} disabled={!zoom.zoomed}>
+                    <IconMinus size={16} />
+                  </IconButton>
+                  <button type="button" className="ps-media-viewer-percent" title={labels.zoomFit} aria-label={`${labels.zoomFit} (${percent})`} onClick={zoom.reset}>
+                    {percent}
+                  </button>
+                  <IconButton label={labels.zoomIn} size="sm" surface="overlay" onClick={() => zoom.zoomBy(1.25)}>
+                    <IconPlus size={16} />
+                  </IconButton>
+                </div>
+              )}
+            </div>
+          </div>
+          {showPanel && (
+            <aside className="ps-media-viewer-panel" aria-label={labels.detailsPane}>
+              <div className="ps-media-viewer-panel-head">
+                {panelToggle}
+                <span className="ps-media-viewer-spacer" />
+                {tools}
+              </div>
+              <div className="ps-media-viewer-panel-body">{panel}</div>
+            </aside>
+          )}
+        </div>
+      </div>
+    </OverlayDepth.Provider>
   );
 }

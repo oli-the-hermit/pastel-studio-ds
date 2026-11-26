@@ -1,14 +1,15 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { isBlockingOverlayOpen } from '../../lib/overlays';
+import { useIdle } from '../../lib/useIdle';
 import { MediaViewer, type MediaViewerProps } from './MediaViewer';
 
 function setup(props: Partial<MediaViewerProps> = {}) {
   const handlers = { onClose: vi.fn(), onPrevious: vi.fn(), onNext: vi.fn(), onPanelOpenChange: vi.fn() };
   const utils = render(
     <MediaViewer open title="beach.png" position="3 of 12" zoomable naturalSize={{ width: 4000, height: 3000 }} panel={<p>Facts</p>} {...handlers} {...props}>
-      <img src="beach.png" alt="" />
+      {props.children ?? <img src="beach.png" alt="" />}
     </MediaViewer>
   );
   return { ...utils, ...handlers, dialog: screen.getByRole('dialog', { name: 'beach.png' }) };
@@ -76,6 +77,57 @@ describe('MediaViewer', () => {
     expect(canvas.style.transform).toContain('scale(1.5625)');
     fireEvent.click(screen.getByRole('button', { name: /^Fit to window/ }));
     expect(canvas.style.transform).toContain('scale(1)');
+  });
+
+  it('puts the tools at the head of the open panel, and in the bar in groups while it is closed', () => {
+    const tools = { actions: <button type="button">Favorite</button>, panelTools: <button type="button">Labels</button> };
+    const { container, rerender } = setup(tools);
+    const bar = container.querySelector('.ps-media-viewer-bar')!;
+    expect(bar.querySelector('.ps-media-viewer-heading')?.textContent).toContain('3 of 12');
+    const groups = Array.from(bar.querySelectorAll('.ps-media-viewer-group'), (g) => Array.from(g.querySelectorAll('button'), (b) => b.getAttribute('aria-label') ?? b.textContent));
+    expect(groups).toEqual([['Details pane'], ['Labels'], ['Favorite'], ['Full screen', 'Close']]);
+
+    rerender(
+      <MediaViewer open title="beach.png" position="3 of 12" panel={<p>Facts</p>} panelOpen onPanelOpenChange={() => {}} onClose={() => {}} {...tools}>
+        <img src="beach.png" alt="" />
+      </MediaViewer>
+    );
+    expect(bar.querySelectorAll('button')).toHaveLength(0);
+    const head = container.querySelector('.ps-media-viewer-panel-head')!;
+    expect(Array.from(head.querySelectorAll('button'), (b) => b.getAttribute('aria-label') ?? b.textContent)).toEqual(['Details pane', 'Favorite', 'Full screen', 'Close']);
+    expect(screen.queryByRole('button', { name: 'Labels' })).toBeNull();
+  });
+
+  it('lets the zoom box fade when the pointer and keys rest, and brings it back with either', () => {
+    vi.useFakeTimers();
+    try {
+      const { dialog } = setup();
+      expect(dialog.classList.contains('is-idle')).toBe(false);
+      act(() => vi.advanceTimersByTime(2100));
+      expect(dialog.classList.contains('is-idle')).toBe(true);
+      fireEvent.pointerMove(dialog);
+      expect(dialog.classList.contains('is-idle')).toBe(false);
+      act(() => vi.advanceTimersByTime(2100));
+      fireEvent.keyDown(dialog, { key: 'Shift' });
+      expect(dialog.classList.contains('is-idle')).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('lets what it holds (a player hiding its controls) go idle inside it, but not under a menu', () => {
+    function Player() {
+      const [idle] = useIdle(true, 100);
+      return <p>{idle ? 'idle' : 'awake'}</p>;
+    }
+    vi.useFakeTimers();
+    try {
+      setup({ zoomable: false, children: <Player /> });
+      act(() => vi.advanceTimersByTime(150));
+      expect(screen.getByText('idle')).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('leaves zoom out for anything that is not zoomable', () => {
