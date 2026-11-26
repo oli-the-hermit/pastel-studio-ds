@@ -5,13 +5,19 @@
 // "Screens" page, made of instances of the library (pastel-studio-ds, tools/figma-library), so
 // a change to a component shows on every screen. A screen that already exists is skipped:
 // delete it to rebuild it. Nothing here edits what is already in the file.
-/* global APP_ACCENT */
+// Built into the whole-file plugin (tools/figma-file), where FILE_LAYOUT is 'three-page', the
+// screens go in the app's section on the "Mockups" page and the app's own components on "Blocks".
+/* global APP_ACCENT, FILE_LAYOUT */
+const THREE_PAGE = typeof FILE_LAYOUT !== 'undefined' && FILE_LAYOUT === 'three-page';
 
 const log = [];
 let V = {};            // variable name -> Variable
 let STY = [];          // local text styles
-let screensPage;       // the "Screens" page
-let appSection;        // this app's section on it
+let screensPage;       // the page the screens go on: "Screens", or "Mockups" in the three-page file
+let blocksPage = null; // the "Blocks" page of the three-page file
+let appName = '';      // the app whose screens are being built
+let appSection;        // this app's section on the screens page
+const freshBlocks = [];   // sections this run added to Blocks
 
 // ── Progress ─────────────────────────────────────────────
 let note = null;
@@ -42,14 +48,16 @@ async function paintOf(variable) {
 async function paint(name) { return paintOf(v(name)); }
 function textStyleId(name) { const s = STY.find(s => s.name === name); if (!s) throw new Error(`Text style "${name}" not found`); return s.id; }
 let compIndex = null;
-function find(name) {
-  if (!compIndex) {
-    compIndex = new Map();
-    for (const n of figma.root.children.flatMap(p => p.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] }))) {
-      if (n.type === 'COMPONENT' && n.parent && n.parent.type === 'COMPONENT_SET') continue;
-      if (!compIndex.has(n.name)) compIndex.set(n.name, n);
-    }
+function indexComponents() {
+  compIndex = new Map();
+  for (const n of figma.root.children.flatMap(p => p.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] }))) {
+    if (n.type === 'COMPONENT' && n.parent && n.parent.type === 'COMPONENT_SET') continue;
+    if (!compIndex.has(n.name)) compIndex.set(n.name, n);
   }
+}
+// Indexed once, and again on a miss: an app's own components are made while it runs
+function find(name) {
+  if (!compIndex || !compIndex.has(name) || compIndex.get(name).removed) indexComponents();
   const n = compIndex.get(name);
   if (!n) throw new Error(`Component "${name}" not found: run "Pastel Studio DS: Figma library" first`);
   return n;
@@ -101,6 +109,22 @@ async function recolor(node, color) {
   for (const n of node.findAll(n => 'strokes' in n)) { if (n.strokes.length) n.strokes = [p]; if ('fills' in n && Array.isArray(n.fills) && n.fills.length) n.fills = [p]; }
 }
 function setText(root, layerName, value) { const t = root.findOne(n => n.type === 'TEXT' && n.name === layerName); if (t) t.characters = value; }
+// The nth text layer of that name (a list's rows, a table's cells), counted from 0
+function setTextAt(root, layerName, index, value) { const t = root.findAll(n => n.type === 'TEXT' && n.name === layerName)[index]; if (t) t.characters = value; }
+// A change Figma may refuse on a layer inside an instance (a size, a layout setting): tried, and
+// left as it was when refused, so a nicety never stops the build
+function soft(change) { try { change(); } catch (err) { console.log(`[screens] skipped: ${err.message}`); } }
+// A box with a centred icon: a stand-in for a picture, a poster or a cover
+async function picture(name, w, h, ic, round, bg) {
+  const f = auto('HORIZONTAL', name); fixed(f, w, h); f.primaryAxisAlignItems = 'CENTER'; f.counterAxisAlignItems = 'CENTER'; f.clipsContent = true;
+  radius(f, round || 'radius/xl'); f.fills = [await paint(bg || 'surface/2')];
+  if (ic) f.appendChild(await iconInst(ic, 'text/3', Math.max(16, Math.round(Math.min(w, h) / 4))));
+  return f;
+}
+// A line across a container: a separator
+async function rule(w, color) { const r = figma.createRectangle(); r.name = 'Separator'; r.resize(w || 100, 1); r.fills = [await paint(color || 'surface/3')]; return r; }
+// The overlay shadow on a floating layer
+async function elevate(node) { const e = (await figma.getLocalEffectStylesAsync()).find(x => x.name === 'elevation/overlay'); if (e) await node.setEffectStyleIdAsync(e.id); return node; }
 async function card(parent, name, padding, gap) {
   const c = auto('VERTICAL', name, gap || 'space/12'); const p = padding || 'space/16'; pad(c, p, p, p, p);
   radius(c, 'radius/3xl'); c.fills = [await paint('surface/1')]; if (parent) parent.appendChild(c); return c;
@@ -171,34 +195,101 @@ async function overlay(f, layer, at) {
 }
 // Something floating without the scrim (a menu, a toast)
 function float(f, layer, x, y) { f.appendChild(layer); if (f.layoutMode !== 'NONE') layer.layoutPositioning = 'ABSOLUTE'; layer.x = x; layer.y = y; }
+// The screens this run added go in rows under the ones already there, which stay where they are
 function layOutScreens() {
-  const kids = appSection.children.filter(n => n.name !== 'Heading');
-  const top = 200, gap = 160, cols = 3;
-  let row = [], y = top;
+  const fresh = built.filter(n => n.parent === appSection);
+  const old = appSection.children.filter(n => n.name !== 'Heading' && !fresh.includes(n));
+  const gap = 160, cols = THREE_PAGE ? 4 : 3;
+  let row = [], y = Math.max(200, ...old.map(n => n.y + n.height + gap + 40));
   const flush = () => { let x = 64; const h = Math.max(...row.map(n => n.height)); for (const n of row) { n.x = x; n.y = y; x += n.width + gap; } y += h + gap + 40; row = []; };
-  for (const n of kids) { row.push(n); if (row.length === cols) flush(); }
+  for (const n of fresh) { row.push(n); if (row.length === cols) flush(); }
   if (row.length) flush();
-  appSection.resizeWithoutConstraints(Math.max(1600, ...kids.map(n => n.x + n.width)) + 64, Math.max(400, y));
+  const kids = appSection.children.filter(n => n.name !== 'Heading');
+  appSection.resizeWithoutConstraints(Math.max(1600, ...kids.map(n => n.x + n.width)) + 64, Math.max(400, ...kids.map(n => n.y + n.height)) + 64);
+}
+// New sections go under what is there; whatever a grown or new section covers moves down.
+// Nothing moves up or sideways, so an arrangement made by hand stays.
+function settle(p, fresh) {
+  let bottom = Math.max(0, ...p.children.filter(n => !fresh.includes(n)).map(n => n.y + n.height));
+  for (const s of fresh) { s.x = 0; s.y = bottom ? bottom + 160 : 0; bottom = s.y + s.height; }
+  const boxes = p.children.slice().sort((a, b) => a.y - b.y);
+  for (let i = 0; i < boxes.length; i++) for (let j = 0; j < i; j++) {
+    const a = boxes[j], b = boxes[i];
+    if (b.x < a.x + a.width && a.x < b.x + b.width && b.y < a.y + a.height + 160 && a.y < b.y + b.height) { b.y = a.y + a.height + 160; j = -1; }
+  }
+}
+
+// ── The app's own components ─────────────────────────────
+// Their section: inside the app's section on "Screens", or on "Blocks" in the three-page file
+// (there it is called "<App> components", whatever name is asked for)
+async function componentsSection(name) {
+  const host = blocksPage || appSection;
+  const title = blocksPage ? `${appName} components` : name;
+  let s = host.children.find(n => n.type === 'SECTION' && n.name === title);
+  if (!s) {
+    s = figma.createSection(); s.name = title; host.appendChild(s); s.fills = [await paint('surface/bg')];
+    if (blocksPage) { freshBlocks.push(s); const h = await text(title, '4xl/Bold', 'text/1', 'Heading'); s.appendChild(h); h.x = 64; h.y = 64; }
+    log.push(`+ ${title}`);
+  }
+  return s;
+}
+// A component of the app, by name, when its section already has it
+function ownComponent(sec, name) { return sec.findOne(n => (n.type === 'COMPONENT_SET' || n.type === 'COMPONENT') && n.name === name); }
+// Puts a new component (or set) in the section, in rows under what is there, and fits the section
+function shelve(sec, node) {
+  sec.appendChild(node);
+  const others = sec.children.filter(n => n !== node && n.name !== 'Heading');
+  const top = blocksPage ? 200 : 64;
+  if (!others.length) { node.x = 64; node.y = top; }
+  else {
+    const rowY = Math.max(...others.map(n => n.y)), row = others.filter(n => n.y === rowY);
+    const right = Math.max(...row.map(n => n.x + n.width));
+    if (right + 96 + node.width <= 3200) { node.x = right + 96; node.y = rowY; }
+    else { node.x = 64; node.y = Math.max(...others.map(n => n.y + n.height)) + 96; }
+  }
+  const kids = sec.children;
+  sec.resizeWithoutConstraints(Math.max(...kids.map(n => n.x + n.width)) + 64, Math.max(...kids.map(n => n.y + n.height)) + 64);
+  return node;
+}
+// A set of variants from components, laid in a row inside the set, with a description
+function variants(sec, name, comps, description) {
+  const set = figma.combineAsVariants(comps, sec); set.name = name; if (description) set.description = description;
+  let x = 24; for (const c of set.children) { c.x = x; c.y = 24; x += c.width + 32; }
+  set.resizeWithoutConstraints(x - 8, Math.max(...set.children.map(c => c.height)) + 48);
+  return shelve(sec, set);
 }
 
 // ── Running ──────────────────────────────────────────────
-async function runScreens(appName, build) {
+// On its own (an app's screens plugin) it closes the plugin with what it did. In the whole-file
+// plugin it returns that line instead, and an error goes to the caller.
+async function runScreens(app, build) {
+  appName = app;
   try {
     for (const p of figma.root.children) await p.loadAsync();
-    screensPage = figma.root.children.find(p => p.name === 'Screens');
-    if (!screensPage) throw new Error('No "Screens" page: run "Pastel Studio DS: Figma library" first');
+    const where = THREE_PAGE ? 'Mockups' : 'Screens';
+    screensPage = figma.root.children.find(p => p.name === where);
+    if (!screensPage) throw new Error(THREE_PAGE ? 'No "Mockups" page: run "Library and Blocks" first' : 'No "Screens" page: run "Pastel Studio DS: Figma library" first');
+    blocksPage = THREE_PAGE ? figma.root.children.find(p => p.name === 'Blocks') || null : null;
+    if (THREE_PAGE && !blocksPage) throw new Error('No "Blocks" page: run "Library and Blocks" first');
     await figma.setCurrentPageAsync(screensPage);
     appSection = screensPage.children.find(n => n.type === 'SECTION' && n.name === appName);
-    if (!appSection) { appSection = figma.createSection(); appSection.name = appName; screensPage.appendChild(appSection); }
+    const freshApp = [];
+    if (!appSection) { appSection = figma.createSection(); appSection.name = appName; screensPage.appendChild(appSection); freshApp.push(appSection); }
     for (const s of ['Regular', 'Medium', 'SemiBold', 'Bold']) await figma.loadFontAsync({ family: 'Geist', style: s });
     for (const x of await figma.variables.getLocalVariablesAsync()) V[x.name] = x;
     STY = await figma.getLocalTextStylesAsync();
     await build();
     if (built.length) layOutScreens();
+    if (THREE_PAGE) { settle(screensPage, freshApp); settle(blocksPage, freshBlocks); }
     if (note) note.cancel();
-    figma.closePlugin(built.length ? `Done: added ${built.length} screens to ${appName}.` : `Nothing to add: ${appName}’s screens are all there.`);
+    const done = built.length ? `added ${built.length} screens to ${appName}` : `${appName}’s screens are all there`;
+    if (THREE_PAGE) return done;
+    figma.closePlugin(built.length ? `Done: ${done}.` : `Nothing to add: ${done}.`);
   } catch (err) {
-    if (note) note.cancel(); console.error(err);
+    if (note) note.cancel();
+    if (THREE_PAGE) throw err;
+    console.error(err);
     figma.closePlugin(`Stopped: ${err.message}. What was built before it stays; run again after fixing.`);
   }
+  return '';
 }

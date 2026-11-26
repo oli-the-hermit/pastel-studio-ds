@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', 'documentation/**', '**/src-tauri/**', 'apps/comfyui/pack/web/**']
+    ignores: ['**/dist/**', '**/node_modules/**', 'documentation/**', '**/src-tauri/**', 'apps/comfyui/pack/web/**', 'tools/figma-file/code.js']
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -38,7 +38,7 @@ export default tseslint.config(
     }
   },
   {
-    files: ['scripts/**/*.{js,ts}', 'tools/**/*.ts', '*.config.{js,ts}'],
+    files: ['scripts/**/*.{js,ts}', 'tools/**/*.{ts,mjs}', '*.config.{js,ts}'],
     languageOptions: { globals: globals.node }
   },
   {

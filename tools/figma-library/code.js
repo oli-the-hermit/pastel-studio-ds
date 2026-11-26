@@ -1,3 +1,4 @@
+/* global FILE_LAYOUT */
 // Pastel Studio DS: Figma library.
 // Builds the design system's components on the "Components" page of the Pastel Studio file, beside
 // the foundations already there (variables, text styles, icons, the basic components: see README).
@@ -784,7 +785,7 @@ async function buildPickers() {
   if (!exists('SegmentedControl')) {
     const vs = [];
     for (const [sel, bg, fg] of [[false, null, 'text/2'], [true, 'accent/accent', 'accent/on-accent']]) {
-      const c = comp('HORIZONTAL', `Selected=${sel ? 'True' : 'False'}`); c.counterAxisAlignItems = 'CENTER'; c.counterAxisSizingMode = 'FIXED'; c.resize(60, 32);
+      const c = comp('HORIZONTAL', `Selected=${sel ? 'True' : 'False'}`); c.counterAxisAlignItems = 'CENTER'; c.resize(60, 32); c.primaryAxisSizingMode = 'AUTO'; c.counterAxisSizingMode = 'FIXED';
       await bindNum(c, 'height', 'size/icon-button-size-sm'); await pad(c, null, 'space/16', null, 'space/16'); await radius(c, 'radius/pill');
       if (bg) c.fills = [await paint(bg)];
       c.appendChild(await text('Tiles', 'sm/SemiBold', fg, 'Label')); vs.push(c);
@@ -837,7 +838,7 @@ async function buildPickers() {
   if (!exists('Tabs')) {
     const vs = [];
     for (const [act, bg, fg] of [[false, null, 'text/2'], [true, 'surface/2', 'text/1']]) {
-      const c = comp('HORIZONTAL', `Active=${act ? 'True' : 'False'}`); c.counterAxisAlignItems = 'CENTER'; c.counterAxisSizingMode = 'FIXED'; c.resize(80, 40);
+      const c = comp('HORIZONTAL', `Active=${act ? 'True' : 'False'}`); c.counterAxisAlignItems = 'CENTER'; c.resize(80, 40); c.primaryAxisSizingMode = 'AUTO'; c.counterAxisSizingMode = 'FIXED';
       await bindNum(c, 'height', 'size/icon-button-size'); await pad(c, null, 'space/16', null, 'space/16'); await bindNum(c, 'itemSpacing', 'space/8');
       c.setBoundVariable('topLeftRadius', v('radius/lg')); c.setBoundVariable('topRightRadius', v('radius/lg'));
       if (bg) c.fills = [await paint(bg)];
@@ -1073,7 +1074,7 @@ async function buildApp() {
 
   startRow();
   if (!exists('CrashScreen')) {
-    const screen = comp('VERTICAL', 'CrashScreen'); screen.primaryAxisAlignItems = 'CENTER'; screen.counterAxisAlignItems = 'CENTER'; screen.resize(760, 560);
+    const screen = comp('VERTICAL', 'CrashScreen'); screen.primaryAxisAlignItems = 'CENTER'; screen.counterAxisAlignItems = 'CENTER'; screen.resize(760, 720);
     screen.primaryAxisSizingMode = 'FIXED'; screen.counterAxisSizingMode = 'FIXED'; await pad(screen, 'space/24', 'space/24', 'space/24', 'space/24'); screen.fills = [await paint('surface/bg')];
     const card = auto('VERTICAL', 'Card'); card.resize(420, 100); card.primaryAxisSizingMode = 'AUTO'; card.counterAxisSizingMode = 'FIXED'; await bindNum(card, 'width', 'size/center-card-width');
     await pad(card, 'space/40', 'space/36', 'space/32', 'space/36'); await bindNum(card, 'itemSpacing', 'space/6'); await radius(card, 'radius/4xl'); card.fills = [await paint('surface/1')];
@@ -1083,12 +1084,21 @@ async function buildApp() {
     await radius(mark, 'radius/2xl'); mark.fills = [await paint('accent/accent')]; mark.appendChild(await iconInst('FolderSolid', 'accent/on-accent', 28, 'Icon')); markWrap.appendChild(mark);
     const title = await text('Something went wrong', '2xl/Bold', 'text/1', 'Title'); card.appendChild(title); fill(title);
     const body = await text('Pastel Studio stopped because of an error. Your files and workspace are safe.', 'md/Regular', 'text/2', 'Body'); card.appendChild(body); fill(body); body.textAutoResize = 'HEIGHT';
+    // What failed and when, then the full stack, folded
+    const probWrap = auto('VERTICAL', 'Problem space'); await bindNum(probWrap, 'paddingTop', 'space/18'); card.appendChild(probWrap); fill(probWrap);
+    const prob = auto('VERTICAL', 'Problem'); await pad(prob, 'space/12', 'space/14', 'space/12', 'space/14'); await bindNum(prob, 'itemSpacing', 'space/4'); await radius(prob, 'radius/lg');
+    prob.fills = [await paint('surface/2')]; probWrap.appendChild(prob); fill(prob);
+    prob.appendChild(await text('What went wrong', 'xs/Bold', 'text/3', 'Problem label'));
+    const ptext = await text('TypeError: Cannot read properties of undefined (reading "id")', 'sm/Regular', 'text/1', 'Problem text'); prob.appendChild(ptext); fill(ptext); ptext.textAutoResize = 'HEIGHT';
+    prob.appendChild(await text('26 Nov 2026, 14:02 · Reference 7F3A-21C9', 'sm/Regular', 'text/2', 'Facts'));
+    const det = auto('HORIZONTAL', 'Technical details (folded)'); det.counterAxisAlignItems = 'CENTER'; await bindNum(det, 'itemSpacing', 'space/4'); await bindNum(det, 'paddingTop', 'space/10'); card.appendChild(det);
+    det.appendChild(await iconInst('ChevronRight', 'text/2', 14, 'Chevron')); det.appendChild(await text('Technical details', 'sm/Regular', 'text/2', 'Summary'));
     const acts = auto('HORIZONTAL', 'Actions'); await bindNum(acts, 'itemSpacing', 'space/10'); await bindNum(acts, 'paddingTop', 'space/22'); card.appendChild(acts);
     for (const [st, label] of [['Primary', 'Restart'], ['Secondary', 'Copy the details']]) { const btn = variantOf('Button', `Style=${st}, Size=md`).createInstance(); prop(btn, 'Label', label); acts.appendChild(btn); }
     const hint = await text('If it happens again, send the details to the developer.', 'sm/Regular', 'text/3', 'Hint'); card.appendChild(hint); fill(hint); hint.textAutoResize = 'HEIGHT';
     title.componentPropertyReferences = { characters: screen.addComponentProperty('Title', 'TEXT', 'Something went wrong') };
     body.componentPropertyReferences = { characters: screen.addComponentProperty('Body', 'TEXT', body.characters) };
-    screen.description = 'What the app shows when it crashes: one centre card (surface/1, radius 4xl, 420 wide) with the app mark, the title 2xl heavy, what happened, the actions and a hint.';
+    screen.description = 'What the app shows when it crashes: one centre card (surface/1, radius 4xl, 420 wide) with the app mark, the title 2xl heavy, what happened, the problem in its own words with the time and the log’s reference, the full stack folded, the actions and a hint.';
     await section('CrashScreen', [screen], 'surface/bg');
   }
 
@@ -1561,26 +1571,208 @@ async function buildMusic() {
   }
 }
 
+// ══ 12. More: pieces the screens need that the library lacked ══
+// TextArea and FormHint, Toolbar, Popover, QueuePanel, the tile with its caption over the
+// thumbnail (and as a drop target), and three blocks: VideoPlayer, AlbumPage and MediaGrid.
+async function buildMore() {
+  const elev = (await figma.getLocalEffectStylesAsync()).find(s => s.name === 'elevation/overlay');
+  startRow();
+  if (!exists('TextArea')) {
+    const vs = [];
+    for (const content of ['Placeholder', 'Filled']) {
+      const c = comp('HORIZONTAL', `Content=${content}`); c.resize(320, 88); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'FIXED';
+      await pad(c, 'space/12', 'space/14', 'space/12', 'space/14'); await radius(c, 'radius/md'); c.fills = [await paint('field/bg')];
+      const t = await text(content === 'Filled' ? 'Shot on the last evening, before the rain.' : 'Add a note', 'md/Regular', content === 'Filled' ? 'text/1' : 'text/3', 'Text');
+      c.appendChild(t); fill(t); t.textAutoResize = 'HEIGHT'; vs.push(c);
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'TextArea';
+    set.description = 'A text field of several rows (TextArea in Field): field/bg, radius md, the text from the top, three rows tall by default.';
+    const pk = set.addComponentProperty('Placeholder', 'TEXT', 'Add a note'), vk = set.addComponentProperty('Value', 'TEXT', 'Shot on the last evening, before the rain.');
+    for (const c of set.children) c.findOne(n => n.name === 'Text').componentPropertyReferences = { characters: c.name.includes('Placeholder') ? pk : vk };
+    const hint = comp('HORIZONTAL', 'FormHint');
+    const ht = await text('Pick a folder in the list, or type its path.', 'xs/Medium', 'text/3', 'Text'); hint.appendChild(ht);
+    ht.componentPropertyReferences = { characters: hint.addComponentProperty('Text', 'TEXT', ht.characters) };
+    hint.description = 'A line of help under a field (FormHint): xs, text/3.';
+    await section('TextArea', [grid(set, 2, 344, 112), hint]);
+  }
+  if (!exists('Toolbar')) {
+    const c = comp('HORIZONTAL', 'Toolbar'); c.counterAxisAlignItems = 'CENTER'; c.resize(760, 34); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'AUTO';
+    await bindNum(c, 'itemSpacing', 'space/6');
+    const group = async (name, icons) => {
+      const g = auto('HORIZONTAL', name); g.counterAxisAlignItems = 'CENTER'; await bindNum(g, 'itemSpacing', 'space/2'); c.appendChild(g);
+      for (const ic of icons) { const b = variantOf('IconButton', 'Size=sm, State=Default').createInstance(); prop(b, 'Icon', icon(ic).id); b.name = ic; g.appendChild(b); }
+    };
+    const tonal = variantOf('Button', 'Style=Tonal, Size=sm').createInstance(); prop(tonal, 'Label', 'New'); prop(tonal, 'Show icon', true); prop(tonal, 'Icon', icon('Plus').id); c.appendChild(tonal);
+    c.appendChild(find('ToolbarDivider').createInstance());
+    await group('ToolbarGroup', ['Cut', 'Copy', 'Paste', 'Rename', 'Trash']);
+    c.appendChild(find('ToolbarDivider').createInstance());
+    for (const [label, ic] of [['Sort', 'Sort'], ['Filter', 'Filter']]) { const b = variantOf('Button', 'Style=Secondary, Size=sm').createInstance(); prop(b, 'Label', label); prop(b, 'Show icon', true); prop(b, 'Icon', icon(ic).id); c.appendChild(b); }
+    const sp = auto('HORIZONTAL', 'ToolbarSpacer'); c.appendChild(sp); fill(sp);
+    await group('ToolbarGroup (end)', ['ViewTiles', 'PanelRight']);
+    c.description = 'A row of commands (Toolbar): gap 6, groups of icon buttons 2 apart, a hairline divider between kinds of command, a spacer that pushes what follows to the end. It wraps when short of room.';
+    await section('Toolbar', [c]);
+  }
+  if (!exists('Popover')) {
+    const c = comp('VERTICAL', 'Popover'); c.resize(260, 100); c.primaryAxisSizingMode = 'AUTO'; c.counterAxisSizingMode = 'FIXED';
+    await pad(c, 'space/12', 'space/14', 'space/12', 'space/14'); await bindNum(c, 'itemSpacing', 'space/6'); await radius(c, 'radius/lg'); c.fills = [await paint('surface/3')]; c.clipsContent = true;
+    if (elev) await c.setEffectStyleIdAsync(elev.id);
+    c.appendChild(await text('Popover', 'sm/SemiBold', 'text/1', 'Title'));
+    const body = await text('A floating panel for whatever it is given: a menu, a picker, a short form.', 'sm/Regular', 'text/2', 'Body'); c.appendChild(body); fill(body); body.textAutoResize = 'HEIGHT';
+    c.description = 'A floating panel (Popover): surface/3, radius lg, elevation/overlay. Menus, pickers and suggestions sit in one.';
+    await section('Popover', [c], 'surface/bg');
+  }
+  if (!exists('MediaTile captions')) {
+    const vs = [];
+    for (const [kind, drop] of [['File', false], ['Folder', false], ['Folder', true]]) {
+      const c = comp('VERTICAL', `Kind=${kind}, Drop target=${drop ? 'True' : 'False'}`); c.resize(200, 200); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'FIXED';
+      c.primaryAxisAlignItems = 'MAX'; c.clipsContent = true; await radius(c, 'radius/xl'); c.fills = [await paint(drop ? 'accent/container' : 'surface/2')];
+      if (drop) { c.strokes = [await paint('accent/accent')]; c.strokeWeight = 2; c.strokeAlign = 'INSIDE'; }
+      const ph = await iconInst(kind === 'Folder' ? 'FolderSolid' : 'Gallery', drop ? 'accent/text' : 'text/3', 48, 'Placeholder'); c.appendChild(ph);
+      ph.layoutPositioning = 'ABSOLUTE'; ph.x = 76; ph.y = 58;
+      const cap = auto('VERTICAL', 'Caption'); await pad(cap, 'space/8', 'space/12', 'space/8', 'space/12'); await bindNum(cap, 'itemSpacing', 'space/2');
+      cap.fills = [await paint(drop ? 'accent/container' : 'media/overlay')]; c.appendChild(cap); fill(cap);
+      const nm = await text(kind === 'Folder' ? 'Trips' : 'IMG_0042.jpg', 'sm/Medium', drop ? 'accent/text' : 'media/on-overlay', 'Name'); cap.appendChild(nm); fill(nm); nm.textTruncation = 'ENDING';
+      const mt = await text(kind === 'Folder' ? 'Folder' : '4032 × 3024 · 3.1 MB', 'xs/Medium', drop ? 'accent/on-container' : 'media/on-overlay-2', 'Meta'); cap.appendChild(mt); fill(mt); mt.textTruncation = 'ENDING';
+      vs.push(c);
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'MediaTile (overlay caption)';
+    set.description = 'The tile with its caption over the thumbnail’s lower edge (MediaTile captions="overlay"): the name and meta on media/overlay. A media tile shows it on hover; a folder always, having no picture to keep clear. Drop target: an accent ring and tint, the name in accent-text.';
+    const nk = set.addComponentProperty('Name', 'TEXT', 'Trips'), mk = set.addComponentProperty('Meta', 'TEXT', 'Folder');
+    for (const c of set.children) { c.findOne(n => n.name === 'Name').componentPropertyReferences = { characters: nk }; c.findOne(n => n.name === 'Meta').componentPropertyReferences = { characters: mk }; }
+    await section('MediaTile captions', [grid(set, 3, 224, 224)]);
+  }
+
+  startRow();
+  if (!exists('QueuePanel')) {
+    const vs = [];
+    for (const active of [false, true]) {
+      const c = comp('VERTICAL', `Active=${active ? 'True' : 'False'}`); c.resize(292, 60); c.primaryAxisSizingMode = 'AUTO'; c.counterAxisSizingMode = 'FIXED';
+      await pad(c, 'space/12', 'space/12', 'space/8', 'space/28'); await bindNum(c, 'itemSpacing', 'space/2'); await radius(c, 'radius/lg');
+      c.fills = [await paint(active ? 'accent/accent' : 'surface/2')];
+      const fg = active ? 'accent/on-accent' : 'text/1', fg2 = active ? 'accent/on-accent-2' : 'text/2';
+      const nameRow = auto('HORIZONTAL', 'Name row'); nameRow.counterAxisAlignItems = 'CENTER'; await bindNum(nameRow, 'itemSpacing', 'space/8'); c.appendChild(nameRow); fill(nameRow);
+      const nm = await text('Deep work', 'md/Bold', fg, 'Name'); nameRow.appendChild(nm); fill(nm); nm.textTruncation = 'ENDING';
+      nameRow.appendChild(await text('25:00', 'xs/Medium', fg2, 'Trailing'));
+      const meta = auto('HORIZONTAL', 'Meta'); meta.counterAxisAlignItems = 'CENTER'; await bindNum(meta, 'itemSpacing', 'space/10'); c.appendChild(meta);
+      meta.counterAxisSizingMode = 'FIXED'; await bindNum(meta, 'height', 'size/icon-button-size-xs');
+      for (const [ic, label] of [['Timer', '25 min'], ['Checklist', '2 lists']]) {
+        const it = auto('HORIZONTAL', `Meta: ${label}`); it.counterAxisAlignItems = 'CENTER'; await bindNum(it, 'itemSpacing', 'space/4');
+        it.appendChild(await iconInst(ic, fg2, 14, 'Icon')); it.appendChild(await text(label, 'xs/Medium', fg2, 'Label')); meta.appendChild(it);
+      }
+      const grip = await iconInst('Grip', active ? 'accent/on-accent-2' : 'structure/grip', 14, 'Grip'); c.appendChild(grip); grip.layoutPositioning = 'ABSOLUTE'; grip.x = 7; grip.y = 23;
+      vs.push(c);
+    }
+    const item = figma.combineAsVariants(vs, page); item.name = 'QueuePanelItem';
+    item.description = 'A row of a QueuePanel (its QueueItem): the name md bold with a trailing value, then small meta items (icon and text, xs) and the row’s actions on hover. Active: filled with the accent. The grip at the left drags it.';
+    const nk = item.addComponentProperty('Name', 'TEXT', 'Deep work'), tk = item.addComponentProperty('Trailing', 'TEXT', '25:00');
+    for (const c of item.children) { c.findOne(n => n.name === 'Name').componentPropertyReferences = { characters: nk }; c.findOne(n => n.name === 'Trailing').componentPropertyReferences = { characters: tk }; }
+    column(item, 16);
+    const panel = comp('VERTICAL', 'QueuePanel'); panel.resize(320, 100); panel.primaryAxisSizingMode = 'AUTO'; panel.counterAxisSizingMode = 'FIXED';
+    await pad(panel, 'space/20', 'space/14', 'space/14', 'space/14'); await bindNum(panel, 'itemSpacing', 'space/14'); await radius(panel, 'radius/3xl'); panel.fills = [await paint('surface/1')];
+    const head = auto('HORIZONTAL', 'Header'); head.counterAxisAlignItems = 'CENTER'; await pad(head, null, 'space/4', null, 'space/6'); panel.appendChild(head); fill(head);
+    const title = await text('Sessions', 'lg/Bold', 'text/1', 'Title'); head.appendChild(title); fill(title);
+    const add = variantOf('IconButton', 'Size=sm, State=Default').createInstance(); prop(add, 'Icon', icon('Plus').id); add.name = 'Add'; head.appendChild(add);
+    const list = auto('VERTICAL', 'List'); await bindNum(list, 'itemSpacing', 'space/8'); panel.appendChild(list); fill(list);
+    for (const [name, trail, act] of [['Deep work', '25:00', true], ['Emails and admin', '15:00', false], ['Reading', '45:00', false]]) {
+      const r = item.children[act ? 1 : 0].createInstance(); prop(r, 'Name', name); prop(r, 'Trailing', trail); list.appendChild(r); fill(r);
+    }
+    title.componentPropertyReferences = { characters: panel.addComponentProperty('Title', 'TEXT', 'Sessions') };
+    panel.description = 'A card that lists things in order (QueuePanel): a title with its action, then the rows 8 apart. Rows can be dragged to reorder.';
+    await section('QueuePanel', [item, panel], 'surface/bg');
+  }
+  if (!exists('MediaGrid')) {
+    const c = comp('HORIZONTAL', 'MediaGrid'); c.layoutWrap = 'WRAP'; c.resize(848, 100); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'AUTO';
+    await bindNum(c, 'itemSpacing', 'space/16'); await bindNum(c, 'counterAxisSpacing', 'space/16');
+    for (const [kind, name, meta] of [['Folder', 'Trips', '40 items'], ['Folder', 'Studio', '64 items'], ['File', 'IMG_0040.jpg', '4032 × 3024 · 2.9 MB'], ['File', 'IMG_0041.jpg', '4032 × 3024 · 3.0 MB'],
+      ['File', 'IMG_0042.jpg', '4032 × 3024 · 3.1 MB'], ['File', 'IMG_0043.jpg', '4032 × 3024 · 2.8 MB'], ['File', 'clip_01.mp4', '0:42 · 58 MB'], ['File', 'IMG_0044.jpg', '4032 × 3024 · 3.3 MB']]) {
+      const t = variantOf('MediaTile', `Kind=${kind}, Selected=${name === 'IMG_0042.jpg' ? 'True' : 'False'}`).createInstance(); prop(t, 'Name', name); prop(t, 'Meta', meta); t.name = name; c.appendChild(t);
+    }
+    c.description = 'A grid of media tiles (MediaGrid): as many columns as fit the narrowest tile (150, 200, 280 or 380), 16 apart, folders first. It scrolls by itself and only draws the rows on screen.';
+    await section('MediaGrid', [c]);
+  }
+
+  startRow();
+  if (!exists('VideoPlayer')) {
+    const vs = [];
+    for (const state of ['Controls shown', 'Controls hidden', 'Loading']) {
+      const c = comp('VERTICAL', `State=${state}`); c.resize(960, 540); c.primaryAxisSizingMode = 'FIXED'; c.counterAxisSizingMode = 'FIXED';
+      c.primaryAxisAlignItems = 'CENTER'; c.counterAxisAlignItems = 'CENTER'; c.clipsContent = true; await radius(c, 'radius/2xl'); c.fills = [await paint('media/backdrop')];
+      if (state === 'Loading') c.appendChild(variantOf('Spinner', 'Size=lg').createInstance());
+      else c.appendChild(await iconInst('Gallery', 'media/on-overlay-2', 64, 'Picture (give the player an image fill)'));
+      if (state === 'Controls shown') {
+        const head = auto('HORIZONTAL', 'Header'); head.counterAxisAlignItems = 'CENTER'; await bindNum(head, 'itemSpacing', 'space/8'); c.appendChild(head);
+        head.layoutPositioning = 'ABSOLUTE'; head.x = 12; head.y = 12;
+        const back = variantOf('IconButton', 'Size=md, State=Default').createInstance(); prop(back, 'Icon', icon('Back').id); back.name = 'Back'; await recolor(back, 'media/on-overlay');
+        back.fills = [await paint('media/overlay')]; head.appendChild(back);
+        const heading = auto('VERTICAL', 'Heading'); await pad(heading, 'space/6', 'space/16', 'space/6', 'space/16'); await radius(heading, 'radius/xl'); heading.fills = [await paint('media/overlay')]; head.appendChild(heading);
+        const over = await text('SEASON 1 · EPISODE 3', 'xs/Bold', 'accent/accent', 'Overline'); over.letterSpacing = { unit: 'PERCENT', value: 12 }; heading.appendChild(over);
+        heading.appendChild(await text('The Long Way Round', 'md/Bold', 'media/on-overlay', 'Title'));
+        const dock = find('MediaControls').createInstance(); c.appendChild(dock); dock.layoutPositioning = 'ABSOLUTE';
+        dock.resize(936, dock.height); dock.x = 12; dock.y = 540 - dock.height - 12; dock.constraints = { horizontal: 'STRETCH', vertical: 'MAX' };
+      }
+      vs.push(c);
+    }
+    const set = figma.combineAsVariants(vs, page); set.name = 'VideoPlayer';
+    set.description = 'The picture and its controls (VideoPlayer, controls="overlay"): the picture edge to edge on media/backdrop, a header (Back and a pill with an overline and the title) and the MediaControls dock, each 12 from the edges. Controls hidden: what it shows after 2.6 s without the pointer moving while playing. Loading: a large Spinner on the backdrop until the first frame.';
+    const shown = set.children[0];
+    shown.findOne(n => n.name === 'Title').componentPropertyReferences = { characters: set.addComponentProperty('Title', 'TEXT', 'The Long Way Round') };
+    shown.findOne(n => n.name === 'Overline').componentPropertyReferences = { characters: set.addComponentProperty('Overline', 'TEXT', 'SEASON 1 · EPISODE 3'), visible: set.addComponentProperty('Show overline', 'BOOLEAN', true) };
+    column(set, 24);
+    await section('VideoPlayer', [set], 'surface/bg');
+  }
+  if (!exists('AlbumPage')) {
+    const c = comp('VERTICAL', 'AlbumPage'); c.resize(960, 100); c.primaryAxisSizingMode = 'AUTO'; c.counterAxisSizingMode = 'FIXED';
+    await pad(c, 'space/28', 'space/28', 'space/28', 'space/28'); await bindNum(c, 'itemSpacing', 'space/28'); await radius(c, 'radius/3xl'); c.fills = [await paint('surface/1')];
+    const head = find('AlbumHeader').createInstance(); c.appendChild(head); fill(head);
+    const list = auto('VERTICAL', 'TrackList'); c.appendChild(list); fill(list);
+    const th = find('TrackListHeader').createInstance(); list.appendChild(th); fill(th);
+    const TRACKS = [['Northern Lights', '3:58'], ['Ice Road', '4:12'], ['Polar Nights', '5:01'], ['Thaw', '3:27'], ['First Light', '4:44'], ['Meltwater', '6:03']];
+    for (let i = 0; i < TRACKS.length; i++) {
+      const r = variantOf('TrackRow', `State=${i === 1 ? 'Playing' : 'Default'}`).createInstance(); r.name = TRACKS[i][0]; list.appendChild(r); fill(r);
+      for (const [layer, value] of [['Number', String(i + 1)], ['Title', TRACKS[i][0]], ['Length', TRACKS[i][1]]]) { const t = r.findOne(n => n.type === 'TEXT' && n.name === layer); if (t) t.characters = value; }
+    }
+    c.description = 'An album on its own page (AlbumPage): a card (surface/1, radius 3xl, padding 28) with the AlbumHeader, then the album’s TrackList 28 under it.';
+    await section('AlbumPage', [c], 'surface/bg');
+  }
+}
+
 // ══ Pages: the file laid out like a design kit, in three pages ══
 // Figma's free plan allows three pages a file, so the kit's pages become sections:
 //   Library  the cover, getting started, Foundations, then one section per family of components
 //   Screens  one section per app, for the apps' own screens plugins
 //   Mockups  the sample screen and room to play
 // A section is found by its name anywhere in the file, so moving one never rebuilds it.
-const LIBRARY = 'Library', SCREENS = 'Screens';
+// Built into the whole-file plugin (tools/figma-file), where FILE_LAYOUT is 'three-page', the
+// pages are instead:
+//   Library  as above, without the big composed pieces
+//   Mockups  one section per app, for its screens, and the sample screen
+//   Blocks   the big pieces made of small ones (BLOCK_FAMILIES), then each app's own components
+const LIBRARY = 'Library', SCREENS = 'Screens', MOCKUPS = 'Mockups', BLOCKS = 'Blocks';
+const THREE = typeof FILE_LAYOUT !== 'undefined' && FILE_LAYOUT === 'three-page';
 const FAMILIES = [
   { name: 'Foundations', about: 'Colour, type, spacing, icons and elevation: the tokens everything is built from.', frames: ['Colour roles', 'Type ramp', 'Spacing and radius', 'Elevation'], sections: ['Icons'] },
   { name: 'Actions', about: 'Buttons and the small things people press.', sections: ['Button', 'IconButton', 'TextButton', 'Chip'] },
-  { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'Field', 'PasswordField', 'SearchField', 'Select', 'Combobox', 'Slider', 'Form parts', 'Subform'] },
+  { name: 'Inputs', about: 'Where people type and adjust values.', sections: ['TextInput', 'TextArea', 'Field', 'PasswordField', 'SearchField', 'Select', 'Combobox', 'Slider', 'Form parts', 'Subform'] },
   { name: 'Selection', about: 'Choosing on or off, one of a few, or a colour.', sections: ['Checkbox', 'Switch', 'SegmentedControl', 'Tabs', 'Appearance'] },
   { name: 'Navigation', about: 'Moving around an app: the drawer, the top bar, addresses and trees.', sections: ['NavItem', 'Drawer', 'TopBar', 'MenuBar', 'AddressBar', 'TreeView', 'AccountMenu'] },
-  { name: 'Menus & pickers', about: 'Floating lists to pick from.', sections: ['Menu', 'ListPicker'] },
-  { name: 'Containers & layout', about: 'Cards, dialogs, rows and the window itself.', sections: ['Card', 'Modal', 'ListRow', 'DetailsPane', 'StatusBar', 'EmptyState', 'SortableList', 'AppShell', 'CrashScreen'] },
+  { name: 'Menus & pickers', about: 'Floating lists to pick from.', sections: ['Menu', 'ListPicker', 'Popover'] },
+  { name: 'Containers & layout', about: 'Cards, dialogs, rows and the window itself.', sections: ['Card', 'Modal', 'ListRow', 'DetailsPane', 'StatusBar', 'Toolbar', 'EmptyState', 'SortableList', 'AppShell', 'CrashScreen'] },
   { name: 'Feedback & status', about: 'What the app tells people: notices, progress, status.', sections: ['Toast', 'Tooltip', 'StatusChip', 'Spinner', 'ProgressBar', 'TransferCard', 'UpdateCard', 'Tour'] },
-  { name: 'Files', about: 'Files and folders: tiles, icons, the views and the file dialog.', sections: ['MediaTile', 'FileIcon', 'FileView', 'File list, tiles and icons', 'FileDialog'] },
-  { name: 'Media', about: 'Players, the controls over a video, and the viewer.', sections: ['PlayerControl', 'Transport', 'Like and volume', 'CoverArt', 'MediaControls', 'MediaViewer'] },
-  { name: 'Music', about: 'Tracks, the queue, albums and the now-playing bar.', sections: ['TrackInfo', 'TrackList', 'Queue', 'NowPlayingBar', 'AlbumHeader', 'PipPlayer'] },
+  { name: 'Files', about: 'Files and folders: tiles, icons, the views and the file dialog.', sections: ['MediaTile', 'MediaTile captions', 'MediaGrid', 'FileIcon', 'FileView', 'File list, tiles and icons', 'FileDialog'] },
+  { name: 'Media', about: 'Players, the controls over a video, and the viewer.', sections: ['PlayerControl', 'Transport', 'Like and volume', 'CoverArt', 'MediaControls', 'VideoPlayer', 'MediaViewer'] },
+  { name: 'Music', about: 'Tracks, the queue, albums and the now-playing bar.', sections: ['TrackInfo', 'TrackList', 'Queue', 'QueuePanel', 'NowPlayingBar', 'AlbumHeader', 'AlbumPage', 'PipPlayer'] },
 ];
+// The big pieces, made of the small ones: on the Blocks page of the three-page file
+const BLOCK_FAMILIES = [
+  { name: 'App shell', about: 'The window: the drawer, the shell that holds the pages, and what a crash shows.', sections: ['Drawer', 'AppShell', 'CrashScreen'] },
+  { name: 'Dialogs & panels', about: 'What opens over a page: dialogs, the file dialog, the appearance panel.', sections: ['Modal', 'FileDialog', 'Appearance'] },
+  { name: 'File views', about: 'Files as a table and as a grid of tiles.', sections: ['FileView', 'MediaGrid'] },
+  { name: 'Players & viewer', about: 'The controls over a video, the video player and the viewer.', sections: ['MediaControls', 'VideoPlayer', 'MediaViewer'] },
+  { name: 'Music blocks', about: 'The queue, the now-playing bar, an album and the mini player.', sections: ['Queue', 'QueuePanel', 'NowPlayingBar', 'AlbumHeader', 'AlbumPage', 'PipPlayer'] },
+  { name: 'Transfers', about: 'Copies and moves in progress.', sections: ['TransferCard'] },
+];
+const BLOCK_SECTIONS = new Set(BLOCK_FAMILIES.flatMap(f => f.sections));
+const MOCKUP_APPS = ['Pastel Studio Pro', 'Pastel Media Pro', 'Pastel Espresso'];
 const APPS = ['Pastel Espresso', 'Pastel Studio Pro', 'Pastel Media Pro'];
 // Pages an earlier version of this plugin made, one per topic: their contents move to Library
 const OLD_PAGES = ['Cover', 'Getting started', '——— Foundations', 'Color', 'Typography', 'Spacing & sizes', 'Icons', 'Elevation', '——— Components',
@@ -1638,10 +1830,11 @@ async function organize() {
     const s = await bigSection(lib, fam.name, fam.about);
     let moved = false;
     for (const name of fam.frames || []) { const f = findFrame(name); if (f && f.parent !== s) { s.appendChild(f); moved = true; } }
-    for (const name of fam.sections) { const c = SECTIONS.get(name); if (c && c.parent !== s) { s.appendChild(c); moved = true; } }
+    for (const name of fam.sections) { if (THREE && BLOCK_SECTIONS.has(name)) continue; const c = SECTIONS.get(name); if (c && c.parent !== s) { s.appendChild(c); moved = true; } }
     if (moved) layOutFamily(s);
     s.x = 0; s.y = y; y += s.height + 160;
   }
+  if (THREE) { await organizeThree(); return; }
   // The screens page, with a section per app
   let screens = figma.root.children.find(p => p.name === SCREENS);
   if (!screens) {
@@ -1653,6 +1846,50 @@ async function organize() {
   for (const app of APPS) { const s = await bigSection(screens, app, `${app}’s screens, built by its screens plugin from this library.`); if (s.height < 400) s.resizeWithoutConstraints(1600, 400); s.x = 0; s.y = sy; sy += s.height + 160; }
   // Library, Screens, Mockups
   [LIBRARY, SCREENS, 'Mockups'].forEach((name, i) => { const p = figma.root.children.find(x => x.name === name); if (p) figma.root.insertChild(Math.min(i, figma.root.children.length - 1), p); });
+}
+
+// A page by its name, made when the file has room for it
+async function pageNamed(name) {
+  let p = figma.root.children.find(x => x.name === name);
+  if (!p) {
+    if (figma.root.children.length >= 3) throw new Error(`This file has three pages already (the free plan’s limit) and none is called ${name}. Start from a new file, or rename or delete a page, then run again`);
+    p = figma.createPage(); p.name = name; log.push(`+ page ${name}`);
+  }
+  await p.loadAsync(); return p;
+}
+// New sections go under what is there; whatever a grown or new section covers moves down.
+// Nothing moves up or sideways, so an arrangement made by hand stays.
+function settle(p, fresh) {
+  let bottom = Math.max(0, ...p.children.filter(n => !fresh.includes(n)).map(n => n.y + n.height));
+  for (const s of fresh) { s.y = bottom ? bottom + 160 : 0; bottom = s.y + s.height; }
+  const boxes = p.children.slice().sort((a, b) => a.y - b.y);
+  for (let i = 0; i < boxes.length; i++) for (let j = 0; j < i; j++) {
+    const a = boxes[j], b = boxes[i];
+    if (b.x < a.x + a.width && a.x < b.x + b.width && b.y < a.y + a.height + 160 && a.y < b.y + b.height) { b.y = a.y + a.height + 160; j = -1; }
+  }
+}
+// The three-page file: the blocks on their page, and a section per app on Mockups
+async function organizeThree() {
+  const blocks = await pageNamed(BLOCKS);
+  const freshBlocks = [];
+  for (const fam of BLOCK_FAMILIES) {
+    const had = blocks.children.some(n => n.type === 'SECTION' && n.name === fam.name);
+    const s = await bigSection(blocks, fam.name, fam.about);
+    let moved = false;
+    for (const name of fam.sections) { const c = SECTIONS.get(name); if (c && c.parent !== s) { s.appendChild(c); moved = true; } }
+    if (moved) layOutFamily(s);
+    if (!had) { s.x = 0; freshBlocks.push(s); }
+  }
+  settle(blocks, freshBlocks);
+  const mock = await pageNamed(MOCKUPS);
+  const freshApps = [];
+  for (const app of MOCKUP_APPS) {
+    const had = mock.children.some(n => n.type === 'SECTION' && n.name === app);
+    const s = await bigSection(mock, app, `${app}’s screens, built from this library. Move and change them freely: running the plugin again only adds what is missing.`);
+    if (!had) { s.resizeWithoutConstraints(1600, 400); s.x = 0; freshApps.push(s); }
+  }
+  settle(mock, freshApps);
+  [LIBRARY, MOCKUPS, BLOCKS].forEach((name, i) => { const p = figma.root.children.find(x => x.name === name); if (p) figma.root.insertChild(Math.min(i, figma.root.children.length - 1), p); });
 }
 
 // ══ Cover, getting started and the foundations ════════════
@@ -1690,7 +1927,9 @@ async function buildGettingStarted() {
     ['Colours and sizes are variables', 'Pick fills from Color (Dark): surface, text, accent, status and the rest. Spacing, Radius and Size hold every px token. Each variable shows its CSS name (var(--ps-…)) in Dev Mode, so a choice here is a token in the code.'],
     ['Type is a set of text styles', 'xs to 4xl over a weight, in Geist: md/Regular for body text, sm/SemiBold for labels, xl/Bold for titles.'],
     ['Components have variants and properties', 'Pick a state or size from the variants (Style=Primary, Size=sm) and change labels and icons from the properties panel. Swap any icon from the Icons page.'],
-    ['Screens are made of instances', 'The Screens pages hold each app’s windows, built from these components. Move and change things there freely: a change to a component shows on every screen.'],
+    THREE
+      ? ['Three pages', 'Library holds the foundations and the small components. Blocks holds the big pieces made of them (the shell, dialogs, players, the queue) and each app’s own components. Mockups holds each app’s windows, made of instances: move and change things there freely, and a change to a component shows on every screen.']
+      : ['Screens are made of instances', 'The Screens pages hold each app’s windows, built from these components. Move and change things there freely: a change to a component shows on every screen.'],
     ['Keeping it in step with the code', 'The library is built by the plugin in pastel-studio-ds, tools/figma-library. "Build what’s missing" adds new pieces and never overwrites what is here; "Update the tokens from the code" rewrites the values after the tokens change.'],
   ];
   for (const [h, b] of parts) { await para(f, h, 'xl/Bold', 'text/1', false); await para(f, b, 'md/Regular', 'text/2'); }
@@ -1955,8 +2194,7 @@ async function buildSuggestAndTransfer() {
 
 // ── Main ─────────────────────────────────────────────────
 // Two commands: "build" adds what is missing; "update" also rewrites the tokens' values from the code.
-async function main() {
-  const update = figma.command === 'update';
+async function main(update = figma.command === 'update') {
   // Build on the Library page (an older file calls it Components); a new file's first page becomes it
   page = figma.root.children.find(p => p.name === 'Library') || figma.root.children.find(p => p.name === 'Components') || figma.root.children[0];
   page.name = 'Library';
@@ -1985,12 +2223,15 @@ async function main() {
   await buildMusic();
   progress('Building suggestions, tooltips and transfers…');
   await buildSuggestAndTransfer();
+  progress('Building what the screens need…');
+  await buildMore();
   await buildSample();
   progress('Writing the cover and the foundations…');
   await buildCover(); await buildGettingStarted(); await buildColorPage(); await buildTypePage(); await buildSpacingPage(); await buildElevationPage();
   await organize();
 }
 
+/* <run> */
 main()
   .then(() => {
     if (note) note.cancel();
@@ -2002,3 +2243,4 @@ main()
     figma.closePlugin((what ? `Done: added ${what}.` : 'Nothing to add: everything is already there.') + skipped);
   })
   .catch(err => { if (note) note.cancel(); console.error(err); figma.closePlugin(`Stopped: ${err.message}. What was built before it stays; run again after fixing.`); });
+/* </run> */
