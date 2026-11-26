@@ -80,6 +80,31 @@ describe('VideoPlayer', () => {
     fireEvent.pointerMove(player);
     expect(player.className).not.toContain('is-idle');
   });
+
+  it('keeps the chrome hidden when a pointer move did not move, and shows it for a real move, a press or a key', () => {
+    vi.useFakeTimers();
+    render(<VideoPlayer media={media({ playing: true })} controls="overlay" title="Tidal Lines"><canvas /></VideoPlayer>);
+    const player = screen.getByLabelText('Tidal Lines');
+    const idle = () => player.classList.contains('is-idle');
+    fireEvent.pointerMove(player, { screenX: 640, screenY: 360 });
+    // A web view sends moves over an embedded video while the pointer rests: the count goes on.
+    act(() => vi.advanceTimersByTime(2000));
+    fireEvent.pointerMove(player, { screenX: 640, screenY: 360 });
+    act(() => vi.advanceTimersByTime(1000));
+    expect(idle()).toBe(true);
+    fireEvent.pointerMove(player, { screenX: 640, screenY: 360 });
+    expect(idle()).toBe(true);
+    fireEvent.pointerMove(player, { screenX: 640, screenY: 361 });
+    expect(idle()).toBe(false);
+    act(() => vi.advanceTimersByTime(3000));
+    expect(idle()).toBe(true);
+    fireEvent.pointerDown(player, { screenX: 640, screenY: 361 });
+    expect(idle()).toBe(false);
+    act(() => vi.advanceTimersByTime(3000));
+    expect(idle()).toBe(true);
+    fireEvent.keyDown(player, { key: 'Shift' });
+    expect(idle()).toBe(false);
+  });
 });
 
 describe('PipPlayer', () => {
@@ -98,5 +123,25 @@ describe('PipPlayer', () => {
     expect(container.querySelector('.ps-pip-player-chrome')?.hasAttribute('data-drag-region')).toBe(true);
     expect(container.querySelector('.ps-pip-player-spacer')?.hasAttribute('data-drag-region')).toBe(true);
     expect(container.querySelector('[data-tauri-drag-region]')).toBeNull();
+  });
+
+  it('hides its chrome while playing untouched, whatever moves arrive from a pointer at rest', () => {
+    vi.useFakeTimers();
+    render(<PipPlayer media={media({ playing: true })} title="Tidal Lines"><canvas /></PipPlayer>);
+    const player = screen.getByLabelText('Tidal Lines');
+    const idle = () => player.classList.contains('is-idle');
+    fireEvent.pointerMove(player, { screenX: 80, screenY: 60 });
+    act(() => vi.advanceTimersByTime(2000));
+    fireEvent.pointerMove(player, { screenX: 80, screenY: 60 });
+    act(() => vi.advanceTimersByTime(500));
+    expect(idle()).toBe(true);
+    fireEvent.pointerMove(player, { screenX: 80, screenY: 60 });
+    expect(idle()).toBe(true);
+    fireEvent.pointerMove(player, { screenX: 82, screenY: 60 });
+    expect(idle()).toBe(false);
+    act(() => vi.advanceTimersByTime(2500));
+    expect(idle()).toBe(true);
+    fireEvent.keyDown(player, { key: 'Shift' });
+    expect(idle()).toBe(false);
   });
 });

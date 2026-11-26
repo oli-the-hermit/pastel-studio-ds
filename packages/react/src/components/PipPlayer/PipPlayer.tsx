@@ -47,7 +47,7 @@ export interface PipPlayerProps extends Omit<React.HTMLAttributes<HTMLDivElement
 export const PipPlayer = forwardRef<HTMLDivElement, PipPlayerProps>(
   ({ media, children, title, chapters, captions, settings, onNext, onPrevious, onExpand, onClose, dragHandleProps, labels: ownLabels, className, ...rest }, ref) => {
     const labels = useLabels(ownLabels);
-    const [idle, wake] = useIdle(media.playing, 2200);
+    const [idle, wake, wakeOnMove] = useIdle(media.playing, 2200);
     const pct = media.duration ? (media.currentTime / media.duration) * 100 : 0;
     const timeOf = (v: number) => labels.timeOf.replace('{current}', formatTime(v)).replace('{total}', formatTime(media.duration));
     const gearLook = 'ps-player-control ps-player-control--ghost ps-player-control--sm is-on-overlay';
@@ -57,7 +57,7 @@ export const PipPlayer = forwardRef<HTMLDivElement, PipPlayerProps>(
         className={cx('ps-pip-player', idle && 'is-idle', !media.playing && 'is-paused', className)}
         tabIndex={0}
         aria-label={title ?? labels.video}
-        onPointerMove={wake}
+        onPointerMove={wakeOnMove}
         onFocus={wake}
         onKeyDown={(e) => {
           wake();

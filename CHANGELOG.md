@@ -421,3 +421,7 @@ is a breaking change.
   Previous and Next at the lower right, and the arrow keys while the focus is in it, round and round. Controlled with
   `index` and `onIndexChange`, or on its own. `autoAdvance` (off by default) moves on every n ms, waits for the pointer
   and the focus, and never runs with reduced motion. New words `carousel` and `slideOf`.
+- `VideoPlayer` and `PipPlayer` hide their controls again when the pointer rests over the picture: only a pointer
+  that really moved wakes them (a `pointermove` at the same screen position as the last one is ignored), as do a
+  press, a key and the focus. `useIdle` returns a third value for it, `wakeOnMove`, to give to `onPointerMove`. From
+  Pastel Media Pro, whose web view sent moves over an embedded video without end, so the controls never hid.

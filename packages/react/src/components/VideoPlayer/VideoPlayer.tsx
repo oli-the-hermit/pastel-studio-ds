@@ -81,7 +81,7 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
     // Filling, the picture's edge comes from the video itself once it is known: a file's stored
     // size can be wrong (a phone clip filmed upright), and the element's never is.
     const ratio = fills && media.width > 0 && media.height > 0 ? media.width / media.height : aspectRatio;
-    const [idle, wake] = useIdle(overlay && autoHide && media.playing);
+    const [idle, wake, wakeOnMove] = useIdle(overlay && autoHide && media.playing);
 
     useEffect(() => {
       const doc = rootRef.current?.ownerDocument;
@@ -131,7 +131,7 @@ export const VideoPlayer = forwardRef<HTMLDivElement, VideoPlayerProps>(
         className={cx('ps-video-player', overlay && 'ps-video-player--overlay', fill && 'ps-video-player--fill', isFullscreen && 'is-fullscreen', idle && 'is-idle', !media.playing && 'is-paused', className)}
         tabIndex={0}
         aria-label={title ?? labels.videoPlayer}
-        onPointerMove={wake}
+        onPointerMove={wakeOnMove}
         onPointerDown={wake}
         onKeyDown={onKeyDown}
         onFocus={wake}
