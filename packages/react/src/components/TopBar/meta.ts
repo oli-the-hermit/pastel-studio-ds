@@ -10,7 +10,9 @@ export const meta: ComponentMeta = {
     { name: 'With window controls', description: '`windowControls` adds the frameless window\'s buttons after the tools and tightens the right padding to sit near the corner.' },
     { name: 'Long title', description: 'A title too long for the bar is cut with an ellipsis; the free space keeps the tools in place.' },
   ],
-  variants: [],
+  variants: [
+    { name: 'Status at the end', description: '`statusAlign="end"` moves the status to the far end of the title\'s side, just before the tools: work in progress, away from the title.' },
+  ],
   keyboard: [
     { keys: 'Tab', action: 'Moves through the status, the tools and the window buttons, in that order.' },
   ],

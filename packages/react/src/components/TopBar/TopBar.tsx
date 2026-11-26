@@ -6,6 +6,11 @@ export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, 'ti
   title: React.ReactNode;
   /** Beside the title: a live status, e.g. a timer or what is playing. */
   status?: React.ReactNode;
+  /**
+   * Where the status sits: beside the title (`start`, the default), or at the far end of the
+   * title's side, just before the tools (`end`): for work in progress that shouldn't crowd the title.
+   */
+  statusAlign?: 'start' | 'end';
   /** The tools at the end, usually icon buttons. */
   tools?: React.ReactNode;
   /** A frameless window's buttons (WindowControls), after the tools. */
@@ -21,11 +26,12 @@ export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, 'ti
  * The bar above the page: its title, a status, the tools and, in a frameless window, the window's
  * buttons. With `dragRegionProps` it doubles as the title bar. It sits in AppShell's `topBar` slot.
  */
-export const TopBar = forwardRef<HTMLElement, TopBarProps>(({ title, status, tools, windowControls, dragRegionProps, className, ...rest }, ref) => (
+export const TopBar = forwardRef<HTMLElement, TopBarProps>(({ title, status, statusAlign = 'start', tools, windowControls, dragRegionProps, className, ...rest }, ref) => (
   <header ref={ref} className={cx('ps-top-bar', windowControls ? 'ps-top-bar--framed' : false, className)} {...dragRegionProps} {...rest}>
     <h1 className="ps-top-bar-title" {...dragRegionProps}>{title}</h1>
-    {status}
+    {statusAlign === 'start' && status}
     <div className="ps-top-bar-spacer" {...dragRegionProps} />
+    {statusAlign === 'end' && status}
     {tools && <div className="ps-top-bar-tools">{tools}</div>}
     {windowControls && <div className="ps-top-bar-window">{windowControls}</div>}
   </header>

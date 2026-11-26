@@ -22,6 +22,12 @@
 .ps-file-explorer-layout-nav { flex: none; flex-wrap: nowrap; gap: var(--ps-space-2); }
 .ps-file-explorer-layout-address { display: flex; flex: 1; min-width: 0; }
 .ps-file-explorer-layout-search { flex: 0 1 300px; min-width: 0; margin-inline-start: auto; }
+/* With the details pane showing, the search takes its column: the same width, and the same gap
+   before it as the cards below, so the gaps between the rows meet in one straight line. */
+.ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-search {
+  flex: 0 0 var(--ps-details-pane-width);
+  margin-inline-start: calc(var(--ps-space-12) - var(--ps-space-8));
+}
 
 .ps-file-explorer-layout-body {
   display: grid;
@@ -56,11 +62,15 @@
 @container ps-file-explorer-layout (max-width: 1080px) {
   .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body,
   .ps-file-explorer-layout-body { grid-template-columns: var(--ps-tree-width) minmax(0, 1fr); }
-  .ps-file-explorer-layout.is-treeless .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
+  /* Without a tree, the hidden details pane leaves no empty column behind either. */
+  .ps-file-explorer-layout.is-treeless .ps-file-explorer-layout-body,
+  .ps-file-explorer-layout.is-treeless.is-details-open .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
   .ps-file-explorer-layout-details { display: none; }
+  .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-search { flex: 0 1 300px; margin-inline-start: auto; }
 }
 @container ps-file-explorer-layout (max-width: 720px) {
   .ps-file-explorer-layout.is-details-open .ps-file-explorer-layout-body,
+  .ps-file-explorer-layout.is-treeless.is-details-open .ps-file-explorer-layout-body,
   .ps-file-explorer-layout-body { grid-template-columns: minmax(0, 1fr); }
   .ps-file-explorer-layout-tree { display: none; }
   /* The address keeps its row: its earlier folders fold to "…" first, and the search gives way. */
