@@ -105,6 +105,7 @@ export * from './components/UpdateCard';
 export * from './components/MediaTile';
 export * from './components/MediaGrid';
 export * from './components/MediaViewer';
+export * from './components/TitleTile';
 export * from './components/ListPicker';
 export * from './components/ListRow';
 export * from './theme';

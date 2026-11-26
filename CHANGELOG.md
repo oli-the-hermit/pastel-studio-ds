@@ -403,3 +403,10 @@ is a breaking change.
   optional `count` after its label. A radio group like SegmentedControl (one tab stop, the arrows, Home and End), but
   each chip is its own surface and the row wraps to more lines when short of room. Sizes `md` and `lg`. For Pastel
   Media Pro's library filters.
+- `TitleTile` and `TitleGrid`: the tile of music and video libraries. A button with a picture (`shape`: `cover` 1:1,
+  `poster` 2:3, `wide` 16:9 or `round`, a circle with centred text), a `title` and a `subtitle`, one line each;
+  `image` fills the picture and `icon` stands in without one or when it fails; `progress` (0 to 1) draws a thin bar
+  along the lower edge, `watched` a check at the top right, `current` an accent ring with `aria-current`. Tiles off
+  screen are not drawn (`content-visibility`), so thousands stay cheap. `TitleGrid` is a list that fits as many columns
+  as it can, each at least `--ps-title-tile-min` wide (160px, 256px for `wide`; the component's own token for now),
+  16px apart and 24px between rows. New word `watched`. Replaces Pastel Media Pro's own tile.

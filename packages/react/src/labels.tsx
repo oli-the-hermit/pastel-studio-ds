@@ -290,6 +290,7 @@ export const defaultLabels = {
   expandMenu: 'Expand menu',
   collapseMenu: 'Collapse menu',
   favorite: 'Favorite',
+  watched: 'Watched',
   mediaEmpty: 'Nothing to show here.',
   zoomIn: 'Zoom in',
   zoomOut: 'Zoom out',

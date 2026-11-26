@@ -1,0 +1,111 @@
+/* ── TitleTile: a title of a music or video library ─────────────
+   A picture (1:1, 2:3, 16:9 or a circle), its name and a quieter line. On its own a tile is as
+   wide as its shape's narrowest, --ps-title-tile-min; in a TitleGrid it fills its cell.
+   Tiles off screen are not drawn (content-visibility), so a library of thousands stays cheap.
+   --ps-title-tile-ring-room is the room around the picture where its focus ring is drawn, taken
+   back by a negative margin, so the picture still lines up with what is around it. */
+.ps-title-grid,
+.ps-title-tile { --ps-title-tile-min: 160px; }
+.ps-title-grid--wide,
+.ps-title-tile--wide { --ps-title-tile-min: 256px; }
+
+.ps-title-tile {
+  --ps-title-tile-ratio: 1;             /* the picture's width / height */
+  --ps-title-tile-radius: var(--ps-radius-lg);
+  --ps-title-tile-ring-room: var(--ps-space-6);
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--ps-space-2);
+  box-sizing: content-box;
+  width: var(--ps-title-tile-min);
+  min-width: 0;
+  padding: var(--ps-title-tile-ring-room);
+  margin: calc(var(--ps-title-tile-ring-room) * -1);
+  color: var(--ps-text-1);
+  text-align: start;
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ps-title-tile-min) auto calc(var(--ps-title-tile-min) / var(--ps-title-tile-ratio) + var(--ps-media-tile-caption));
+}
+.ps-title-tile--poster { --ps-title-tile-ratio: 0.6667; }
+.ps-title-tile--wide { --ps-title-tile-ratio: 1.7778; }
+.ps-title-tile--round { --ps-title-tile-radius: var(--ps-radius-pill); align-items: center; text-align: center; }
+/* The ring is the picture's, not the whole tile's. */
+.ps-title-tile:focus-visible { outline: none; }
+
+.ps-title-tile-picture {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 100%;
+  aspect-ratio: var(--ps-title-tile-ratio);
+  margin-bottom: var(--ps-space-6);
+  overflow: hidden;
+  border-radius: var(--ps-title-tile-radius);
+  background: var(--ps-surface-2);
+  outline: var(--ps-ring-width) solid transparent;
+  outline-offset: var(--ps-ring-width);
+  transition: background var(--ps-transition);
+}
+.ps-title-tile:hover .ps-title-tile-picture { background: var(--ps-surface-3); }
+.ps-title-tile:focus-visible .ps-title-tile-picture { outline-color: var(--ps-focus-ring); }
+.ps-title-tile-picture > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ps-title-tile-icon { display: grid; place-items: center; width: 100%; height: 100%; color: var(--ps-text-3); }
+.ps-title-tile-icon > svg { width: 34%; height: 34%; }
+
+/* The one that is playing: an accent ring inside the picture's edge, and its name in the accent. */
+.ps-title-tile.is-current .ps-title-tile-picture::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 var(--ps-ring-width-lg) var(--ps-accent);
+  pointer-events: none;
+}
+.ps-title-tile.is-current .ps-title-tile-title { color: var(--ps-accent-text); }
+
+/* How far it has been played: a thin bar along the picture's lower edge. A circle has no edge
+   to run along, so a round tile doesn't show it. */
+.ps-title-tile-progress {
+  position: absolute;
+  right: var(--ps-space-8);
+  bottom: var(--ps-space-8);
+  left: var(--ps-space-8);
+  height: var(--ps-progress-hairline);
+  overflow: hidden;
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-media-overlay-track);
+}
+.ps-title-tile-progress-fill { display: block; height: 100%; border-radius: var(--ps-radius-pill); background: var(--ps-accent); }
+.ps-title-tile--round .ps-title-tile-progress { display: none; }
+
+/* Played to the end: a check on the accent, at the picture's top right. */
+.ps-title-tile-watched {
+  position: absolute;
+  top: var(--ps-space-8);
+  right: var(--ps-space-8);
+  display: grid;
+  place-items: center;
+  width: var(--ps-checkbox-size);
+  height: var(--ps-checkbox-size);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-accent);
+  color: var(--ps-on-accent);
+}
+
+.ps-title-tile-title,
+.ps-title-tile-subtitle { max-width: 100%; overflow: hidden; line-height: var(--ps-leading-snug); white-space: nowrap; text-overflow: ellipsis; }
+.ps-title-tile-title { font-size: var(--ps-font-size-sm); font-weight: var(--ps-font-weight-semibold); }
+.ps-title-tile-subtitle { color: var(--ps-text-2); font-size: var(--ps-font-size-xs); }
+
+/* ── TitleGrid: as many columns of tiles as fit ───────────────── */
+.ps-title-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--ps-title-tile-min), 1fr));
+  align-items: start;
+  gap: var(--ps-space-24) var(--ps-space-16);
+  list-style: none;
+}
+/* A long name must not widen its column: it is cut off with an ellipsis instead. */
+.ps-title-grid-item { display: flex; min-width: 0; }
+.ps-title-grid-item > .ps-title-tile { width: 100%; }
