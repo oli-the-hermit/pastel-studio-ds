@@ -6,14 +6,14 @@ import type { Album } from '../../lib/types';
 import { PanelHeader } from '../Card';
 import { TextButton } from '../TextButton';
 
-type AlbumDetailsWords = 'aboutAlbum' | 'released' | 'recordLabel' | 'tracks' | 'length' | 'showMore' | 'showLess';
+type AlbumDetailsWords = 'aboutAlbum' | 'aboutPlaylist' | 'released' | 'recordLabel' | 'tracks' | 'length' | 'showMore' | 'showLess';
 
 export interface AlbumDetailsProps extends React.HTMLAttributes<HTMLElement> {
   album: Album;
   labels?: LabelOverrides<AlbumDetailsWords>;
 }
 
-/** About an album: its description (folded after four lines), its facts and the copyright line. Shows only what is known. */
+/** About an album or a playlist: its description (folded after four lines), its facts and the copyright line. Shows only what is known. */
 export const AlbumDetails = forwardRef<HTMLElement, AlbumDetailsProps>(({ album, labels: ownLabels, className, ...rest }, ref) => {
   const labels = useLabels(ownLabels);
   const titleId = useId();
@@ -27,7 +27,7 @@ export const AlbumDetails = forwardRef<HTMLElement, AlbumDetailsProps>(({ album,
   ].filter(Boolean) as [string, string][];
   return (
     <section ref={ref} className={cx('ps-album-details', className)} aria-labelledby={titleId} {...rest}>
-      <PanelHeader title={labels.aboutAlbum} titleId={titleId} />
+      <PanelHeader title={album.kind === 'Playlist' ? labels.aboutPlaylist : labels.aboutAlbum} titleId={titleId} />
       {album.description && (
         <div className="ps-album-details-about">
           <p className={cx('ps-album-details-text', open && 'is-open')}>{album.description}</p>

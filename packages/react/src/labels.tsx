@@ -146,6 +146,7 @@ export const defaultLabels = {
   download: 'Download',
   share: 'Share',
   aboutAlbum: 'About this album',
+  aboutPlaylist: 'About this playlist',
   released: 'Released',
   recordLabel: 'Label',
   tracks: 'Tracks',

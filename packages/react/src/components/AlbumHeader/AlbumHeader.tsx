@@ -47,11 +47,12 @@ export const AlbumHeader = forwardRef<HTMLElement, AlbumHeaderProps>(
           <span className="ps-album-header-kind">{kindWord(album.kind, labels)}</span>
           <h1 className="ps-album-header-title">{album.title}</h1>
           <p className="ps-album-header-meta">
-            {onArtistClick ? (
+            {/* A playlist has no artist: its facts start at the songs. */}
+            {album.artist && (onArtistClick ? (
               <button type="button" className="ps-album-header-artist" onClick={onArtistClick}>{album.artist}</button>
             ) : (
               <span className="ps-album-header-artist">{album.artist}</span>
-            )}
+            ))}
             {album.year && <span>{album.year}</span>}
             <span>{songs}</span>
             <span>{formatDuration(total)}</span>
