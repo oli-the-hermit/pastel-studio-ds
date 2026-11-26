@@ -1,0 +1,19 @@
+{
+  "name": "Pastel Studio: the whole file",
+  "id": "pastel-studio-figma-file-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] },
+  "menu": [
+    { "name": "Build everything", "command": "all" },
+    { "name": "Library and Blocks", "command": "library" },
+    { "separator": true },
+    { "name": "Mockups: Pastel Studio Pro", "command": "pro" },
+    { "name": "Mockups: Pastel Media Pro", "command": "media" },
+    { "name": "Mockups: Pastel Espresso", "command": "espresso" },
+    { "separator": true },
+    { "name": "Update the tokens from the code", "command": "update" }
+  ]
+}
