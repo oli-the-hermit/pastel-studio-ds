@@ -49,7 +49,10 @@ It runs inside the Figma desktop app, with no network access and no account limi
     - Combobox (field and search), its open list and ComboboxOption.
     - Tooltip.
     - TransferRow (running, asking, failed with Retry, done), the TransferCard and the TransferIndicator.
-12. **A sample Files screen** made of those components, on a `Mockups` page.
+12. **What the screens needed:** TextArea and FormHint, Toolbar, Popover, the tile with its caption over the
+    thumbnail (and as a drop target), QueuePanel with its rows, and three blocks: MediaGrid, VideoPlayer (controls
+    shown, hidden, loading) and AlbumPage.
+13. **A sample Files screen** made of those components, on a `Mockups` page.
 
 **How the file is laid out**, like a design kit in three pages (the free plan's limit):
 - **Library:** the cover and Getting started, then a section per topic: Foundations (colour roles and the palette, the type ramp, spacing and radius, elevation, icons), then one per family of components (Actions, Inputs, Selection, Navigation, Menus & pickers, Containers & layout, Feedback & status, Files, Media, Music), each with a heading.
@@ -59,6 +62,10 @@ It runs inside the Figma desktop app, with no network access and no account limi
 Sections can be shown and hidden from the layers panel. A section is found by its name anywhere in the file, so moving one never rebuilds it. Pages from an earlier, one-page-per-topic version are folded into Library.
 
 Only the dark theme is built: Figma's free plan allows one mode per collection.
+
+**The whole-file plugin** (`tools/figma-file`) runs this same code with another layout, for a new file: Library,
+**Mockups** (each app's screens) and **Blocks** (the big composed pieces, and each app's own components). Its
+README says how to run it, and how to check a change without Figma.
 
 ## Run it
 
