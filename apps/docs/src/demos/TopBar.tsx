@@ -40,7 +40,9 @@ export const demo: ComponentDemo = {
     'With window controls': <div className="docs-gallery-span docs-topbar-stage"><TopBar title="Library" tools={tools} windowControls={controls} /></div>,
     'Long title': <div className="docs-gallery-span"><div className="docs-topbar-stage is-narrow"><TopBar title="A page whose title is far too long for this bar" status={status} tools={tools} /></div></div>,
   },
-  variants: {},
+  variants: {
+    'Status at the end': <div className="docs-gallery-span docs-topbar-stage"><TopBar title="Library" status={status} statusAlign="end" tools={tools} /></div>,
+  },
   dos: [
     'Put the page\'s title in it and nothing else that names the page: it is the page\'s `h1`.',
     'Keep the tools to a few icon buttons with names; anything more belongs in the page.',

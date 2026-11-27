@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Field, FormHint, TextArea, TextInput } from '@pastel-studio/react';
+import { Button, Field, FormHint, IconButton, IconCheck, IconCopy, TextArea, TextInput } from '@pastel-studio/react';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};
@@ -47,6 +47,14 @@ export const demo: ComponentDemo = {
   },
   variants: {
     TextArea: wide(<Field label="Notes"><TextArea defaultValue="Bring the receipts for the returns." /></Field>),
+    'With action': wide(
+      <Field
+        label="Note"
+        action={<><IconCheck size={14} /> Saved<IconButton label="Copy the note" size="xs" onClick={noop}><IconCopy size={14} /></IconButton></>}
+      >
+        <TextArea defaultValue="Use for the spring cover." />
+      </Field>
+    ),
     'Group label': wide(
       <Field label="Repeat on" group>
         <div className="docs-demo-row"><Button size="sm">Mon</Button><Button size="sm">Wed</Button><Button size="sm">Fri</Button></div>

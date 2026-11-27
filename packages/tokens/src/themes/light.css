@@ -53,6 +53,7 @@
   --ps-media-backdrop:      var(--ps-graphite-4);   /* the space around the picture: a grey, so black footage doesn't blend into it */
   --ps-media-frame:         color-mix(in srgb, var(--ps-stone-95) 16%, transparent);   /* a hairline around the picture, so its edge is certain */
   --ps-media-overlay:       color-mix(in srgb, var(--ps-graphite-4) 90%, transparent);   /* the control dock over video: see-through, like the scrim */
+  --ps-media-overlay-glass: color-mix(in srgb, var(--ps-graphite-4) 62%, transparent);   /* a lighter dock over a still picture (the viewer's zoom box): the picture shows through */
   --ps-media-overlay-hover: color-mix(in srgb, var(--ps-graphite-22) 92%, transparent);  /* a control hovered on the dock */
   --ps-media-overlay-track: color-mix(in srgb, var(--ps-stone-95) 24%, transparent);     /* a slider's track on the dock */
   --ps-media-overlay-buffer: color-mix(in srgb, var(--ps-stone-95) 42%, transparent);    /* the loaded part of that track */

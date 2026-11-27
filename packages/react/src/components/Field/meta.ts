@@ -14,6 +14,7 @@ export const meta: ComponentMeta = {
   ],
   variants: [
     { name: 'TextArea', description: 'Several lines; it can be made taller by dragging its corner.' },
+    { name: 'With action', description: '`action` puts the field\'s own status or tools at the far end of the label\'s row: a saved tick, a copy button.' },
     { name: 'Group label', description: '`group` names a set of controls (chips, options) instead of one; the label is plain text.' },
   ],
   keyboard: [],

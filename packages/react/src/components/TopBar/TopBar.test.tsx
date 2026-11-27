@@ -12,6 +12,12 @@ describe('TopBar', () => {
     expect([...bar.children].map((c) => c.className || c.tagName.toLowerCase())).toEqual(['ps-top-bar-title', 'span', 'ps-top-bar-spacer', 'ps-top-bar-tools']);
   });
 
+  it('moves the status to the far end of the title\'s side, before the tools, with statusAlign end', () => {
+    const { container } = render(<TopBar title="Library" status={<span>Reading</span>} statusAlign="end" tools={<button>Help</button>} />);
+    const bar = container.querySelector('.ps-top-bar')!;
+    expect([...bar.children].map((c) => c.className || c.tagName.toLowerCase())).toEqual(['ps-top-bar-title', 'ps-top-bar-spacer', 'span', 'ps-top-bar-tools']);
+  });
+
   it('leaves out the tools and the window buttons when it has none', () => {
     const { container } = render(<TopBar title="Library" />);
     expect(container.querySelector('.ps-top-bar-tools')).toBeNull();
