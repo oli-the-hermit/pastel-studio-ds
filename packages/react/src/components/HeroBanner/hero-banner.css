@@ -1,0 +1,104 @@
+/* ── HeroBanner: one suggestion at a time, large ────────────────
+   The text sits on the banner's own surface, in the theme's text colors. The picture covers the
+   banner and fades out behind the text (a mask, so no color is laid over it): solid surface for
+   most of the text's measure, all picture past it. The dots and arrows sit on the picture, so
+   over one they take the media dock's colors.
+   --ps-hero-banner-min-height and --ps-hero-banner-measure (the text's longest line) on its
+   class set its size. */
+.ps-hero-banner {
+  --ps-hero-banner-min-height: 360px;
+  --ps-hero-banner-measure: 520px;
+  --ps-hero-banner-pad: var(--ps-space-40);
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: var(--ps-hero-banner-min-height);
+  overflow: hidden;
+  border-radius: var(--ps-radius-3xl);
+  background: var(--ps-surface-2);
+  color: var(--ps-text-1);
+  container: ps-hero-banner / inline-size;
+}
+
+.ps-hero-banner-slides { display: flex; flex: 1; min-width: 0; }
+.ps-hero-banner-slide {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  min-width: 0;
+  padding: var(--ps-hero-banner-pad);
+  animation: ps-hero-banner-in var(--ps-dur-3) var(--ps-ease-standard);
+}
+
+.ps-hero-banner-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: linear-gradient(to right, transparent calc(var(--ps-hero-banner-measure) * 0.8), black calc(var(--ps-hero-banner-measure) * 1.8));
+}
+
+.ps-hero-banner-text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ps-space-8);
+  min-width: 0;
+  max-width: var(--ps-hero-banner-measure);
+}
+.ps-hero-banner-overline {
+  color: var(--ps-accent-text);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+}
+.ps-hero-banner-title {
+  font-size: clamp(var(--ps-font-size-2xl), 7cqi, var(--ps-font-size-4xl));
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-tight);
+  letter-spacing: var(--ps-tracking-tighter);
+  overflow-wrap: anywhere;
+}
+.ps-hero-banner-facts,
+.ps-hero-banner-summary { color: var(--ps-text-2); font-size: var(--ps-font-size-md); line-height: var(--ps-leading-normal); }
+/* At most three lines. */
+.ps-hero-banner-summary { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; }
+.ps-hero-banner-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-8); margin-top: var(--ps-space-12); }
+
+/* The dots and the arrows, lower right. */
+.ps-hero-banner-controls {
+  position: absolute;
+  right: var(--ps-space-24);
+  bottom: var(--ps-space-24);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-4);
+  padding: var(--ps-space-4) var(--ps-space-4) var(--ps-space-4) var(--ps-space-14);
+  border-radius: var(--ps-radius-pill);
+}
+.ps-hero-banner-dots { display: flex; gap: var(--ps-space-4); margin-right: var(--ps-space-8); }
+.ps-hero-banner-dot {
+  width: var(--ps-tour-dot-size);
+  height: var(--ps-tour-dot-size);
+  border-radius: var(--ps-radius-pill);
+  background: var(--ps-surface-4);
+  transition: width var(--ps-dur-3) var(--ps-ease-emphasized), background var(--ps-dur-3) var(--ps-ease-emphasized);
+}
+.ps-hero-banner-dot.is-current { width: var(--ps-tour-dot-current); background: var(--ps-accent); }
+.ps-hero-banner.is-pictured .ps-hero-banner-controls { background: var(--ps-media-overlay); }
+.ps-hero-banner.is-pictured .ps-hero-banner-dot:not(.is-current) { background: var(--ps-media-overlay-buffer); }
+
+/* Narrow: the text keeps clear of the dots and arrows under it, and the picture stays faint. */
+@container ps-hero-banner (max-width: 640px) {
+  .ps-hero-banner-slide {
+    --ps-hero-banner-pad: var(--ps-space-24);
+    padding-bottom: calc(var(--ps-space-24) + var(--ps-icon-button-size) + var(--ps-space-16));
+  }
+  .ps-hero-banner-image { mask-image: linear-gradient(to right, transparent 40%, black 160%); }
+}
+
+@keyframes ps-hero-banner-in { from { opacity: 0; } }

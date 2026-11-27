@@ -399,3 +399,29 @@ is a breaking change.
 - `MediaTile` takes `dropTarget`: an accent ring and tint (and, with overlay captions, the name showing on the tint)
   while something dragged over the tile would be dropped into it. From Pastel Studio Pro, where media dropped on a
   folder tile move into that folder.
+- `FilterChips`: a row of separate chips that filter what a list or a grid shows, one always chosen, each with an
+  optional `count` after its label. A radio group like SegmentedControl (one tab stop, the arrows, Home and End), but
+  each chip is its own surface and the row wraps to more lines when short of room. Sizes `md` and `lg`. For Pastel
+  Media Pro's library filters.
+- `TitleTile` and `TitleGrid`: the tile of music and video libraries. A button with a picture (`shape`: `cover` 1:1,
+  `poster` 2:3, `wide` 16:9 or `round`, a circle with centred text), a `title` and a `subtitle`, one line each;
+  `image` fills the picture and `icon` stands in without one or when it fails; `progress` (0 to 1) draws a thin bar
+  along the lower edge, `watched` a check at the top right, `current` an accent ring with `aria-current`. Tiles off
+  screen are not drawn (`content-visibility`), so thousands stay cheap. `TitleGrid` is a list that fits as many columns
+  as it can, each at least `--ps-title-tile-min` wide (160px, 256px for `wide`; the component's own token for now),
+  16px apart and 24px between rows. New word `watched`. Replaces Pastel Media Pro's own tile.
+- `MediaRow`: a heading over one row of items that scrolls sideways ("Continue watching"), with "See all" (with
+  `onSeeAll`) and Previous / Next at the heading's end. No scrollbar shows and the row comes to rest on an item; the
+  arrows scroll about one page, are disabled at the ends and are not shown when everything fits. A `region` named by
+  its heading (`headingLevel`, default 2) with its items in a list; one tab stop for the row, with the arrow keys, Home
+  and End moving between items and scrolling them into view. New word `seeAll`.
+- `HeroBanner`: a large banner that suggests one title at a time (`items`: an overline, a title, facts joined with a
+  middle dot, a summary of at most three lines, a picture and its buttons). The picture covers the banner and fades
+  out behind the text, which stays on the banner's surface. With several items (six at most) it is a carousel: dots,
+  Previous and Next at the lower right, and the arrow keys while the focus is in it, round and round. Controlled with
+  `index` and `onIndexChange`, or on its own. `autoAdvance` (off by default) moves on every n ms, waits for the pointer
+  and the focus, and never runs with reduced motion. New words `carousel` and `slideOf`.
+- `VideoPlayer` and `PipPlayer` hide their controls again when the pointer rests over the picture: only a pointer
+  that really moved wakes them (a `pointermove` at the same screen position as the last one is ignored), as do a
+  press, a key and the focus. `useIdle` returns a third value for it, `wakeOnMove`, to give to `onPointerMove`. From
+  Pastel Media Pro, whose web view sent moves over an embedded video without end, so the controls never hid.

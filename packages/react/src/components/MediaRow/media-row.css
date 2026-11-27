@@ -1,0 +1,49 @@
+/* ── MediaRow: a heading over one row of items that scrolls sideways ──
+   No scrollbar shows: the arrows beside the heading, the keyboard, a touchpad or a finger move
+   it, and it comes to rest on an item. --ps-media-row-ring-room is the room around the row where
+   its items draw their focus rings, taken back by a negative margin, so the items still line up
+   with the heading. */
+.ps-media-row {
+  --ps-media-row-gap: var(--ps-space-16);
+  --ps-media-row-ring-room: var(--ps-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-space-12);
+  min-width: 0;
+}
+
+.ps-media-row-header { display: flex; align-items: center; gap: var(--ps-space-8); min-height: var(--ps-icon-button-size-sm); }
+.ps-media-row-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ps-text-1);
+  font-size: var(--ps-font-size-lg);
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-snug);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-media-row-see-all { flex: none; }
+.ps-media-row-arrows { display: flex; flex: none; gap: var(--ps-space-4); }
+
+.ps-media-row-list {
+  position: relative;   /* the items' positions are measured from it */
+  display: flex;
+  gap: var(--ps-media-row-gap);
+  padding: var(--ps-media-row-ring-room);
+  margin: calc(var(--ps-media-row-ring-room) * -1);
+  overflow: auto hidden;
+  overscroll-behavior-x: contain;
+  list-style: none;
+  scroll-behavior: smooth;
+  scroll-padding-inline: var(--ps-media-row-ring-room);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.ps-media-row-list::-webkit-scrollbar { display: none; }
+.ps-media-row-item { display: flex; flex: none; min-width: 0; scroll-snap-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-media-row-list { scroll-behavior: auto; }
+}

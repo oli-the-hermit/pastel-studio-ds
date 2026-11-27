@@ -38,6 +38,7 @@
 @import url('./components/Tooltip/tooltip.css') layer(ps.components);
 @import url('./components/Switch/switch.css') layer(ps.components);
 @import url('./components/SegmentedControl/segmented-control.css') layer(ps.components);
+@import url('./components/FilterChips/filter-chips.css') layer(ps.components);
 @import url('./components/Field/field.css') layer(ps.components);
 @import url('./components/PasswordField/password-field.css') layer(ps.components);
 @import url('./components/Select/select.css') layer(ps.components);
@@ -95,6 +96,9 @@
 @import url('./components/MediaTile/media-tile.css') layer(ps.components);
 @import url('./components/MediaGrid/media-grid.css') layer(ps.components);
 @import url('./components/MediaViewer/media-viewer.css') layer(ps.components);
+@import url('./components/TitleTile/title-tile.css') layer(ps.components);
+@import url('./components/MediaRow/media-row.css') layer(ps.components);
+@import url('./components/HeroBanner/hero-banner.css') layer(ps.components);
 @import url('./components/ListPicker/list-picker.css') layer(ps.components);
 @import url('./components/ListRow/list-row.css') layer(ps.components);
 

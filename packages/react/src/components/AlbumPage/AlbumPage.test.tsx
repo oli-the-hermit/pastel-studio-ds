@@ -69,3 +69,19 @@ describe('AlbumPage', () => {
     expect(screen.getByRole('region', { name: 'About this album' })).toBeTruthy();
   });
 });
+
+describe('A playlist', () => {
+  const playlist: Album = { ...album, title: 'Road trip', artist: '', kind: 'Playlist', year: undefined, label: undefined };
+
+  it('has no artist in its header: its facts start at the songs', () => {
+    const { container } = render(<AlbumHeader album={playlist} onPlayPause={noop} />);
+    expect(screen.getByText('Playlist')).toBeTruthy();
+    expect(container.querySelector('.ps-album-header-artist')).toBeNull();
+    expect(container.querySelector('.ps-album-header-meta')?.firstElementChild?.textContent).toBe('2 songs');
+  });
+
+  it('is described as a playlist, not an album', () => {
+    render(<AlbumDetails album={playlist} />);
+    expect(screen.getByRole('region', { name: 'About this playlist' })).toBeTruthy();
+  });
+});

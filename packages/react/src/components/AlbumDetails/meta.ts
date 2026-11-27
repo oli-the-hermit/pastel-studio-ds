@@ -13,7 +13,7 @@ export const meta: ComponentMeta = {
   keyboard: [
     { keys: 'Enter / Space', action: 'On "Show more", opens or folds the description.' },
   ],
-  labels: ['aboutAlbum', 'released', 'recordLabel', 'tracks', 'length', 'showMore', 'showLess'],
+  labels: ['aboutAlbum', 'aboutPlaylist', 'released', 'recordLabel', 'tracks', 'length', 'showMore', 'showLess'],
   aria: [
     'A `section` named by its heading, "About this album".',
     'The facts are a description list; "Show more" says whether it is open with `aria-expanded`.',
