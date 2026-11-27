@@ -457,3 +457,10 @@ is a breaking change.
   `--ps-title-header-min-height` (360px) and `--ps-title-header-band` (120px) with a backdrop,
   `--ps-title-header-measure` (560px), `--ps-title-header-poster` (200px), `--ps-title-header-radius`. Under 640px
   wide the poster is smaller and sits above the text. For Pastel Media Pro's film and series pages.
+- `EpisodeCard`: one episode of a series as a button, for a `MediaRow`. A 16:9 picture (`image`, or `icon` when there
+  is none or it fails) over an `overline` ("Episode 3") with the `length` at the line's end, the `title` on one line
+  and the `summary` on at most two. `progress`, `watched`, `current` and `unavailable` are `TitleTile`'s: the picture,
+  with its bar, check, ring and warning mark, is the same part drawn by both. Every card is as wide as
+  `--ps-episode-card-width` (256px), so they line up. The button is named by its overline, title and length, then
+  "Watched" or the reason it is unavailable, and described by its summary, so a row of episodes can be gone through
+  quickly; an `aria-label` of your own replaces that name. For Pastel Media Pro's series pages.

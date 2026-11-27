@@ -26,5 +26,5 @@ export const meta: ComponentMeta = {
     'The rating reads as its text, "IMDb 7.8". With `rating.label` the chip is an image named by it instead: "IMDb rating 7.8 out of 10".',
     'It has no words of its own: the overline, the facts and the buttons arrive translated.',
   ],
-  related: ['HeroBanner', 'MediaRow', 'TitleTile', 'AlbumHeader'],
+  related: ['HeroBanner', 'EpisodeCard', 'MediaRow', 'TitleTile', 'AlbumHeader'],
 };

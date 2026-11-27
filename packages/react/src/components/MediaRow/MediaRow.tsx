@@ -13,7 +13,7 @@ export interface MediaRowProps extends Omit<React.HTMLAttributes<HTMLElement>, '
   /** The heading's level on the page (default 2). */
   headingLevel?: 2 | 3 | 4;
   /**
-   * The items, usually TitleTiles. Each child becomes one list item and should be one element
+   * The items, usually TitleTiles or EpisodeCards. Each child becomes one list item and should be one element
    * that can take the focus and passes `tabIndex` on (a button, a link): the row gives it the tab stop.
    */
   children?: React.ReactNode;

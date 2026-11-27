@@ -100,6 +100,7 @@
 @import url('./components/MediaRow/media-row.css') layer(ps.components);
 @import url('./components/HeroBanner/hero-banner.css') layer(ps.components);
 @import url('./components/TitleHeader/title-header.css') layer(ps.components);
+@import url('./components/EpisodeCard/episode-card.css') layer(ps.components);
 @import url('./components/ListPicker/list-picker.css') layer(ps.components);
 @import url('./components/ListRow/list-row.css') layer(ps.components);
 

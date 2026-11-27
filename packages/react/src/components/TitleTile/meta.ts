@@ -36,5 +36,5 @@ export const meta: ComponentMeta = {
     'The progress bar is decorative: when how far it has been played matters, say it in the subtitle ("12 min left").',
     'TitleGrid is a `list` and wraps each child in a list item; name it with `aria-label` or `aria-labelledby`.',
   ],
-  related: ['MediaTile', 'CoverArt', 'MediaGrid'],
+  related: ['MediaTile', 'CoverArt', 'MediaGrid', 'EpisodeCard'],
 };
