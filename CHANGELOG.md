@@ -438,3 +438,9 @@ is a breaking change.
   part of the button's name, and the tile stays a button. `CoverArt` takes `images` with the same rule, `Album` has
   `covers`, and `AlbumHeader` passes them on, so a playlist without art of its own shows its albums. For Pastel Media
   Pro's playlists and its files that have gone missing.
+- A song can be unavailable: `Track` has `unavailable`, the reason in a few words ("Can't find this file"). `TrackList`
+  and `PlayQueue` dim such a row (`is-unavailable`; `--ps-track-list-dim` and `--ps-play-queue-dim` set how much of its
+  cover still shows), put the reason where the artist was, and never play it: a double click, Enter (and a click or
+  Space in the queue) call the new `onUnavailable(track)` in place of `onPlay`, and a row of `TrackList` has no play
+  button. Its ⋮ menu, its heart, removing and reordering still work, and its name reads "Title, Artist, 3:20, Can't
+  find this file". `AlbumPage` passes `onUnavailable` on. For Pastel Media Pro's songs whose file has gone missing.

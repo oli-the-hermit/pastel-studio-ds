@@ -15,6 +15,7 @@ export const meta: ComponentMeta = {
   labels: [],
   aria: [
     'Its parts keep their own roles: the header with the `h1`, the track list named by the album, the details section.',
+    'A track with `unavailable` is dimmed and says why; `onUnavailable` is called for it in place of `onPlayTrack`.',
   ],
   related: ['AlbumHeader', 'TrackList', 'AlbumDetails'],
 };

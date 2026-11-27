@@ -14,6 +14,8 @@ export interface Track {
   number?: number;
   /** When it was added to a playlist (ISO date). */
   addedAt?: string;
+  /** Why it can't be played, in a few words: "Can't find this file". Lists dim it and say why. */
+  unavailable?: string;
 }
 
 /** An album, EP, single or playlist. */

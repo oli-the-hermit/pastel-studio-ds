@@ -48,6 +48,50 @@ describe('TrackList', () => {
     expect(screen.getByRole('menuitem', { name: 'Add to queue' })).toBeTruthy();
   });
 
+  it('dims a track that is unavailable, says why, and calls onUnavailable in place of onPlay', async () => {
+    const onPlay = vi.fn();
+    const onUnavailable = vi.fn();
+    const user = userEvent.setup();
+    const missing: Track = { ...tracks[1], unavailable: "Can't find this file" };
+    render(
+      <TrackList tracks={[tracks[0], missing, tracks[2]]} onPlay={onPlay} onUnavailable={onUnavailable} columns={{ cover: true }} rowActions={() => [{ key: 'find', label: 'Find the file', onSelect: noop }]} />
+    );
+    const row = rows()[1];
+    expect(row.className).toBe('ps-track-list-row is-unavailable');
+    expect(rows()[0].className).toBe('ps-track-list-row');
+    expect(row.getAttribute('aria-label')).toBe("Low Tide Radio, Glass Harbor, 3:20, Can't find this file");
+    // The reason stands where the artist was, and there is no play button.
+    expect(row.querySelector('.ps-track-info-meta')?.textContent).toBe("Can't find this file");
+    expect(row.querySelector('.ps-track-list-num-play')).toBeNull();
+    expect(row.querySelector('.ps-track-list-num-text')?.textContent).toBe('2');
+    expect(rows()[0].querySelector('.ps-track-list-num-play')).toBeTruthy();
+    await user.dblClick(row);
+    row.focus();
+    await user.keyboard('{Enter}');
+    expect(onUnavailable.mock.calls.map(([track]) => track)).toEqual([missing, missing]);
+    expect(onPlay).not.toHaveBeenCalled();
+    // Its menu still opens.
+    await user.click(screen.getByRole('button', { name: 'More actions for Low Tide Radio' }));
+    expect(screen.getByRole('menuitem', { name: 'Find the file' })).toBeTruthy();
+  });
+
+  it('leaves an unavailable track alone when nothing handles it, and still moves it', async () => {
+    const onPlay = vi.fn();
+    const user = userEvent.setup();
+    function Playlist() {
+      const [list, setList] = useState<Track[]>([{ ...tracks[0], unavailable: 'The drive is not connected' }, tracks[1], tracks[2]]);
+      return <TrackList tracks={list} onPlay={onPlay} onReorder={(a, b) => setList((l) => moveById(l, a, b) ?? l)} />;
+    }
+    render(<Playlist />);
+    await user.dblClick(rows()[0]);
+    rows()[0].focus();
+    await user.keyboard('{Enter}');
+    expect(onPlay).not.toHaveBeenCalled();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(rows().map((r) => r.querySelector('.ps-track-info-title')?.textContent)).toEqual(['Low Tide Radio', 'Signal Fires', 'Northbound']);
+    expect(rows()[1].className).toContain('is-unavailable');
+  });
+
   it('turns columns into classes and reorders with Alt + arrows', async () => {
     const user = userEvent.setup();
     function Playlist() {

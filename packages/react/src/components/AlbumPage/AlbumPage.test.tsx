@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Album } from '../../lib/types';
@@ -67,6 +67,21 @@ describe('AlbumPage', () => {
     expect(container.firstElementChild?.className).toBe('ps-album-page');
     expect(screen.getByRole('list', { name: 'Midnight Static' })).toBeTruthy();
     expect(screen.getByRole('region', { name: 'About this album' })).toBeTruthy();
+  });
+
+  it('hands a track that is unavailable to onUnavailable, not to onPlayTrack', () => {
+    const onPlayTrack = vi.fn();
+    const onUnavailable = vi.fn();
+    const missing = { ...album.tracks[1], unavailable: "Can't find this file" };
+    const { container } = render(<AlbumPage album={{ ...album, tracks: [album.tracks[0], missing] }} onPlayPause={noop} onPlayTrack={onPlayTrack} onUnavailable={onUnavailable} />);
+    const [first, second] = screen.getAllByRole('listitem');
+    fireEvent.doubleClick(second);
+    expect(onUnavailable).toHaveBeenCalledWith(missing);
+    expect(onPlayTrack).not.toHaveBeenCalled();
+    fireEvent.doubleClick(first);
+    expect(onPlayTrack).toHaveBeenCalledWith(album.tracks[0]);
+    // The handler is the page's own: it never reaches the header's element.
+    expect(container.querySelector('header')?.getAttributeNames()).toEqual(['class']);
   });
 });
 

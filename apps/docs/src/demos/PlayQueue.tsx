@@ -47,6 +47,7 @@ export const demo: ComponentDemo = {
     'Up next': still({}),
     History: still({ defaultTab: 'history', history: album.tracks.slice(3, 5) }),
     Empty: still({ upNext: [] }),
+    Unavailable: still({ upNext: [album.tracks[1], { ...album.tracks[2], unavailable: "Can't find this file" }, album.tracks[3]], onRemove: noop, onReorder: noop }),
   },
   variants: {
     Full: still({ source: album.title, onClose: noop, onClear: noop, onShuffle: noop, onRemove: noop, onReorder: noop, autoplay: { value: true, onChange: noop } }),

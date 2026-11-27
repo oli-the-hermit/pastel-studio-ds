@@ -21,6 +21,11 @@ export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement
   playing?: boolean;
   /** Plays a track: a double click, Enter, or the play button on its number. */
   onPlay: (track: Track) => void;
+  /**
+   * A double click or Enter on a track with `unavailable`, in place of `onPlay`: the way to fix it,
+   * e.g. a page to find the file. Such a row has no play button.
+   */
+  onUnavailable?: (track: Track) => void;
   onPause?: () => void;
   likedIds?: ReadonlySet<string>;
   /** Shows a heart on each row. */
@@ -49,6 +54,7 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
       currentId,
       playing = false,
       onPlay,
+      onUnavailable,
       onPause,
       likedIds,
       onLikedChange,
@@ -95,43 +101,49 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
             const isPlaying = current && playing;
             const liked = likedIds?.has(t.id) ?? false;
             const drag = onReorder ? sortable.itemProps(t.id) : undefined;
+            // A track that can't be played says why where its artist was, and is never played.
+            const unavailable = t.unavailable || undefined;
+            const activate = () => (unavailable ? onUnavailable?.(t) : onPlay(t));
             return (
               <li
                 key={t.id}
                 className={cx(
                   'ps-track-list-row',
                   current && 'is-current',
+                  unavailable && 'is-unavailable',
                   sortable.isDragging(t.id) && 'is-dragging',
                   sortable.isDragOver(t.id) && 'is-drag-over'
                 )}
                 tabIndex={0}
                 aria-current={current ? 'true' : undefined}
-                aria-label={`${t.title}, ${t.artist}, ${formatTime(t.duration)}`}
-                onDoubleClick={() => onPlay(t)}
+                aria-label={`${t.title}, ${t.artist}, ${formatTime(t.duration)}${unavailable ? `, ${unavailable}` : ''}`}
+                onDoubleClick={activate}
                 {...drag}
                 onKeyDown={(e) => {
                   drag?.onKeyDown(e);
                   if (e.defaultPrevented) return;
-                  if (e.key === 'Enter' && e.target === e.currentTarget) onPlay(t);
+                  if (e.key === 'Enter' && e.target === e.currentTarget) activate();
                 }}
               >
                 {drag && <IconGrip className="ps-track-list-grip" title={labels.dragToReorder} />}
                 <span className="ps-track-list-num">
                   <span className="ps-track-list-num-text">{current ? <Equalizer playing={isPlaying} size={14} /> : t.number ?? i + 1}</span>
-                  <PlayerControl
-                    className="ps-track-list-num-play"
-                    variant="ghost"
-                    size="sm"
-                    label={named(isPlaying ? labels.pauseTrack : labels.playTrack, t)}
-                    tabIndex={-1}
-                    onClick={() => (isPlaying ? onPause?.() : onPlay(t))}
-                  >
-                    {isPlaying ? <IconPause size={14} /> : <IconPlay size={14} />}
-                  </PlayerControl>
+                  {!unavailable && (
+                    <PlayerControl
+                      className="ps-track-list-num-play"
+                      variant="ghost"
+                      size="sm"
+                      label={named(isPlaying ? labels.pauseTrack : labels.playTrack, t)}
+                      tabIndex={-1}
+                      onClick={() => (isPlaying ? onPause?.() : onPlay(t))}
+                    >
+                      {isPlaying ? <IconPause size={14} /> : <IconPlay size={14} />}
+                    </PlayerControl>
+                  )}
                 </span>
                 <span className="ps-track-list-title">
                   {columns.cover && <CoverArt size="xs" src={t.cover} />}
-                  <TrackInfo title={t.title} artist={t.artist} explicit={t.explicit} size="sm" />
+                  <TrackInfo title={t.title} artist={unavailable ?? t.artist} explicit={t.explicit} size="sm" />
                 </span>
                 {columns.album && <span className="ps-track-list-album">{t.album}</span>}
                 {columns.added && <span className="ps-track-list-added">{t.addedAt ? new Date(t.addedAt).toLocaleDateString() : ''}</span>}

@@ -9,6 +9,7 @@ export const meta: ComponentMeta = {
     { name: 'Rows', description: 'Quiet rows; on hover the number turns into a play button and the tools appear.' },
     { name: 'Current', description: '`currentId`: the loaded track in the accent, with the "now playing" bars in place of its number.' },
     { name: 'Liked', description: 'A liked track keeps its filled heart showing; the others show the heart on hover.' },
+    { name: 'Unavailable', description: 'A track with `unavailable` (the reason, e.g. "Can\'t find this file") is dimmed and shows the reason where its artist was. It has no play button; a double click or Enter calls `onUnavailable` in place of `onPlay`. Its menu, its heart and reordering still work.' },
   ],
   variants: [
     { name: 'Album', description: 'Number, title, heart, length and menu.' },
@@ -17,7 +18,7 @@ export const meta: ComponentMeta = {
   ],
   keyboard: [
     { keys: 'Tab', action: 'Moves between rows and their tools.' },
-    { keys: 'Enter', action: 'Plays the focused row.' },
+    { keys: 'Enter', action: 'Plays the focused row; on an unavailable one, calls `onUnavailable`.' },
     { keys: 'Alt + ↑ / ↓', action: 'Moves the focused row, when `onReorder` is given.' },
   ],
   labels: ['trackNumber', 'trackTitle', 'album', 'dateAdded', 'duration', 'playTrack', 'pauseTrack', 'trackActions', 'dragToReorder', 'like', 'unlike'],
@@ -25,6 +26,7 @@ export const meta: ComponentMeta = {
     'An ordered list; each row is focusable and named "Title, Artist, 3:20".',
     'The play button on a number and the ⋮ menu name the track they act on.',
     'The loaded track has `aria-current`. A double click also plays a row.',
+    'An unavailable row adds the reason to its name: "Title, Artist, 3:20, Can\'t find this file".',
   ],
   related: ['PlayQueue', 'LikeButton', 'SortableList'],
 };

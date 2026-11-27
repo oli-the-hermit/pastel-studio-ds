@@ -45,6 +45,10 @@ export const demo: ComponentDemo = {
     Rows: still({}),
     Current: still({ currentId: 't2', playing: true }),
     Liked: still({ likedIds: new Set(['t1', 't3']) }),
+    Unavailable: still({
+      tracks: playlist.map((t, i) => (i % 2 ? { ...t, unavailable: i === 1 ? "Can't find this file" : 'The drive is not connected' } : t)),
+      columns: { cover: true, album: true },
+    }),
   },
   variants: {
     Album: still({ tracks: album.tracks }),
@@ -54,6 +58,7 @@ export const demo: ComponentDemo = {
   dos: [
     'Use the album layout for an album and add columns for a playlist, where tracks come from many places.',
     'Give the list an `ariaLabel` with the album or playlist name.',
+    'Set `unavailable` on a track that cannot be played, with the reason, and open the way to fix it from `onUnavailable`.',
   ],
   donts: [
     'Don\'t add columns that repeat what the page already says, like the album on an album page.',

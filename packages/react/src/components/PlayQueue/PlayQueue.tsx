@@ -38,7 +38,7 @@ interface RowProps {
 function Row({ track, active, playing, onSelect, onRemove, removeLabel, drag, dragLabel, isDragging, isDragOver }: RowProps) {
   return (
     <li
-      className={cx('ps-play-queue-row', drag && 'ps-play-queue-row--reorderable', active && 'is-active', isDragging && 'is-dragging', isDragOver && 'is-drag-over')}
+      className={cx('ps-play-queue-row', drag && 'ps-play-queue-row--reorderable', active && 'is-active', track.unavailable && 'is-unavailable', isDragging && 'is-dragging', isDragOver && 'is-drag-over')}
       tabIndex={0}
       aria-current={active ? 'true' : undefined}
       onClick={onSelect}
@@ -54,7 +54,8 @@ function Row({ track, active, playing, onSelect, onRemove, removeLabel, drag, dr
     >
       {drag && <IconGrip className="ps-play-queue-row-grip" title={dragLabel} />}
       <CoverArt size="xs" src={track.cover} badge={active ? <Equalizer playing={playing} size={16} /> : undefined} />
-      <TrackInfo title={track.title} artist={track.artist} size="sm" className="ps-play-queue-row-info" />
+      {/* A track that can't be played says why where its artist was. */}
+      <TrackInfo title={track.title} artist={track.unavailable || track.artist} size="sm" className="ps-play-queue-row-info" />
       <span className="ps-play-queue-row-time">{formatTime(track.duration)}</span>
       {onRemove && !active && (
         <span className="ps-play-queue-row-tools">
@@ -77,6 +78,11 @@ export interface PlayQueueProps extends Omit<React.HTMLAttributes<HTMLElement>, 
   source?: string;
   /** Plays a track from a list. */
   onPlay: (track: Track, list: PlayQueueTab) => void;
+  /**
+   * A click, Enter or Space on a track with `unavailable`, in place of `onPlay`: the way to fix
+   * it, e.g. a page to find the file.
+   */
+  onUnavailable?: (track: Track) => void;
   /** Shows a remove tool on each row of Up next. */
   onRemove?: (track: Track) => void;
   /** Makes Up next reorderable: move `sourceId` to where `targetId` is. */
@@ -105,6 +111,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
       history = [],
       source,
       onPlay,
+      onUnavailable,
       onRemove,
       onReorder,
       onClear,
@@ -126,6 +133,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
     const [shown, setShown] = useControllable<PlayQueueTab>(tab, defaultTab, onTabChange);
     const sortable = useSortable({ ids: upNext.map((t) => t.id), onReorder: onReorder ?? (() => {}) });
     const remaining = upNext.reduce((sum, t) => sum + t.duration, 0);
+    const select = (track: Track, list: PlayQueueTab) => (track.unavailable ? onUnavailable?.(track) : onPlay(track, list));
     const menu = tidyMenuItems([
       onShuffle && { key: 'shuffle', label: labels.shuffleQueue, icon: <IconShuffle size={16} />, onSelect: onShuffle },
       onSaveAsPlaylist && { key: 'save', label: labels.saveAsPlaylist, icon: <IconPlaylistAdd size={16} />, onSelect: onSaveAsPlaylist },
@@ -169,7 +177,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
                 <section className="ps-play-queue-section" aria-label={labels.nowPlaying}>
                   <span className="ps-play-queue-label" aria-hidden="true">{labels.nowPlaying}</span>
                   <ul className="ps-play-queue-list">
-                    <Row track={current} active playing={playing} onSelect={() => onPlay(current, 'next')} />
+                    <Row track={current} active playing={playing} onSelect={() => select(current, 'next')} />
                   </ul>
                 </section>
               )}
@@ -186,7 +194,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
                       <Row
                         key={track.id}
                         track={track}
-                        onSelect={() => onPlay(track, 'next')}
+                        onSelect={() => select(track, 'next')}
                         onRemove={onRemove && (() => onRemove(track))}
                         removeLabel={labels.removeFromQueue.replace('{title}', track.title)}
                         drag={onReorder ? sortable.itemProps(track.id) : undefined}
@@ -204,7 +212,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
           ) : (
             <ol className="ps-play-queue-list" aria-label={labels.history}>
               {history.map((track, i) => (
-                <Row key={`${track.id}-${i}`} track={track} onSelect={() => onPlay(track, 'history')} />
+                <Row key={`${track.id}-${i}`} track={track} onSelect={() => select(track, 'history')} />
               ))}
             </ol>
           )}
