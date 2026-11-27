@@ -444,3 +444,6 @@ is a breaking change.
   Space in the queue) call the new `onUnavailable(track)` in place of `onPlay`, and a row of `TrackList` has no play
   button. Its ⋮ menu, its heart, removing and reordering still work, and its name reads "Title, Artist, 3:20, Can't
   find this file". `AlbumPage` passes `onUnavailable` on. For Pastel Media Pro's songs whose file has gone missing.
+- `PlayQueue`, and `TrackList` when it can be reordered, say where a row went after Alt + ↑ / ↓: "Moved to position 2
+  of 12", in a polite live region, with `SortableList`'s word `movedTo` (now also in their `labels`). Until now the
+  move was silent for a screen reader.

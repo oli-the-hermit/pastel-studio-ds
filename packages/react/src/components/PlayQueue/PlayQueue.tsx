@@ -1,4 +1,4 @@
-import React, { forwardRef, useId } from 'react';
+import React, { forwardRef, useId, useState } from 'react';
 import { IconClose, IconGrip, IconPlaylistAdd, IconShuffle, IconTrash } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
@@ -19,7 +19,7 @@ export type PlayQueueTab = 'next' | 'history';
 
 type PlayQueueWords =
   | 'queue' | 'upNext' | 'history' | 'nowPlaying' | 'nextFrom' | 'queueEmpty' | 'historyEmpty' | 'queueActions'
-  | 'shuffleQueue' | 'saveAsPlaylist' | 'clearQueue' | 'autoplay' | 'autoplayHint' | 'closeQueue' | 'removeFromQueue' | 'dragToReorder';
+  | 'shuffleQueue' | 'saveAsPlaylist' | 'clearQueue' | 'autoplay' | 'autoplayHint' | 'closeQueue' | 'removeFromQueue' | 'dragToReorder' | 'movedTo';
 
 interface RowProps {
   track: Track;
@@ -131,7 +131,14 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
     const labels = useLabels(ownLabels);
     const titleId = useId();
     const [shown, setShown] = useControllable<PlayQueueTab>(tab, defaultTab, onTabChange);
-    const sortable = useSortable({ ids: upNext.map((t) => t.id), onReorder: onReorder ?? (() => {}) });
+    // Where a track went after Alt + ↑ / ↓, for a screen reader: the move itself is silent.
+    const [announcement, setAnnouncement] = useState('');
+    const sortable = useSortable({
+      ids: upNext.map((t) => t.id),
+      onReorder: onReorder ?? (() => {}),
+      onKeyboardMove: (_, index) =>
+        setAnnouncement(labels.movedTo.replace('{position}', String(index + 1)).replace('{total}', String(upNext.length))),
+    });
     const remaining = upNext.reduce((sum, t) => sum + t.duration, 0);
     const select = (track: Track, list: PlayQueueTab) => (track.unavailable ? onUnavailable?.(track) : onPlay(track, list));
     const menu = tidyMenuItems([
@@ -223,6 +230,7 @@ export const PlayQueue = forwardRef<HTMLElement, PlayQueueProps>(
             <Switch label={labels.autoplay} hint={labels.autoplayHint} checked={autoplay.value} onChange={autoplay.onChange} />
           </div>
         )}
+        {onReorder && <span role="status" className="ps-visually-hidden">{announcement}</span>}
       </Card>
     );
   }

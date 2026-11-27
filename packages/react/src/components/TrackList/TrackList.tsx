@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { IconClock, IconGrip, IconPause, IconPlay } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
@@ -12,7 +12,7 @@ import { PlayerControl } from '../PlayerControl';
 import { useSortable } from '../SortableList';
 import { TrackInfo } from '../TrackInfo';
 
-type TrackListWords = 'trackNumber' | 'trackTitle' | 'album' | 'dateAdded' | 'duration' | 'playTrack' | 'pauseTrack' | 'trackActions' | 'dragToReorder' | 'like' | 'unlike';
+type TrackListWords = 'trackNumber' | 'trackTitle' | 'album' | 'dateAdded' | 'duration' | 'playTrack' | 'pauseTrack' | 'trackActions' | 'dragToReorder' | 'movedTo' | 'like' | 'unlike';
 
 export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onPlay' | 'onPause'> {
   tracks: Track[];
@@ -70,7 +70,14 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
     ref
   ) => {
     const labels = useLabels(ownLabels);
-    const sortable = useSortable({ ids: tracks.map((t) => t.id), onReorder: onReorder ?? (() => {}) });
+    // Where a row went after Alt + ↑ / ↓, for a screen reader: the move itself is silent.
+    const [announcement, setAnnouncement] = useState('');
+    const sortable = useSortable({
+      ids: tracks.map((t) => t.id),
+      onReorder: onReorder ?? (() => {}),
+      onKeyboardMove: (_, index) =>
+        setAnnouncement(labels.movedTo.replace('{position}', String(index + 1)).replace('{total}', String(tracks.length))),
+    });
     const named = (word: string, t: Track) => word.replace('{title}', t.title);
     return (
       <div
@@ -160,6 +167,7 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
             );
           })}
         </ol>
+        {onReorder && <span role="status" className="ps-visually-hidden">{announcement}</span>}
       </div>
     );
   }

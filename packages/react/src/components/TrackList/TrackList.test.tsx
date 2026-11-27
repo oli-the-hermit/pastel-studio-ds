@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Track } from '../../lib/types';
@@ -10,6 +10,8 @@ const t = (id: string, title: string, number: number): Track => ({ id, title, ar
 const tracks = [t('a', 'Signal Fires', 1), t('b', 'Low Tide Radio', 2), t('c', 'Northbound', 3)];
 const noop = () => {};
 const rows = () => screen.getAllByRole('listitem');
+/** Waits for the next frame, when a row that moved gets the focus back. */
+const frame = () => act(() => new Promise<void>((done) => requestAnimationFrame(() => done())));
 
 describe('TrackList', () => {
   it('lists named rows with their numbers and lengths, under a hidden header', () => {
@@ -103,5 +105,38 @@ describe('TrackList', () => {
     rows()[0].focus();
     await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
     expect(rows().map((r) => r.querySelector('.ps-track-info-title')?.textContent)).toEqual(['Low Tide Radio', 'Signal Fires', 'Northbound']);
+  });
+
+  it('says where a row went after a move from the keyboard, in its own words', async () => {
+    const user = userEvent.setup();
+    function Playlist({ movedTo }: { movedTo?: string }) {
+      const [list, setList] = useState(tracks);
+      return <TrackList tracks={list} onPlay={noop} onReorder={(a, b) => setList((l) => moveById(l, a, b) ?? l)} labels={movedTo ? { movedTo } : undefined} />;
+    }
+    const { rerender } = render(<Playlist />);
+    const status = screen.getByRole('status');
+    expect(status.className).toBe('ps-visually-hidden');
+    expect(status.textContent).toBe('');
+    const moved = rows()[0];
+    moved.focus();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 2 of 3');
+    // The row that moved has the focus again by the next frame.
+    await frame();
+    expect(document.activeElement).toBe(moved);
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 3 of 3');
+    await frame();
+    // At the end there is nowhere to go: nothing new is said.
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 3 of 3');
+    rerender(<Playlist movedTo="Ahora en {position} de {total}" />);
+    await user.keyboard('{Alt>}{ArrowUp}{/Alt}');
+    expect(status.textContent).toBe('Ahora en 2 de 3');
+  });
+
+  it('has no live region when its rows cannot be moved', () => {
+    render(<TrackList tracks={tracks} onPlay={noop} />);
+    expect(screen.queryByRole('status')).toBeNull();
   });
 });

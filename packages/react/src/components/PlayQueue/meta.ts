@@ -17,14 +17,15 @@ export const meta: ComponentMeta = {
   keyboard: [
     { keys: 'Tab', action: 'Moves through the tabs, the rows and their tools.' },
     { keys: 'Enter / Space', action: 'Plays the focused row; on an unavailable one, calls `onUnavailable`.' },
-    { keys: 'Alt + ↑ / ↓', action: 'Moves the focused queued track, when `onReorder` is given.' },
+    { keys: 'Alt + ↑ / ↓', action: 'Moves the focused queued track, when `onReorder` is given, and says where it went.' },
   ],
-  labels: ['queue', 'upNext', 'history', 'nowPlaying', 'nextFrom', 'queueEmpty', 'historyEmpty', 'queueActions', 'shuffleQueue', 'saveAsPlaylist', 'clearQueue', 'autoplay', 'autoplayHint', 'closeQueue', 'removeFromQueue', 'dragToReorder'],
+  labels: ['queue', 'upNext', 'history', 'nowPlaying', 'nextFrom', 'queueEmpty', 'historyEmpty', 'queueActions', 'shuffleQueue', 'saveAsPlaylist', 'clearQueue', 'autoplay', 'autoplayHint', 'closeQueue', 'removeFromQueue', 'dragToReorder', 'movedTo'],
   aria: [
     'An `aside` landmark named by its heading, "Queue".',
     'The playing row has `aria-current`; each remove tool names its track.',
     'An unavailable row reads its reason with its title, in the artist\'s place.',
     'Up next and history are lists; the tab switch is a SegmentedControl.',
+    'A move from the keyboard is announced in a polite live region: "Moved to position 2 of 12".',
   ],
   related: ['QueuePanel', 'TrackList', 'TransportControls'],
 };

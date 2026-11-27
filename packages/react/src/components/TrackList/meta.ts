@@ -19,13 +19,14 @@ export const meta: ComponentMeta = {
   keyboard: [
     { keys: 'Tab', action: 'Moves between rows and their tools.' },
     { keys: 'Enter', action: 'Plays the focused row; on an unavailable one, calls `onUnavailable`.' },
-    { keys: 'Alt + ↑ / ↓', action: 'Moves the focused row, when `onReorder` is given.' },
+    { keys: 'Alt + ↑ / ↓', action: 'Moves the focused row, when `onReorder` is given, and says where it went.' },
   ],
-  labels: ['trackNumber', 'trackTitle', 'album', 'dateAdded', 'duration', 'playTrack', 'pauseTrack', 'trackActions', 'dragToReorder', 'like', 'unlike'],
+  labels: ['trackNumber', 'trackTitle', 'album', 'dateAdded', 'duration', 'playTrack', 'pauseTrack', 'trackActions', 'dragToReorder', 'movedTo', 'like', 'unlike'],
   aria: [
     'An ordered list; each row is focusable and named "Title, Artist, 3:20".',
     'The play button on a number and the ⋮ menu name the track they act on.',
     'The loaded track has `aria-current`. A double click also plays a row.',
+    'A move from the keyboard is announced in a polite live region: "Moved to position 2 of 12".',
     'An unavailable row adds the reason to its name: "Title, Artist, 3:20, Can\'t find this file".',
   ],
   related: ['PlayQueue', 'LikeButton', 'SortableList'],

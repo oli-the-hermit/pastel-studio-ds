@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Track } from '../../lib/types';
@@ -60,6 +60,25 @@ describe('PlayQueue', () => {
     within(screen.getByRole('region', { name: 'Up next' })).getAllByRole('listitem')[0].focus();
     await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
     expect(upNextTitles()).toEqual(['Northbound', 'Low Tide Radio']);
+  });
+
+  it('says where a track went after a move from the keyboard', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Queue />);
+    const status = screen.getByRole('status');
+    expect(status.className).toBe('ps-visually-hidden');
+    expect(status.textContent).toBe('');
+    within(screen.getByRole('region', { name: 'Up next' })).getAllByRole('listitem')[0].focus();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 2 of 2');
+    // The row that moved has the focus again by the next frame.
+    await act(() => new Promise<void>((done) => requestAnimationFrame(() => done())));
+    await user.keyboard('{Alt>}{ArrowUp}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 1 of 2');
+    unmount();
+    // A queue that can't be reordered has nothing to announce.
+    render(<PlayQueue upNext={next} onPlay={noop} />);
+    expect(screen.queryByRole('status')).toBeNull();
   });
 
   it('dims an unavailable track, says why, and calls onUnavailable in place of onPlay', async () => {
