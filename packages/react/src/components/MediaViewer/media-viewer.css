@@ -1,8 +1,9 @@
 /* ── MediaViewer: one item, as large as the window allows ───────
-   Over the scrim, a margin that grows with the window (--ps-media-viewer-inset) around a card:
-   the bar and the stage, and the details panel beside them. The media is fitted to the stage
-   with no aspect ratio of the viewer's own; when the viewer is narrower than 880px (a window
-   under about 940px) the panel floats over the stage. */
+   Over the scrim, a margin that grows with the window (--ps-media-viewer-inset) around a card.
+   Inside the card's padding: the bar over a rounded stage, and the details panel beside them.
+   The stage clips whatever it shows to its corners, an image or a video player, zoomed or not.
+   The media is fitted to the stage with no aspect ratio of the viewer's own; when the viewer is
+   narrower than 880px (a window under about 940px) the panel floats over the stage. */
 .ps-media-viewer-backdrop {
   position: fixed;
   inset: 0;
@@ -18,8 +19,10 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--ps-space-12);
   min-width: 0;
   min-height: 0;
+  padding: var(--ps-space-12);
   overflow: hidden;
   border-radius: var(--ps-radius-3xl);
   background: var(--ps-surface-1);
@@ -32,14 +35,25 @@
 
 .ps-media-viewer-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 
+/* The bar: the item's kind, name and place, spread apart; then, with the panel closed, the tool
+   groups, each one kept together. */
 .ps-media-viewer-bar {
   flex: none;
   display: flex;
   align-items: center;
-  gap: var(--ps-space-4);
+  gap: var(--ps-space-12);
   height: var(--ps-media-viewer-bar);
-  padding: 0 var(--ps-space-12) 0 var(--ps-space-20);
+  padding-left: var(--ps-space-12);
 }
+.ps-media-viewer-heading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-8);
+  min-width: 0;
+  padding-right: var(--ps-space-12);
+}
+.ps-media-viewer-icon { flex: none; display: flex; color: var(--ps-text-3); }
 .ps-media-viewer-title {
   min-width: 0;
   overflow: hidden;
@@ -50,29 +64,22 @@
 }
 .ps-media-viewer-position {
   flex: none;
-  margin-left: var(--ps-space-8);
+  margin-left: auto;
+  padding-left: var(--ps-space-16);
   color: var(--ps-text-3);
   font-size: var(--ps-font-size-sm);
   font-variant-numeric: tabular-nums;
 }
+.ps-media-viewer-group { flex: none; display: flex; align-items: center; gap: var(--ps-space-2); }
 .ps-media-viewer-spacer { flex: 1; }
-.ps-media-viewer-zoom { display: flex; align-items: center; gap: var(--ps-space-2); }
-.ps-media-viewer-percent {
-  min-width: calc(var(--ps-icon-button-size-sm) * 1.75);
-  height: var(--ps-icon-button-size-sm);
-  border-radius: var(--ps-radius-pill);
-  color: var(--ps-text-2);
-  font-size: var(--ps-font-size-sm);
-  font-variant-numeric: tabular-nums;
-  transition: background-color var(--ps-dur-1) var(--ps-ease-standard);
-}
-.ps-media-viewer-percent:hover { background: var(--ps-surface-2); color: var(--ps-text-1); }
 
+/* The stage: rounded, and nothing inside it shows past its corners. */
 .ps-media-viewer-stage {
   position: relative;
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  border-radius: var(--ps-radius-xl);
   background: var(--ps-media-backdrop);
   touch-action: none;
 }
@@ -92,6 +99,8 @@
 .ps-media-viewer-canvas > * { width: 100%; height: 100%; min-width: 0; min-height: 0; }
 .ps-media-viewer-canvas > img,
 .ps-media-viewer-canvas > video { display: block; object-fit: contain; user-select: none; }
+/* A video player takes the stage's corners, not its own (it keeps its own in full screen). */
+.ps-media-viewer-canvas > .ps-video-player:not(.is-fullscreen) { border-radius: 0; }
 
 /* Previous and next on the stage's edges, on the media dock, while the pointer is over it. */
 .ps-media-viewer-nav {
@@ -106,23 +115,70 @@
 .ps-media-viewer-stage:hover .ps-media-viewer-nav,
 .ps-media-viewer-nav:focus-visible { opacity: 1; }
 
+/* Zoom: a see-through box in the stage's corner, so the picture shows through it. It fades when
+   the pointer rests and no key is pressed, but never under the pointer or a keyboard focus. */
+.ps-media-viewer-zoom {
+  position: absolute;
+  right: var(--ps-space-12);
+  bottom: var(--ps-space-12);
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-2);
+  padding: var(--ps-space-4);
+  border-radius: var(--ps-radius-lg);
+  background: var(--ps-media-overlay-glass);
+  color: var(--ps-media-on-overlay);
+  backdrop-filter: blur(var(--ps-media-overlay-blur));
+  cursor: default;
+  transition: opacity var(--ps-dur-3) var(--ps-ease-standard);
+}
+.ps-media-viewer.is-idle .ps-media-viewer-zoom:not(:hover, :has(:focus-visible)) { opacity: 0; pointer-events: none; }
+.ps-media-viewer-percent {
+  min-width: calc(var(--ps-icon-button-size-sm) * 1.75);
+  height: var(--ps-icon-button-size-sm);
+  border-radius: var(--ps-radius-pill);
+  color: var(--ps-media-on-overlay-2);
+  font-size: var(--ps-font-size-sm);
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--ps-dur-1) var(--ps-ease-standard);
+}
+.ps-media-viewer-percent:hover { background: var(--ps-media-overlay-hover); color: var(--ps-media-on-overlay); }
+.ps-media-viewer-percent:focus-visible { outline-color: var(--ps-media-focus-ring); }
+
+/* The panel: its head lines up with the bar (the details toggle, then the tool groups), and the
+   details scroll under it. */
 .ps-media-viewer-panel {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 0;
-  overflow-y: auto;
-  padding: var(--ps-space-16);
+  padding-left: var(--ps-space-16);
   background: var(--ps-surface-1);
+}
+.ps-media-viewer-panel-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-12);
+  height: var(--ps-media-viewer-bar);
+}
+.ps-media-viewer-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--ps-space-16) var(--ps-space-4) var(--ps-space-4) 0;
 }
 
 @container (width < 880px) {
   .ps-media-viewer.is-panel-open { grid-template-columns: minmax(0, 1fr); }
   .ps-media-viewer-panel {
     position: absolute;
-    top: var(--ps-media-viewer-bar);
+    top: 0;
     right: 0;
     bottom: 0;
     z-index: 2;
     width: min(var(--ps-aside-width), 90%);
+    padding: 0 var(--ps-space-12) var(--ps-space-12) var(--ps-space-16);
     box-shadow: var(--ps-elev-overlay);
   }
 }

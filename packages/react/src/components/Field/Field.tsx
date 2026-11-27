@@ -19,12 +19,14 @@ export interface FieldProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   group?: boolean;
   /** Extra space above, to separate it from the field before. */
   spaced?: boolean;
+  /** At the far end of the label's row: the field's own status or tools (a saved tick, a copy button). */
+  action?: React.ReactNode;
   children: React.ReactNode;
 }
 
 /** A label above a control, with optional help or an error under it: the unit of every form. */
 export const Field = forwardRef<HTMLDivElement, FieldProps>(
-  ({ label, labelHint, hint, error, htmlFor, group = false, spaced = false, className, children, ...rest }, ref) => {
+  ({ label, labelHint, hint, error, htmlFor, group = false, spaced = false, action, className, children, ...rest }, ref) => {
     const autoId = useId();
     let controlId = htmlFor;
     let content = children;
@@ -53,13 +55,20 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(
       </>
     );
 
+    const labelElement = group ? (
+      <span className="ps-field-label">{labelContent}</span>
+    ) : (
+      <label className="ps-field-label" htmlFor={controlId}>{labelContent}</label>
+    );
+
     return (
       <div ref={ref} className={cx('ps-field', spaced && 'ps-field--spaced', className)} {...rest}>
-        {group ? (
-          <span className="ps-field-label">{labelContent}</span>
-        ) : (
-          <label className="ps-field-label" htmlFor={controlId}>{labelContent}</label>
-        )}
+        {action ? (
+          <div className="ps-field-head">
+            {labelElement}
+            <div className="ps-field-action">{action}</div>
+          </div>
+        ) : labelElement}
         {content}
         {error ? <FormError id={noteId}>{error}</FormError> : hint && <FormHint id={noteId}>{hint}</FormHint>}
       </div>

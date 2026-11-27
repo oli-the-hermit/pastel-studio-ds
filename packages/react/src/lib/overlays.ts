@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { createContext, useEffect } from 'react';
 
 /**
  * Registry of overlays that pause an app's keyboard shortcuts (modals, menus, anything
@@ -22,3 +22,14 @@ export function useBlockingOverlay(active: boolean): void {
 export function isBlockingOverlayOpen(): boolean {
   return openCount > 0;
 }
+
+/** How many blocking overlays are open now. */
+export function blockingOverlayCount(): number {
+  return openCount;
+}
+
+/**
+ * How many blocking overlays its contents sit inside: a full-screen overlay (the media viewer)
+ * raises it for what it holds, so a player in it can still go idle while nothing opens over it.
+ */
+export const OverlayDepth = createContext(0);
