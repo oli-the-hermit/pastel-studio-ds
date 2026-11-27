@@ -1,7 +1,8 @@
 /* ── TrackList: rows of tracks on one grid ──────────────────────
    Number · title · [album] · [date] · heart · length · ⋮. The optional columns fold away as
    the list narrows (a container query: the rows follow the list's width).
-   --ps-track-list-dim is how much of an unavailable track's cover still shows. */
+   --ps-track-list-dim is how much of an unavailable track's cover still shows.
+   A long list draws only the rows near the screen; .ps-track-list-gap stands for the rest. */
 .ps-track-list { --ps-track-list-dim: 0.4; min-width: 0; container: ps-track-list / inline-size; }
 
 .ps-track-list-head,
@@ -34,6 +35,9 @@
   text-transform: uppercase;
 }
 .ps-track-list-rows { display: flex; flex-direction: column; gap: var(--ps-space-2); list-style: none; }
+/* A gap is never what the browser holds still when the page changes (scroll anchoring): as the
+   rows around it change, it would take the scroll position with it. */
+.ps-track-list-gap { flex: none; overflow-anchor: none; }
 
 .ps-track-list-row {
   position: relative;

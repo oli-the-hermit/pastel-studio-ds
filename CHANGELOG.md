@@ -464,3 +464,16 @@ is a breaking change.
   `--ps-episode-card-width` (256px), so they line up. The button is named by its overline, title and length, then
   "Watched" or the reason it is unavailable, and described by its summary, so a row of episodes can be gone through
   quickly; an `aria-label` of your own replaces that name. For Pastel Media Pro's series pages.
+- A long list draws only the rows near the screen. With more than 200 rows, `TrackList` and `PlayQueue` (up next and
+  the history) draw the rows on screen and six around them, and stand for the rest with empty items of their height,
+  so the scroll height stays that of the whole list; up to 200 rows nothing changes. The lists are not their own
+  scroller: the new hook `useWindowedRows(listRef, { count, overscan, threshold, keep })` finds the nearest scrolling
+  element above the list, or the page, reads a row's height from the first row drawn and the space between rows from
+  the list's `row-gap`, follows the scroll and any resize, and answers again once per row scrolled (with
+  `gridLayout`'s functions, as `MediaGrid`; `listLayout` is new there). It returns the first and last row, the
+  heights that stand for the rows above and below, and `slots`, what to draw in order (`windowedSlots` builds them).
+  The row that last had the focus and a row being dragged stay drawn while scrolled away (`useSortable` returns
+  `draggedId` for it), rows have `aria-posinset` and `aria-setsize`, and the gaps are hidden from assistive
+  technology and kept out of scroll anchoring. Without a layout a long list draws its first 48 rows. Tab, Enter,
+  Alt + ↑ / ↓, dragging, `currentId` and the row menus work as in a short list. For Pastel Media Pro's song library
+  of thousands of songs, and its queue.

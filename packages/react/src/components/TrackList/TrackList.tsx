@@ -1,9 +1,10 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useMemo, useRef, useState } from 'react';
 import { IconClock, IconGrip, IconPause, IconPlay } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { formatTime } from '../../lib/format';
 import type { Track } from '../../lib/types';
+import { useWindowedRows, WINDOWED_ROWS_THRESHOLD } from '../../lib/useWindowedRows';
 import { CoverArt } from '../CoverArt';
 import { Equalizer } from '../Equalizer';
 import { LikeButton } from '../LikeButton';
@@ -46,6 +47,8 @@ export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement
 /**
  * A list of tracks: the number (a play button on hover, the bars while playing), title and artist,
  * an optional cover, album and date, a heart, the length and a ⋮ menu. Columns fold away as it narrows.
+ * With more than 200 tracks it draws only the rows near the screen, as the page or the panel
+ * around it scrolls, so a library of thousands of songs stays quick.
  */
 export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
   (
@@ -72,13 +75,24 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
     const labels = useLabels(ownLabels);
     // Where a row went after Alt + ↑ / ↓, for a screen reader: the move itself is silent.
     const [announcement, setAnnouncement] = useState('');
+    const ids = useMemo(() => tracks.map((t) => t.id), [tracks]);
     const sortable = useSortable({
-      ids: tracks.map((t) => t.id),
+      ids,
       onReorder: onReorder ?? (() => {}),
       onKeyboardMove: (_, index) =>
         setAnnouncement(labels.movedTo.replace('{position}', String(index + 1)).replace('{total}', String(tracks.length))),
     });
     const named = (word: string, t: Track) => word.replace('{title}', t.title);
+    // A long list draws only the rows near the screen. The row that last had the keyboard focus
+    // and the row being dragged stay drawn wherever the scroll is: the focus is never lost, and a
+    // drag can scroll the list under it.
+    const listRef = useRef<HTMLOListElement>(null);
+    const [focusId, setFocusId] = useState<string | null>(null);
+    const indexOf = (id: string | null) => (id === null ? -1 : ids.indexOf(id));
+    const rows = useWindowedRows(listRef, {
+      count: tracks.length,
+      keep: tracks.length > WINDOWED_ROWS_THRESHOLD ? [indexOf(focusId), indexOf(sortable.draggedId)] : undefined,
+    });
     return (
       <div
         ref={ref}
@@ -102,8 +116,21 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
             <span className="ps-track-list-more" />
           </div>
         )}
-        <ol className="ps-track-list-rows" aria-label={ariaLabel}>
-          {tracks.map((t, i) => {
+        <ol
+          ref={listRef}
+          className="ps-track-list-rows"
+          aria-label={ariaLabel}
+          onFocus={rows.windowed ? (e) => {
+            // The focus is in a row, or in one of its tools; a row's menu, drawn elsewhere, is neither.
+            const row = (e.target as HTMLElement).closest<HTMLElement>('[data-index]');
+            if (row?.parentElement === e.currentTarget) setFocusId(ids[Number(row.dataset.index)] ?? null);
+          } : undefined}
+        >
+          {rows.slots.map((slot) => {
+            // The rows left out, as one empty item of their height: the scroll stays the whole list's.
+            if (slot.kind === 'gap') return <li key={slot.key} className="ps-track-list-gap" aria-hidden="true" style={{ height: slot.height }} />;
+            const i = slot.index;
+            const t = tracks[i];
             const current = t.id === currentId;
             const isPlaying = current && playing;
             const liked = likedIds?.has(t.id) ?? false;
@@ -122,6 +149,10 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
                   sortable.isDragOver(t.id) && 'is-drag-over'
                 )}
                 tabIndex={0}
+                // Only some rows are drawn: each says its place in the whole list.
+                data-index={rows.windowed ? i : undefined}
+                aria-posinset={rows.windowed ? i + 1 : undefined}
+                aria-setsize={rows.windowed ? tracks.length : undefined}
                 aria-current={current ? 'true' : undefined}
                 aria-label={`${t.title}, ${t.artist}, ${formatTime(t.duration)}${unavailable ? `, ${unavailable}` : ''}`}
                 onDoubleClick={activate}

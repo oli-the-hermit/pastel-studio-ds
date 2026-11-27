@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gridLayout, rowsFromTopRow, sameTopRow, visibleRows } from './gridLayout';
+import { gridLayout, listLayout, rowsFromTopRow, sameTopRow, visibleRows } from './gridLayout';
 
 describe('gridLayout', () => {
   it('fits as many tiles as the width holds and stretches them to fill the row', () => {
@@ -16,6 +16,18 @@ describe('gridLayout', () => {
   it('keeps one column when the width is narrower than a tile, and has no height without items', () => {
     expect(gridLayout(120, 200, 16, 44, 5).columns).toBe(1);
     expect(gridLayout(1000, 200, 16, 44, 0)).toMatchObject({ rows: 0, height: 0 });
+  });
+});
+
+describe('listLayout', () => {
+  it('is a grid of one column, one row for each item', () => {
+    // 100 rows of 56px, 2px apart.
+    const layout = listLayout(56, 2, 100);
+    expect(layout).toMatchObject({ columns: 1, rowHeight: 56, stride: 58, rows: 100, height: 100 * 58 - 2 });
+    expect(listLayout(56, 2, 0).height).toBe(0);
+    expect(rowsFromTopRow(layout, 580 + 30, 580, 3)).toEqual({ first: 7, last: 23 });
+    expect(sameTopRow(layout, 580, 580 + 57)).toBe(true);
+    expect(sameTopRow(layout, 580, 580 + 58)).toBe(false);
   });
 });
 

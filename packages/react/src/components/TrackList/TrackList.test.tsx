@@ -135,6 +135,21 @@ describe('TrackList', () => {
     expect(status.textContent).toBe('Ahora en 2 de 3');
   });
 
+  // With a layout it draws the rows near the screen: see TrackList.scroll.test.tsx.
+  it('draws a first batch of a long list where there is no layout, each row with its place', () => {
+    const many: Track[] = Array.from({ length: 5_000 }, (_, i) => t(`m${i}`, `Song ${i + 1}`, i + 1));
+    const { container, rerender } = render(<TrackList ariaLabel="All songs" tracks={many} onPlay={noop} />);
+    expect(rows()).toHaveLength(48);
+    expect(container.querySelector('.ps-track-list-gap')).toBeNull();
+    expect(rows()[47].getAttribute('aria-posinset')).toBe('48');
+    expect(rows()[47].getAttribute('aria-setsize')).toBe('5000');
+    // Up to 200 tracks nothing is windowed, and nothing is added to the rows.
+    rerender(<TrackList ariaLabel="All songs" tracks={many.slice(0, 200)} onPlay={noop} />);
+    expect(rows()).toHaveLength(200);
+    expect(rows()[0].hasAttribute('aria-posinset')).toBe(false);
+    expect(rows()[0].hasAttribute('data-index')).toBe(false);
+  });
+
   it('has no live region when its rows cannot be moved', () => {
     render(<TrackList tracks={tracks} onPlay={noop} />);
     expect(screen.queryByRole('status')).toBeNull();
