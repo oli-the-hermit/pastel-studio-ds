@@ -108,6 +108,7 @@ export * from './components/MediaViewer';
 export * from './components/TitleTile';
 export * from './components/MediaRow';
 export * from './components/HeroBanner';
+export * from './components/TitleHeader';
 export * from './components/ListPicker';
 export * from './components/ListRow';
 export * from './theme';

@@ -447,3 +447,13 @@ is a breaking change.
 - `PlayQueue`, and `TrackList` when it can be reordered, say where a row went after Alt + ↑ / ↓: "Moved to position 2
   of 12", in a polite live region, with `SortableList`'s word `movedTo` (now also in their `labels`). Until now the
   move was silent for a screen reader.
+- `TitleHeader`: the head of a film or series page. A `<header>` with a `title` (a heading, `headingLevel` 1 to 3,
+  default 2), an `overline` ("Film"), `facts` joined with a middle dot, a `rating` as a chip beside them (`value`,
+  `source`, and `label` for what a screen reader says), the `summary` shown whole at a readable measure, `actions`,
+  and a last line (`children`). A 2:3 `poster` sits beside the text, with `icon` in its place when there is none or
+  it fails. A `backdrop` covers the header behind everything: it shows in a band above the text and to the right of
+  it, has faded out where the text is and fades toward the lower edge (masks, no color laid over it), so the text
+  stays on the page's surface in both themes; a backdrop that fails to load behaves as none. Knobs:
+  `--ps-title-header-min-height` (360px) and `--ps-title-header-band` (120px) with a backdrop,
+  `--ps-title-header-measure` (560px), `--ps-title-header-poster` (200px), `--ps-title-header-radius`. Under 640px
+  wide the poster is smaller and sits above the text. For Pastel Media Pro's film and series pages.

@@ -1,0 +1,112 @@
+/* ── TitleHeader: the head of a film or series page ─────────────
+   A poster beside the kind, the title, the facts, the overview and the buttons, over a wide
+   picture. The text sits on the page's own surface, in the theme's text colors: the picture is
+   masked, not covered with a color. It shows in a band above the text and to the right of it,
+   has faded to nothing where the text is, and fades out toward the lower edge.
+   On its class: --ps-title-header-min-height and --ps-title-header-band (the room above the
+   text that the picture has to itself) count only with a backdrop; --ps-title-header-measure is
+   the text's longest line, --ps-title-header-poster the poster's width and
+   --ps-title-header-radius the backdrop's corners. */
+.ps-title-header {
+  --ps-title-header-min-height: 360px;
+  --ps-title-header-band: 120px;
+  --ps-title-header-measure: 560px;
+  --ps-title-header-poster: 200px;
+  --ps-title-header-radius: var(--ps-radius-3xl);
+  --ps-title-header-gap: var(--ps-space-28);
+  /* How far from the left edge the picture stays clear: the text, and the poster when there is one. */
+  --ps-title-header-clear: var(--ps-title-header-measure);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  color: var(--ps-text-1);
+  container: ps-title-header / inline-size;
+}
+.ps-title-header--poster { --ps-title-header-clear: calc(var(--ps-title-header-measure) + var(--ps-title-header-poster) + var(--ps-title-header-gap)); }
+.ps-title-header.is-backdropped { min-height: var(--ps-title-header-min-height); padding-top: var(--ps-title-header-band); }
+
+/* The picture covers the header. Its own mask lets it show in the band above the text and past
+   the text's right end; the mask of the box around it fades the whole toward the lower edge. */
+.ps-title-header-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--ps-title-header-radius);
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 50%, transparent);
+}
+.ps-title-header-backdrop > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image:
+    linear-gradient(to bottom, black calc(var(--ps-title-header-band) * 0.4), transparent var(--ps-title-header-band)),
+    linear-gradient(to right, transparent var(--ps-title-header-clear), black calc(var(--ps-title-header-clear) + 30%));
+}
+
+.ps-title-header-body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: var(--ps-title-header-gap);
+  min-width: 0;
+}
+
+.ps-title-header-poster {
+  flex: none;
+  width: var(--ps-title-header-poster);
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--ps-radius-xl);
+  background: var(--ps-surface-2);
+}
+.ps-title-header-poster > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ps-title-header-icon { display: grid; place-items: center; width: 100%; height: 100%; color: var(--ps-text-3); }
+.ps-title-header-icon > svg { width: 34%; height: 34%; }
+
+.ps-title-header-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ps-space-8);
+  min-width: 0;
+  max-width: var(--ps-title-header-measure);
+}
+.ps-title-header-overline {
+  color: var(--ps-accent-text);
+  font-size: var(--ps-font-size-xs);
+  font-weight: var(--ps-font-weight-bold);
+  letter-spacing: var(--ps-tracking-caps);
+  text-transform: uppercase;
+}
+.ps-title-header-title {
+  font-size: clamp(var(--ps-font-size-2xl), 6cqi, var(--ps-font-size-4xl));
+  font-weight: var(--ps-font-weight-bold);
+  line-height: var(--ps-leading-tight);
+  letter-spacing: var(--ps-tracking-tighter);
+  overflow-wrap: anywhere;
+}
+.ps-title-header-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ps-space-6) var(--ps-space-10);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-md);
+  line-height: var(--ps-leading-normal);
+}
+.ps-title-header-rating-value { color: var(--ps-text-1); font-weight: var(--ps-font-weight-bold); }
+/* The whole overview: it is not cut off. */
+.ps-title-header-summary { color: var(--ps-text-2); font-size: var(--ps-font-size-md); line-height: var(--ps-leading-normal); overflow-wrap: anywhere; }
+.ps-title-header-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ps-space-8); margin-top: var(--ps-space-12); }
+.ps-title-header-note { color: var(--ps-text-2); font-size: var(--ps-font-size-sm); line-height: var(--ps-leading-normal); }
+
+/* Narrow: a smaller poster above the text. Nothing shows beside the text any more, so the
+   picture is the band above it. */
+@container ps-title-header (max-width: 640px) {
+  .ps-title-header-body { flex-direction: column; align-items: flex-start; gap: var(--ps-space-18); }
+  .ps-title-header-poster { width: min(var(--ps-title-header-poster), 40%); }
+}
