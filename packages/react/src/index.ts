@@ -23,6 +23,8 @@ export { PortalProvider, usePortalContainer } from './lib/portal';
 export type { PortalProviderProps } from './lib/portal';
 export { useZoomPan } from './lib/useZoomPan';
 export type { ZoomPan, ZoomPanOptions, ZoomPanState } from './lib/useZoomPan';
+export { useWindowedRows, windowedSlots, WINDOWED_ROWS_THRESHOLD } from './lib/useWindowedRows';
+export type { WindowedRows, WindowedRowsOptions, WindowedSlot } from './lib/useWindowedRows';
 export type { Surface } from './lib/surface';
 export * from './icons';
 
@@ -108,6 +110,8 @@ export * from './components/MediaViewer';
 export * from './components/TitleTile';
 export * from './components/MediaRow';
 export * from './components/HeroBanner';
+export * from './components/TitleHeader';
+export * from './components/EpisodeCard';
 export * from './components/ListPicker';
 export * from './components/ListRow';
 export * from './theme';

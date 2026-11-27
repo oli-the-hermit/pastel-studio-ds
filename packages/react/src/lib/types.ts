@@ -14,6 +14,8 @@ export interface Track {
   number?: number;
   /** When it was added to a playlist (ISO date). */
   addedAt?: string;
+  /** Why it can't be played, in a few words: "Can't find this file". Lists dim it and say why. */
+  unavailable?: string;
 }
 
 /** An album, EP, single or playlist. */
@@ -24,6 +26,8 @@ export interface Album {
   kind: 'Album' | 'EP' | 'Single' | 'Playlist' | 'Compilation';
   year?: number;
   cover?: string;
+  /** Covers to show as a mosaic when there is no `cover`: a playlist's first albums. */
+  covers?: string[];
   tracks: Track[];
   description?: string;
   label?: string;

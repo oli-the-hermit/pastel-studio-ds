@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Track } from '../../lib/types';
@@ -10,6 +10,8 @@ const t = (id: string, title: string, number: number): Track => ({ id, title, ar
 const tracks = [t('a', 'Signal Fires', 1), t('b', 'Low Tide Radio', 2), t('c', 'Northbound', 3)];
 const noop = () => {};
 const rows = () => screen.getAllByRole('listitem');
+/** Waits for the next frame, when a row that moved gets the focus back. */
+const frame = () => act(() => new Promise<void>((done) => requestAnimationFrame(() => done())));
 
 describe('TrackList', () => {
   it('lists named rows with their numbers and lengths, under a hidden header', () => {
@@ -48,6 +50,50 @@ describe('TrackList', () => {
     expect(screen.getByRole('menuitem', { name: 'Add to queue' })).toBeTruthy();
   });
 
+  it('dims a track that is unavailable, says why, and calls onUnavailable in place of onPlay', async () => {
+    const onPlay = vi.fn();
+    const onUnavailable = vi.fn();
+    const user = userEvent.setup();
+    const missing: Track = { ...tracks[1], unavailable: "Can't find this file" };
+    render(
+      <TrackList tracks={[tracks[0], missing, tracks[2]]} onPlay={onPlay} onUnavailable={onUnavailable} columns={{ cover: true }} rowActions={() => [{ key: 'find', label: 'Find the file', onSelect: noop }]} />
+    );
+    const row = rows()[1];
+    expect(row.className).toBe('ps-track-list-row is-unavailable');
+    expect(rows()[0].className).toBe('ps-track-list-row');
+    expect(row.getAttribute('aria-label')).toBe("Low Tide Radio, Glass Harbor, 3:20, Can't find this file");
+    // The reason stands where the artist was, and there is no play button.
+    expect(row.querySelector('.ps-track-info-meta')?.textContent).toBe("Can't find this file");
+    expect(row.querySelector('.ps-track-list-num-play')).toBeNull();
+    expect(row.querySelector('.ps-track-list-num-text')?.textContent).toBe('2');
+    expect(rows()[0].querySelector('.ps-track-list-num-play')).toBeTruthy();
+    await user.dblClick(row);
+    row.focus();
+    await user.keyboard('{Enter}');
+    expect(onUnavailable.mock.calls.map(([track]) => track)).toEqual([missing, missing]);
+    expect(onPlay).not.toHaveBeenCalled();
+    // Its menu still opens.
+    await user.click(screen.getByRole('button', { name: 'More actions for Low Tide Radio' }));
+    expect(screen.getByRole('menuitem', { name: 'Find the file' })).toBeTruthy();
+  });
+
+  it('leaves an unavailable track alone when nothing handles it, and still moves it', async () => {
+    const onPlay = vi.fn();
+    const user = userEvent.setup();
+    function Playlist() {
+      const [list, setList] = useState<Track[]>([{ ...tracks[0], unavailable: 'The drive is not connected' }, tracks[1], tracks[2]]);
+      return <TrackList tracks={list} onPlay={onPlay} onReorder={(a, b) => setList((l) => moveById(l, a, b) ?? l)} />;
+    }
+    render(<Playlist />);
+    await user.dblClick(rows()[0]);
+    rows()[0].focus();
+    await user.keyboard('{Enter}');
+    expect(onPlay).not.toHaveBeenCalled();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(rows().map((r) => r.querySelector('.ps-track-info-title')?.textContent)).toEqual(['Low Tide Radio', 'Signal Fires', 'Northbound']);
+    expect(rows()[1].className).toContain('is-unavailable');
+  });
+
   it('turns columns into classes and reorders with Alt + arrows', async () => {
     const user = userEvent.setup();
     function Playlist() {
@@ -59,5 +105,53 @@ describe('TrackList', () => {
     rows()[0].focus();
     await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
     expect(rows().map((r) => r.querySelector('.ps-track-info-title')?.textContent)).toEqual(['Low Tide Radio', 'Signal Fires', 'Northbound']);
+  });
+
+  it('says where a row went after a move from the keyboard, in its own words', async () => {
+    const user = userEvent.setup();
+    function Playlist({ movedTo }: { movedTo?: string }) {
+      const [list, setList] = useState(tracks);
+      return <TrackList tracks={list} onPlay={noop} onReorder={(a, b) => setList((l) => moveById(l, a, b) ?? l)} labels={movedTo ? { movedTo } : undefined} />;
+    }
+    const { rerender } = render(<Playlist />);
+    const status = screen.getByRole('status');
+    expect(status.className).toBe('ps-visually-hidden');
+    expect(status.textContent).toBe('');
+    const moved = rows()[0];
+    moved.focus();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 2 of 3');
+    // The row that moved has the focus again by the next frame.
+    await frame();
+    expect(document.activeElement).toBe(moved);
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 3 of 3');
+    await frame();
+    // At the end there is nowhere to go: nothing new is said.
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 3 of 3');
+    rerender(<Playlist movedTo="Ahora en {position} de {total}" />);
+    await user.keyboard('{Alt>}{ArrowUp}{/Alt}');
+    expect(status.textContent).toBe('Ahora en 2 de 3');
+  });
+
+  // With a layout it draws the rows near the screen: see TrackList.scroll.test.tsx.
+  it('draws a first batch of a long list where there is no layout, each row with its place', () => {
+    const many: Track[] = Array.from({ length: 5_000 }, (_, i) => t(`m${i}`, `Song ${i + 1}`, i + 1));
+    const { container, rerender } = render(<TrackList ariaLabel="All songs" tracks={many} onPlay={noop} />);
+    expect(rows()).toHaveLength(48);
+    expect(container.querySelector('.ps-track-list-gap')).toBeNull();
+    expect(rows()[47].getAttribute('aria-posinset')).toBe('48');
+    expect(rows()[47].getAttribute('aria-setsize')).toBe('5000');
+    // Up to 200 tracks nothing is windowed, and nothing is added to the rows.
+    rerender(<TrackList ariaLabel="All songs" tracks={many.slice(0, 200)} onPlay={noop} />);
+    expect(rows()).toHaveLength(200);
+    expect(rows()[0].hasAttribute('aria-posinset')).toBe(false);
+    expect(rows()[0].hasAttribute('data-index')).toBe(false);
+  });
+
+  it('has no live region when its rows cannot be moved', () => {
+    render(<TrackList tracks={tracks} onPlay={noop} />);
+    expect(screen.queryByRole('status')).toBeNull();
   });
 });

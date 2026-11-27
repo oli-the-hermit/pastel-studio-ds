@@ -29,5 +29,5 @@ export const meta: ComponentMeta = {
     'Auto advance waits for the pointer and the focus but has no pause button: leave it off, or keep it slow, where the text has to be read.',
     'At most six items are shown: pass the six that matter.',
   ],
-  related: ['MediaRow', 'TitleTile', 'Button'],
+  related: ['MediaRow', 'TitleTile', 'TitleHeader', 'Button'],
 };

@@ -1,6 +1,8 @@
 /* ── PlayQueue: the music queue as a side card ──────────────────
-   Its rows are QueueItem's look: raised rows, a grip at the edge, the playing one in accent. */
-.ps-play-queue { display: flex; flex-direction: column; width: min(var(--ps-play-queue-width), 100%); min-height: 0; }
+   Its rows are QueueItem's look: raised rows, a grip at the edge, the playing one in accent.
+   --ps-play-queue-dim is how much of an unavailable track's cover still shows.
+   A long list draws only the rows near the screen; .ps-play-queue-gap stands for the rest. */
+.ps-play-queue { --ps-play-queue-dim: 0.4; display: flex; flex-direction: column; width: min(var(--ps-play-queue-width), 100%); min-height: 0; }
 .ps-play-queue-head { display: flex; flex: none; flex-direction: column; gap: var(--ps-space-10); padding: var(--ps-space-18) var(--ps-space-14) var(--ps-space-10) var(--ps-space-18); }
 .ps-play-queue-head .ps-panel-header { margin-bottom: 0; }
 .ps-play-queue-head .ps-segmented-control { align-self: flex-start; }
@@ -19,6 +21,9 @@
 .ps-play-queue-label-meta { color: var(--ps-text-3); font-weight: var(--ps-font-weight-medium); font-variant-numeric: tabular-nums; }
 .ps-play-queue-empty { padding: var(--ps-space-16); border-radius: var(--ps-radius-lg); background: var(--ps-surface-2); color: var(--ps-text-2); font-size: var(--ps-font-size-sm); text-align: center; }
 .ps-play-queue-list { display: flex; flex-direction: column; gap: var(--ps-space-6); list-style: none; }
+/* A gap is never what the browser holds still when the list changes (scroll anchoring): as the
+   rows around it change, it would take the scroll position with it. */
+.ps-play-queue-gap { flex: none; overflow-anchor: none; }
 .ps-play-queue-foot { flex: none; padding: 0 var(--ps-space-14) var(--ps-space-14); }
 
 .ps-play-queue-row {
@@ -58,6 +63,10 @@
 }
 .ps-play-queue-row:hover .ps-play-queue-row-tools,
 .ps-play-queue-row:focus-within .ps-play-queue-row-tools { visibility: visible; }
+/* A track that can't be played: dimmed, with the reason where its artist was. */
+.ps-play-queue-row.is-unavailable .ps-track-info-title,
+.ps-play-queue-row.is-unavailable .ps-play-queue-row-time { color: var(--ps-text-3); }
+.ps-play-queue-row.is-unavailable .ps-cover-art { opacity: var(--ps-play-queue-dim); }
 .ps-play-queue-row.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
 .ps-play-queue-row.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
 

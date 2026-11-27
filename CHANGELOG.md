@@ -430,3 +430,50 @@ is a breaking change.
   the reason or the way out (a sentence, a button). Without them it is the one line of text it was.
 - `StatusCount`, for a `StatusBar`: a count said with an icon ("▶ 12"), read out and shown as a tooltip in words
   (`label`: "12 videos"). Several in a row tell what a folder holds by kind. From Pastel Studio Pro's explorer.
+- `TitleTile` takes `images` and `unavailable`. `images` (used when `image` is not given) makes the picture of a title
+  made of others, like a playlist: four or more distinct pictures are a mosaic of the first four, two rows of two;
+  fewer show the first alone. A picture that fails to load is left out, so a mosaic falls back to four others or to
+  one picture and never shows a hole. `unavailable` takes the reason a title can't be played ("Can't find this file"):
+  the picture is dimmed (`--ps-title-tile-dim`) under a warning mark, the reason takes the subtitle's place and so is
+  part of the button's name, and the tile stays a button. `CoverArt` takes `images` with the same rule, `Album` has
+  `covers`, and `AlbumHeader` passes them on, so a playlist without art of its own shows its albums. For Pastel Media
+  Pro's playlists and its files that have gone missing.
+- A song can be unavailable: `Track` has `unavailable`, the reason in a few words ("Can't find this file"). `TrackList`
+  and `PlayQueue` dim such a row (`is-unavailable`; `--ps-track-list-dim` and `--ps-play-queue-dim` set how much of its
+  cover still shows), put the reason where the artist was, and never play it: a double click, Enter (and a click or
+  Space in the queue) call the new `onUnavailable(track)` in place of `onPlay`, and a row of `TrackList` has no play
+  button. Its ⋮ menu, its heart, removing and reordering still work, and its name reads "Title, Artist, 3:20, Can't
+  find this file". `AlbumPage` passes `onUnavailable` on. For Pastel Media Pro's songs whose file has gone missing.
+- `PlayQueue`, and `TrackList` when it can be reordered, say where a row went after Alt + ↑ / ↓: "Moved to position 2
+  of 12", in a polite live region, with `SortableList`'s word `movedTo` (now also in their `labels`). Until now the
+  move was silent for a screen reader.
+- `TitleHeader`: the head of a film or series page. A `<header>` with a `title` (a heading, `headingLevel` 1 to 3,
+  default 2), an `overline` ("Film"), `facts` joined with a middle dot, a `rating` as a chip beside them (`value`,
+  `source`, and `label` for what a screen reader says), the `summary` shown whole at a readable measure, `actions`,
+  and a last line (`children`). A 2:3 `poster` sits beside the text, with `icon` in its place when there is none or
+  it fails. A `backdrop` covers the header behind everything: it shows in a band above the text and to the right of
+  it, has faded out where the text is and fades toward the lower edge (masks, no color laid over it), so the text
+  stays on the page's surface in both themes; a backdrop that fails to load behaves as none. Knobs:
+  `--ps-title-header-min-height` (360px) and `--ps-title-header-band` (120px) with a backdrop,
+  `--ps-title-header-measure` (560px), `--ps-title-header-poster` (200px), `--ps-title-header-radius`. Under 640px
+  wide the poster is smaller and sits above the text. For Pastel Media Pro's film and series pages.
+- `EpisodeCard`: one episode of a series as a button, for a `MediaRow`. A 16:9 picture (`image`, or `icon` when there
+  is none or it fails) over an `overline` ("Episode 3") with the `length` at the line's end, the `title` on one line
+  and the `summary` on at most two. `progress`, `watched`, `current` and `unavailable` are `TitleTile`'s: the picture,
+  with its bar, check, ring and warning mark, is the same part drawn by both. Every card is as wide as
+  `--ps-episode-card-width` (256px), so they line up. The button is named by its overline, title and length, then
+  "Watched" or the reason it is unavailable, and described by its summary, so a row of episodes can be gone through
+  quickly; an `aria-label` of your own replaces that name. For Pastel Media Pro's series pages.
+- A long list draws only the rows near the screen. With more than 200 rows, `TrackList` and `PlayQueue` (up next and
+  the history) draw the rows on screen and six around them, and stand for the rest with empty items of their height,
+  so the scroll height stays that of the whole list; up to 200 rows nothing changes. The lists are not their own
+  scroller: the new hook `useWindowedRows(listRef, { count, overscan, threshold, keep })` finds the nearest scrolling
+  element above the list, or the page, reads a row's height from the first row drawn and the space between rows from
+  the list's `row-gap`, follows the scroll and any resize, and answers again once per row scrolled (with
+  `gridLayout`'s functions, as `MediaGrid`; `listLayout` is new there). It returns the first and last row, the
+  heights that stand for the rows above and below, and `slots`, what to draw in order (`windowedSlots` builds them).
+  The row that last had the focus and a row being dragged stay drawn while scrolled away (`useSortable` returns
+  `draggedId` for it), rows have `aria-posinset` and `aria-setsize`, and the gaps are hidden from assistive
+  technology and kept out of scroll anchoring. Without a layout a long list draws its first 48 rows. Tab, Enter,
+  Alt + ↑ / ↓, dragging, `currentId` and the row menus work as in a short list. For Pastel Media Pro's song library
+  of thousands of songs, and its queue.

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlbumHeader, IconPlaylistAdd } from '@pastel-studio/react';
-import { album } from '@pastel-studio/catalog/fixtures';
+import { album, playlist } from '@pastel-studio/catalog/fixtures';
 import type { ComponentDemo } from './types';
 
 const noop = () => {};
@@ -38,6 +38,7 @@ export const demo: ComponentDemo = {
   },
   variants: {
     Album: still({ onArtistClick: noop, onShare: noop }),
+    Mosaic: still({ album: { id: 'autumn', title: 'Autumn evenings', artist: '', kind: 'Playlist', covers: playlist.map((t) => t.cover ?? ''), tracks: playlist } }),
     Narrow: <div className="docs-player-stage is-narrow"><AlbumHeader album={album} onPlayPause={noop} /></div>,
   },
   dos: [

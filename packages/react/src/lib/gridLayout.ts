@@ -1,6 +1,6 @@
 // The geometry of a virtualized grid of square tiles with a caption: how many fit on a row, how
-// big each one is and which rows are on screen. Pure numbers, so the grid can be tested without a
-// browser's layout.
+// big each one is and which rows are on screen. A windowed list is the same with one column.
+// Pure numbers, so the grid can be tested without a browser's layout.
 
 export interface GridLayout {
   columns: number;
@@ -23,6 +23,12 @@ export function gridLayout(width: number, min: number, gap: number, caption: num
   const stride = rowHeight + gap;
   const rows = Math.ceil(count / columns);
   return { columns, tileWidth, rowHeight, stride, rows, height: rows ? rows * stride - gap : 0 };
+}
+
+/** A list as a grid of one column: `count` rows of `rowHeight` px, `gap` px apart. For a list that draws only the rows on screen. */
+export function listLayout(rowHeight: number, gap: number, count: number): GridLayout {
+  const stride = rowHeight + gap;
+  return { columns: 1, tileWidth: 0, rowHeight, stride, rows: count, height: count ? count * stride - gap : 0 };
 }
 
 /**

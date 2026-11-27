@@ -47,7 +47,8 @@ export interface UseSortableOptions {
 
 /**
  * Drag to reorder, and Alt + ↑ / ↓ from anywhere inside an item, for a list of items with ids.
- * `itemProps(id)` wires an item; `isDragging` and `isDragOver` drive its look. Only this list's
+ * `itemProps(id)` wires an item; `isDragging` and `isDragOver` drive its look, and `draggedId` is
+ * the item being dragged (null when none is), for a list that must keep it drawn. Only this list's
  * own drags count: not a nested list's items, a selection dragged out of a field, or a file.
  */
 export function useSortable({ ids, onReorder, onKeyboardMove }: UseSortableOptions) {
@@ -101,6 +102,7 @@ export function useSortable({ ids, onReorder, onKeyboardMove }: UseSortableOptio
 
   return {
     itemProps,
+    draggedId,
     isDragging: (id: string) => draggedId === id,
     isDragOver: (id: string) => dragOverId === id && draggedId !== id,
   };

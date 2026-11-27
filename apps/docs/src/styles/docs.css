@@ -644,6 +644,8 @@
   .docs-media-row { width: 100%; min-width: 0; }
   .docs-hero-banner { width: 100%; min-width: 0; }
   .docs-hero-banner--narrow { width: min(420px, 100%); }
+  .docs-title-header { width: 100%; min-width: 0; }
+  .docs-title-header--narrow { width: min(420px, 100%); }
   .docs-file-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--ps-space-8) var(--ps-space-12); width: 100%; list-style: none; }
   .docs-scaled-stage { width: 100%; min-width: 0; overflow: hidden; border-radius: var(--ps-radius-lg); background: var(--ps-bg); padding: var(--ps-space-12); }
   .docs-scaled-stage-box { position: relative; }
@@ -691,6 +693,8 @@
   .docs-player-stage.is-bar { width: 100%; }
   .docs-page-patch > .docs-play-queue { flex: 0 1 var(--ps-play-queue-width); max-height: 560px; }
   .docs-card-flush { padding: var(--ps-space-8) var(--ps-space-12); color: var(--ps-text-2); }
+  /* A box that scrolls a long list, as an app's page would. */
+  .docs-long-list { height: 420px; overflow-y: auto; }
   /* As wide as the stage: progress bars and the surfaces they sit on. */
   .docs-demo-wide { flex: 1 1 100%; min-width: 0; }
   .docs-surface.docs-demo-wide { display: flex; }

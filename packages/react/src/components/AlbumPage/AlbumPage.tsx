@@ -11,6 +11,8 @@ export interface AlbumPageProps extends AlbumHeaderProps {
   /** The player is playing: the current row's bars move. */
   isPlaying?: boolean;
   onPlayTrack: (track: Track) => void;
+  /** A double click or Enter on a track with `unavailable`, in place of `onPlayTrack`. */
+  onUnavailable?: (track: Track) => void;
   onPause?: () => void;
   likedIds?: ReadonlySet<string>;
   onTrackLikedChange?: (track: Track, liked: boolean) => void;
@@ -21,7 +23,7 @@ export interface AlbumPageProps extends AlbumHeaderProps {
 
 /** An album or playlist page on one card: the header, the track list and the details. */
 export const AlbumPage = forwardRef<HTMLDivElement, AlbumPageProps>(
-  ({ album, currentId, isPlaying, onPlayTrack, onPause, likedIds, onTrackLikedChange, rowActions, playlist, className, ...header }, ref) => (
+  ({ album, currentId, isPlaying, onPlayTrack, onUnavailable, onPause, likedIds, onTrackLikedChange, rowActions, playlist, className, ...header }, ref) => (
     <div ref={ref} className={cx('ps-album-page', className)}>
       <AlbumHeader album={album} {...header} />
       <TrackList
@@ -30,6 +32,7 @@ export const AlbumPage = forwardRef<HTMLDivElement, AlbumPageProps>(
         currentId={currentId}
         playing={isPlaying}
         onPlay={onPlayTrack}
+        onUnavailable={onUnavailable}
         onPause={onPause}
         likedIds={likedIds}
         onLikedChange={onTrackLikedChange}

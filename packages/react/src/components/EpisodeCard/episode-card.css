@@ -1,0 +1,61 @@
+/* ── EpisodeCard: one episode, for a row of them ────────────────
+   A 16:9 picture over the episode's number and length, its title and two lines of its summary.
+   Every card is as wide as --ps-episode-card-width, so they line up in a MediaRow.
+   The picture is TitleTile's, with its progress bar, watched check, current ring and warning
+   mark: its look is in title-tile.css, which names this card beside the tile.
+   --ps-episode-card-ring-room is the room around the picture where its focus ring is drawn,
+   taken back by a negative margin, so the picture still lines up with what is around it. */
+.ps-episode-card {
+  --ps-episode-card-width: 256px;
+  --ps-episode-card-ring-room: var(--ps-space-6);
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--ps-space-2);
+  box-sizing: content-box;
+  width: var(--ps-episode-card-width);
+  min-width: 0;
+  padding: var(--ps-episode-card-ring-room);
+  margin: calc(var(--ps-episode-card-ring-room) * -1);
+  color: var(--ps-text-1);
+  text-align: start;
+}
+/* The ring is the picture's, not the whole card's. */
+.ps-episode-card:focus-visible { outline: none; }
+
+/* Which episode, and how long it is at the line's end. */
+.ps-episode-card-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ps-space-8);
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-xs);
+  line-height: var(--ps-leading-snug);
+}
+.ps-episode-card-overline { min-width: 0; overflow: hidden; font-weight: var(--ps-font-weight-semibold); white-space: nowrap; text-overflow: ellipsis; }
+.ps-episode-card-length { flex: none; margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.ps-episode-card-title {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--ps-font-size-sm);
+  font-weight: var(--ps-font-weight-semibold);
+  line-height: var(--ps-leading-snug);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ps-episode-card.is-current .ps-episode-card-title { color: var(--ps-accent-text); }
+.ps-episode-card.is-unavailable .ps-episode-card-title { color: var(--ps-text-2); }
+
+/* At most two lines. */
+.ps-episode-card-summary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ps-text-2);
+  font-size: var(--ps-font-size-xs);
+  line-height: var(--ps-leading-normal);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}

@@ -1,9 +1,10 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo, useRef, useState } from 'react';
 import { IconClock, IconGrip, IconPause, IconPlay } from '../../icons';
 import { useLabels, type LabelOverrides } from '../../labels';
 import { cx } from '../../lib/cx';
 import { formatTime } from '../../lib/format';
 import type { Track } from '../../lib/types';
+import { useWindowedRows, WINDOWED_ROWS_THRESHOLD } from '../../lib/useWindowedRows';
 import { CoverArt } from '../CoverArt';
 import { Equalizer } from '../Equalizer';
 import { LikeButton } from '../LikeButton';
@@ -12,7 +13,7 @@ import { PlayerControl } from '../PlayerControl';
 import { useSortable } from '../SortableList';
 import { TrackInfo } from '../TrackInfo';
 
-type TrackListWords = 'trackNumber' | 'trackTitle' | 'album' | 'dateAdded' | 'duration' | 'playTrack' | 'pauseTrack' | 'trackActions' | 'dragToReorder' | 'like' | 'unlike';
+type TrackListWords = 'trackNumber' | 'trackTitle' | 'album' | 'dateAdded' | 'duration' | 'playTrack' | 'pauseTrack' | 'trackActions' | 'dragToReorder' | 'movedTo' | 'like' | 'unlike';
 
 export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onPlay' | 'onPause'> {
   tracks: Track[];
@@ -21,6 +22,11 @@ export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement
   playing?: boolean;
   /** Plays a track: a double click, Enter, or the play button on its number. */
   onPlay: (track: Track) => void;
+  /**
+   * A double click or Enter on a track with `unavailable`, in place of `onPlay`: the way to fix it,
+   * e.g. a page to find the file. Such a row has no play button.
+   */
+  onUnavailable?: (track: Track) => void;
   onPause?: () => void;
   likedIds?: ReadonlySet<string>;
   /** Shows a heart on each row. */
@@ -41,6 +47,8 @@ export interface TrackListProps extends Omit<React.HTMLAttributes<HTMLDivElement
 /**
  * A list of tracks: the number (a play button on hover, the bars while playing), title and artist,
  * an optional cover, album and date, a heart, the length and a ⋮ menu. Columns fold away as it narrows.
+ * With more than 200 tracks it draws only the rows near the screen, as the page or the panel
+ * around it scrolls, so a library of thousands of songs stays quick.
  */
 export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
   (
@@ -49,6 +57,7 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
       currentId,
       playing = false,
       onPlay,
+      onUnavailable,
       onPause,
       likedIds,
       onLikedChange,
@@ -64,8 +73,26 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
     ref
   ) => {
     const labels = useLabels(ownLabels);
-    const sortable = useSortable({ ids: tracks.map((t) => t.id), onReorder: onReorder ?? (() => {}) });
+    // Where a row went after Alt + ↑ / ↓, for a screen reader: the move itself is silent.
+    const [announcement, setAnnouncement] = useState('');
+    const ids = useMemo(() => tracks.map((t) => t.id), [tracks]);
+    const sortable = useSortable({
+      ids,
+      onReorder: onReorder ?? (() => {}),
+      onKeyboardMove: (_, index) =>
+        setAnnouncement(labels.movedTo.replace('{position}', String(index + 1)).replace('{total}', String(tracks.length))),
+    });
     const named = (word: string, t: Track) => word.replace('{title}', t.title);
+    // A long list draws only the rows near the screen. The row that last had the keyboard focus
+    // and the row being dragged stay drawn wherever the scroll is: the focus is never lost, and a
+    // drag can scroll the list under it.
+    const listRef = useRef<HTMLOListElement>(null);
+    const [focusId, setFocusId] = useState<string | null>(null);
+    const indexOf = (id: string | null) => (id === null ? -1 : ids.indexOf(id));
+    const rows = useWindowedRows(listRef, {
+      count: tracks.length,
+      keep: tracks.length > WINDOWED_ROWS_THRESHOLD ? [indexOf(focusId), indexOf(sortable.draggedId)] : undefined,
+    });
     return (
       <div
         ref={ref}
@@ -89,49 +116,72 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
             <span className="ps-track-list-more" />
           </div>
         )}
-        <ol className="ps-track-list-rows" aria-label={ariaLabel}>
-          {tracks.map((t, i) => {
+        <ol
+          ref={listRef}
+          className="ps-track-list-rows"
+          aria-label={ariaLabel}
+          onFocus={rows.windowed ? (e) => {
+            // The focus is in a row, or in one of its tools; a row's menu, drawn elsewhere, is neither.
+            const row = (e.target as HTMLElement).closest<HTMLElement>('[data-index]');
+            if (row?.parentElement === e.currentTarget) setFocusId(ids[Number(row.dataset.index)] ?? null);
+          } : undefined}
+        >
+          {rows.slots.map((slot) => {
+            // The rows left out, as one empty item of their height: the scroll stays the whole list's.
+            if (slot.kind === 'gap') return <li key={slot.key} className="ps-track-list-gap" aria-hidden="true" style={{ height: slot.height }} />;
+            const i = slot.index;
+            const t = tracks[i];
             const current = t.id === currentId;
             const isPlaying = current && playing;
             const liked = likedIds?.has(t.id) ?? false;
             const drag = onReorder ? sortable.itemProps(t.id) : undefined;
+            // A track that can't be played says why where its artist was, and is never played.
+            const unavailable = t.unavailable || undefined;
+            const activate = () => (unavailable ? onUnavailable?.(t) : onPlay(t));
             return (
               <li
                 key={t.id}
                 className={cx(
                   'ps-track-list-row',
                   current && 'is-current',
+                  unavailable && 'is-unavailable',
                   sortable.isDragging(t.id) && 'is-dragging',
                   sortable.isDragOver(t.id) && 'is-drag-over'
                 )}
                 tabIndex={0}
+                // Only some rows are drawn: each says its place in the whole list.
+                data-index={rows.windowed ? i : undefined}
+                aria-posinset={rows.windowed ? i + 1 : undefined}
+                aria-setsize={rows.windowed ? tracks.length : undefined}
                 aria-current={current ? 'true' : undefined}
-                aria-label={`${t.title}, ${t.artist}, ${formatTime(t.duration)}`}
-                onDoubleClick={() => onPlay(t)}
+                aria-label={`${t.title}, ${t.artist}, ${formatTime(t.duration)}${unavailable ? `, ${unavailable}` : ''}`}
+                onDoubleClick={activate}
                 {...drag}
                 onKeyDown={(e) => {
                   drag?.onKeyDown(e);
                   if (e.defaultPrevented) return;
-                  if (e.key === 'Enter' && e.target === e.currentTarget) onPlay(t);
+                  if (e.key === 'Enter' && e.target === e.currentTarget) activate();
                 }}
               >
                 {drag && <IconGrip className="ps-track-list-grip" title={labels.dragToReorder} />}
                 <span className="ps-track-list-num">
                   <span className="ps-track-list-num-text">{current ? <Equalizer playing={isPlaying} size={14} /> : t.number ?? i + 1}</span>
-                  <PlayerControl
-                    className="ps-track-list-num-play"
-                    variant="ghost"
-                    size="sm"
-                    label={named(isPlaying ? labels.pauseTrack : labels.playTrack, t)}
-                    tabIndex={-1}
-                    onClick={() => (isPlaying ? onPause?.() : onPlay(t))}
-                  >
-                    {isPlaying ? <IconPause size={14} /> : <IconPlay size={14} />}
-                  </PlayerControl>
+                  {!unavailable && (
+                    <PlayerControl
+                      className="ps-track-list-num-play"
+                      variant="ghost"
+                      size="sm"
+                      label={named(isPlaying ? labels.pauseTrack : labels.playTrack, t)}
+                      tabIndex={-1}
+                      onClick={() => (isPlaying ? onPause?.() : onPlay(t))}
+                    >
+                      {isPlaying ? <IconPause size={14} /> : <IconPlay size={14} />}
+                    </PlayerControl>
+                  )}
                 </span>
                 <span className="ps-track-list-title">
                   {columns.cover && <CoverArt size="xs" src={t.cover} />}
-                  <TrackInfo title={t.title} artist={t.artist} explicit={t.explicit} size="sm" />
+                  <TrackInfo title={t.title} artist={unavailable ?? t.artist} explicit={t.explicit} size="sm" />
                 </span>
                 {columns.album && <span className="ps-track-list-album">{t.album}</span>}
                 {columns.added && <span className="ps-track-list-added">{t.addedAt ? new Date(t.addedAt).toLocaleDateString() : ''}</span>}
@@ -148,6 +198,7 @@ export const TrackList = forwardRef<HTMLDivElement, TrackListProps>(
             );
           })}
         </ol>
+        {onReorder && <span role="status" className="ps-visually-hidden">{announcement}</span>}
       </div>
     );
   }

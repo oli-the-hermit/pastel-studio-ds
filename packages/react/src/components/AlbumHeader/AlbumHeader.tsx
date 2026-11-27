@@ -42,7 +42,7 @@ export const AlbumHeader = forwardRef<HTMLElement, AlbumHeaderProps>(
     const songs = (count === 1 ? labels.songOne : labels.songOther).replace('{count}', String(count));
     return (
       <header ref={ref} className={cx('ps-album-header', className)} {...rest}>
-        <CoverArt className="ps-album-header-art" src={album.cover} alt={album.title} size="lg" />
+        <CoverArt className="ps-album-header-art" src={album.cover} images={album.covers} alt={album.title} size="lg" />
         <div className="ps-album-header-main">
           <span className="ps-album-header-kind">{kindWord(album.kind, labels)}</span>
           <h1 className="ps-album-header-title">{album.title}</h1>

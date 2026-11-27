@@ -1,7 +1,9 @@
 /* ── TrackList: rows of tracks on one grid ──────────────────────
    Number · title · [album] · [date] · heart · length · ⋮. The optional columns fold away as
-   the list narrows (a container query: the rows follow the list's width). */
-.ps-track-list { min-width: 0; container: ps-track-list / inline-size; }
+   the list narrows (a container query: the rows follow the list's width).
+   --ps-track-list-dim is how much of an unavailable track's cover still shows.
+   A long list draws only the rows near the screen; .ps-track-list-gap stands for the rest. */
+.ps-track-list { --ps-track-list-dim: 0.4; min-width: 0; container: ps-track-list / inline-size; }
 
 .ps-track-list-head,
 .ps-track-list-row {
@@ -33,6 +35,9 @@
   text-transform: uppercase;
 }
 .ps-track-list-rows { display: flex; flex-direction: column; gap: var(--ps-space-2); list-style: none; }
+/* A gap is never what the browser holds still when the page changes (scroll anchoring): as the
+   rows around it change, it would take the scroll position with it. */
+.ps-track-list-gap { flex: none; overflow-anchor: none; }
 
 .ps-track-list-row {
   position: relative;
@@ -47,6 +52,12 @@
 .ps-track-list-row:focus-visible { outline-offset: calc(var(--ps-ring-width) * -1); }
 .ps-track-list-row.is-current .ps-track-info-title,
 .ps-track-list-row.is-current .ps-track-list-num-text { color: var(--ps-accent-text); }
+/* A track that can't be played: dimmed, with the reason where its artist was. It has no play
+   button, so its number stays when hovered. */
+.ps-track-list-row.is-unavailable,
+.ps-track-list-row.is-unavailable .ps-track-info-title { color: var(--ps-text-3); }
+.ps-track-list-row.is-unavailable .ps-cover-art { opacity: var(--ps-track-list-dim); }
+.ps-track-list-row.is-unavailable:is(:hover, :focus-within) .ps-track-list-num-text { visibility: visible; }
 .ps-track-list-row.is-dragging { background: var(--ps-surface-3); color: var(--ps-text-3); }
 .ps-track-list-row.is-drag-over { box-shadow: inset 0 var(--ps-ring-width-lg) 0 var(--ps-accent); }
 

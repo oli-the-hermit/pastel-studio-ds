@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Album } from '../../lib/types';
@@ -68,6 +68,21 @@ describe('AlbumPage', () => {
     expect(screen.getByRole('list', { name: 'Midnight Static' })).toBeTruthy();
     expect(screen.getByRole('region', { name: 'About this album' })).toBeTruthy();
   });
+
+  it('hands a track that is unavailable to onUnavailable, not to onPlayTrack', () => {
+    const onPlayTrack = vi.fn();
+    const onUnavailable = vi.fn();
+    const missing = { ...album.tracks[1], unavailable: "Can't find this file" };
+    const { container } = render(<AlbumPage album={{ ...album, tracks: [album.tracks[0], missing] }} onPlayPause={noop} onPlayTrack={onPlayTrack} onUnavailable={onUnavailable} />);
+    const [first, second] = screen.getAllByRole('listitem');
+    fireEvent.doubleClick(second);
+    expect(onUnavailable).toHaveBeenCalledWith(missing);
+    expect(onPlayTrack).not.toHaveBeenCalled();
+    fireEvent.doubleClick(first);
+    expect(onPlayTrack).toHaveBeenCalledWith(album.tracks[0]);
+    // The handler is the page's own: it never reaches the header's element.
+    expect(container.querySelector('header')?.getAttributeNames()).toEqual(['class']);
+  });
 });
 
 describe('A playlist', () => {
@@ -78,6 +93,15 @@ describe('A playlist', () => {
     expect(screen.getByText('Playlist')).toBeTruthy();
     expect(container.querySelector('.ps-album-header-artist')).toBeNull();
     expect(container.querySelector('.ps-album-header-meta')?.firstElementChild?.textContent).toBe('2 songs');
+  });
+
+  it('shows a mosaic of its covers when it has no cover of its own', () => {
+    const covers = ['1.png', '2.png', '3.png', '4.png'];
+    const { container, rerender } = render(<AlbumHeader album={{ ...playlist, covers }} onPlayPause={noop} />);
+    expect(screen.getByRole('img', { name: 'Road trip' }).className).toBe('ps-cover-art-mosaic');
+    expect(Array.from(container.querySelectorAll('.ps-cover-art-mosaic img'), (img) => img.getAttribute('src'))).toEqual(covers);
+    rerender(<AlbumHeader album={{ ...playlist, cover: 'own.png', covers }} onPlayPause={noop} />);
+    expect(screen.getByRole('img', { name: 'Road trip' }).getAttribute('src')).toBe('own.png');
   });
 
   it('is described as a playlist, not an album', () => {

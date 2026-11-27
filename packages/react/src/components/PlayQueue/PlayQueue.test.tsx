@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { Track } from '../../lib/types';
@@ -60,6 +60,59 @@ describe('PlayQueue', () => {
     within(screen.getByRole('region', { name: 'Up next' })).getAllByRole('listitem')[0].focus();
     await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
     expect(upNextTitles()).toEqual(['Northbound', 'Low Tide Radio']);
+  });
+
+  it('says where a track went after a move from the keyboard', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Queue />);
+    const status = screen.getByRole('status');
+    expect(status.className).toBe('ps-visually-hidden');
+    expect(status.textContent).toBe('');
+    within(screen.getByRole('region', { name: 'Up next' })).getAllByRole('listitem')[0].focus();
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 2 of 2');
+    // The row that moved has the focus again by the next frame.
+    await act(() => new Promise<void>((done) => requestAnimationFrame(() => done())));
+    await user.keyboard('{Alt>}{ArrowUp}{/Alt}');
+    expect(status.textContent).toBe('Moved to position 1 of 2');
+    unmount();
+    // A queue that can't be reordered has nothing to announce.
+    render(<PlayQueue upNext={next} onPlay={noop} />);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('dims an unavailable track, says why, and calls onUnavailable in place of onPlay', async () => {
+    const onPlay = vi.fn();
+    const onUnavailable = vi.fn();
+    const onRemove = vi.fn();
+    const onReorder = vi.fn();
+    const user = userEvent.setup();
+    const missing: Track = { ...next[0], unavailable: "Can't find this file" };
+    const { rerender } = render(<PlayQueue upNext={[missing, next[1]]} onPlay={onPlay} onUnavailable={onUnavailable} onRemove={onRemove} onReorder={onReorder} />);
+    const [row, other] = within(screen.getByRole('region', { name: 'Up next' })).getAllByRole('listitem');
+    expect(row.className).toContain('is-unavailable');
+    expect(other.className).not.toContain('is-unavailable');
+    // The reason stands where the artist was, so it is read with the title.
+    expect(row.querySelector('.ps-track-info-meta')?.textContent).toBe("Can't find this file");
+    await user.click(row);
+    row.focus();
+    await user.keyboard('{Enter}');
+    await user.keyboard(' ');
+    expect(onUnavailable.mock.calls.map(([track]) => track)).toEqual([missing, missing, missing]);
+    expect(onPlay).not.toHaveBeenCalled();
+    // It can still be moved and removed.
+    await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
+    expect(onReorder).toHaveBeenCalledWith('a', 'b');
+    await user.click(screen.getByRole('button', { name: 'Remove from queue: Low Tide Radio' }));
+    expect(onRemove).toHaveBeenCalledWith(missing);
+    expect(onUnavailable).toHaveBeenCalledTimes(3);
+    // The same in the history, and for the track that is loaded; without a handler nothing happens.
+    rerender(<PlayQueue current={missing} upNext={[]} history={[missing]} onPlay={onPlay} tab="history" />);
+    await user.click(within(screen.getByRole('list', { name: 'History' })).getByRole('listitem'));
+    rerender(<PlayQueue current={missing} upNext={[]} onPlay={onPlay} onUnavailable={onUnavailable} tab="next" />);
+    await user.click(within(screen.getByRole('region', { name: 'Now playing' })).getByRole('listitem'));
+    expect(onUnavailable).toHaveBeenCalledTimes(4);
+    expect(onPlay).not.toHaveBeenCalled();
   });
 
   it('switches to the history, and says when it or the queue is empty', async () => {

@@ -35,6 +35,12 @@ function Demo() {
   );
 }
 
+// A long queue, made up from the album's songs: enough for the list to draw only the rows on screen.
+const long: Track[] = Array.from({ length: 1200 }, (_, i) => {
+  const from = album.tracks[i % album.tracks.length];
+  return { ...from, id: `long-${i}`, title: `${from.title} ${Math.floor(i / album.tracks.length) + 1}` };
+});
+
 const still = (props: Partial<React.ComponentProps<typeof PlayQueue>>) => (
   <div className="docs-page-patch">
     <PlayQueue className="docs-play-queue" current={album.tracks[0]} upNext={album.tracks.slice(1, 3)} onPlay={noop} {...props} />
@@ -47,6 +53,8 @@ export const demo: ComponentDemo = {
     'Up next': still({}),
     History: still({ defaultTab: 'history', history: album.tracks.slice(3, 5) }),
     Empty: still({ upNext: [] }),
+    'Long queue': still({ upNext: long, source: 'All songs', onRemove: noop, onReorder: noop }),
+    Unavailable: still({ upNext: [album.tracks[1], { ...album.tracks[2], unavailable: "Can't find this file" }, album.tracks[3]], onRemove: noop, onReorder: noop }),
   },
   variants: {
     Full: still({ source: album.title, onClose: noop, onClear: noop, onShuffle: noop, onRemove: noop, onReorder: noop, autoplay: { value: true, onChange: noop } }),

@@ -21,6 +21,12 @@ export const demo: ComponentDemo = {
   Demo,
   states: {
     Image: <CoverArt src={covers.orchard} alt="Orchard cover" size="md" />,
+    Mosaic: (
+      <>
+        <CoverArt images={[covers.orchard, covers.tidal, covers.paper, covers.neon]} alt="Autumn evenings" size="md" />
+        <CoverArt images={[covers.orchard, covers.tidal, covers.paper, covers.neon]} alt="" size="sm" />
+      </>
+    ),
     Placeholder: <CoverArt alt="Untitled demo" size="md" />,
     Loading: <CoverArt size="md" loading />,
     'With progress': <CoverArt src={covers.tidal} alt="Tidal Lines cover" size="md" shape="round" progress={62} />,

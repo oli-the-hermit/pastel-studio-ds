@@ -1,9 +1,16 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { IconMusic } from '../../icons';
 import { cx } from '../../lib/cx';
+import { Mosaic, usePictures } from '../../lib/mosaic';
 
 export interface CoverArtProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
+  /**
+   * Several covers for art made of others (a playlist's albums), used when `src` is not given:
+   * four or more distinct ones make a mosaic of the first four, two rows of two; fewer show the
+   * first alone. One that fails to load is left out.
+   */
+  images?: string[];
   /** Describes the art ("Midnight Static cover"); leave it empty when the title is right beside it. */
   alt?: string;
   /** A size from the tokens, or `fluid` to fill the width (always square). */
@@ -18,11 +25,10 @@ export interface CoverArtProps extends React.HTMLAttributes<HTMLDivElement> {
   badge?: React.ReactNode;
 }
 
-/** Album or track art, with a placeholder when there is no image or it fails, a loading pulse and an optional ring. */
+/** Album or track art, or a mosaic of four covers, with a placeholder when there is no image or it fails, a loading pulse and an optional ring. */
 export const CoverArt = forwardRef<HTMLDivElement, CoverArtProps>(
-  ({ src, alt = '', size = 'fluid', shape = 'square', loading = false, progress, badge, className, ...rest }, ref) => {
-    const [failed, setFailed] = useState<string | null>(null);
-    const showImg = src && failed !== src;
+  ({ src, images, alt = '', size = 'fluid', shape = 'square', loading = false, progress, badge, className, ...rest }, ref) => {
+    const { pictures, onError } = usePictures(src, images);
     return (
       <div
         ref={ref}
@@ -37,8 +43,10 @@ export const CoverArt = forwardRef<HTMLDivElement, CoverArtProps>(
         {...rest}
       >
         <div className="ps-cover-art-frame">
-          {showImg ? (
-            <img src={src} alt={alt} draggable={false} onError={() => setFailed(src)} />
+          {pictures.length > 1 ? (
+            <Mosaic className="ps-cover-art-mosaic" pictures={pictures} onError={onError} role={alt ? 'img' : undefined} aria-label={alt || undefined} />
+          ) : pictures.length ? (
+            <img src={pictures[0]} alt={alt} draggable={false} onError={() => onError(pictures[0])} />
           ) : (
             <span className="ps-cover-art-placeholder" role={alt ? 'img' : undefined} aria-label={alt || undefined}>
               <IconMusic />

@@ -49,6 +49,50 @@ describe('TitleTile', () => {
     expect(screen.getByTestId('icon')).toBeTruthy();
   });
 
+  it('makes a mosaic of the first four distinct images, and shows the first alone when there are fewer', () => {
+    const sources = () => Array.from(picture().querySelectorAll('img'), (img) => img.getAttribute('src'));
+    const { rerender } = render(<TitleTile title="a" images={['1.jpg', '2.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg']} icon={<svg data-testid="icon" />} />);
+    const mosaic = picture().querySelector('.ps-title-tile-mosaic')!;
+    expect(Array.from(mosaic.children, (img) => img.getAttribute('src'))).toEqual(['1.jpg', '2.jpg', '3.jpg', '4.jpg']);
+    expect(Array.from(mosaic.children).every((img) => img.getAttribute('alt') === '')).toBe(true);
+    rerender(<TitleTile title="a" images={['1.jpg', '2.jpg', '1.jpg', '3.jpg', '2.jpg']} />);
+    expect(picture().querySelector('.ps-title-tile-mosaic')).toBeNull();
+    expect(sources()).toEqual(['1.jpg']);
+    rerender(<TitleTile title="a" images={[]} icon={<svg data-testid="icon" />} />);
+    expect(sources()).toEqual([]);
+    expect(screen.getByTestId('icon')).toBeTruthy();
+    // `image` comes first: the others are not looked at.
+    rerender(<TitleTile title="a" image="own.jpg" images={['1.jpg', '2.jpg', '3.jpg', '4.jpg']} />);
+    expect(sources()).toEqual(['own.jpg']);
+  });
+
+  it('leaves out an image that fails, so a mosaic never shows a hole', () => {
+    const sources = () => Array.from(picture().querySelectorAll('img'), (img) => img.getAttribute('src'));
+    const fail = (src: string) => fireEvent.error(picture().querySelector(`img[src="${src}"]`)!);
+    const { rerender } = render(<TitleTile title="a" images={['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg']} icon={<svg data-testid="icon" />} progress={0.5} watched current />);
+    // A fifth takes the place of the one that failed...
+    fail('2.jpg');
+    expect(sources()).toEqual(['1.jpg', '3.jpg', '4.jpg', '5.jpg']);
+    expect(picture().querySelector('.ps-title-tile-mosaic')).toBeTruthy();
+    // ...and with only three left, the first is shown alone.
+    fail('4.jpg');
+    expect(picture().querySelector('.ps-title-tile-mosaic')).toBeNull();
+    expect(sources()).toEqual(['1.jpg']);
+    fail('1.jpg');
+    expect(sources()).toEqual(['3.jpg']);
+    fail('3.jpg');
+    expect(sources()).toEqual(['5.jpg']);
+    fail('5.jpg');
+    expect(sources()).toEqual([]);
+    expect(screen.getByTestId('icon')).toBeTruthy();
+    // What lies over the picture is there whatever the picture is.
+    expect(picture().querySelector<HTMLElement>('.ps-title-tile-progress-fill')?.style.width).toBe('50%');
+    expect(screen.getByRole('img', { name: 'Watched' })).toBeTruthy();
+    expect(tile().getAttribute('aria-current')).toBe('true');
+    rerender(<TitleTile title="a" images={['1.jpg', '6.jpg']} />);
+    expect(sources()).toEqual(['6.jpg']);
+  });
+
   it('draws the progress only above 0, and never past the ends', () => {
     const fill = () => picture().querySelector<HTMLElement>('.ps-title-tile-progress-fill');
     const { rerender } = render(<TitleTile title="a" />);
@@ -80,6 +124,25 @@ describe('TitleTile', () => {
     render(<TitleTile title="a" current shape="poster" />);
     expect(tile().getAttribute('aria-current')).toBe('true');
     expect(tile().className).toBe('ps-title-tile ps-title-tile--poster is-current');
+  });
+
+  it('says why it is unavailable in place of the subtitle, under a warning mark, and stays a button', async () => {
+    const onClick = vi.fn();
+    const user = userEvent.setup();
+    const { rerender } = render(<TitleTile title="Tidal" subtitle="Harbour Moss" image="cover.jpg" unavailable="Can't find this file" onClick={onClick} />);
+    expect(screen.getByRole('button', { name: "Tidal Can't find this file" })).toBe(tile());
+    expect(tile().className).toBe('ps-title-tile is-unavailable');
+    expect(screen.getByText("Can't find this file").className).toBe('ps-title-tile-subtitle');
+    expect(screen.queryByText('Harbour Moss')).toBeNull();
+    expect(picture().querySelector('.ps-title-tile-warning')?.getAttribute('aria-hidden')).toBe('true');
+    expect(picture().querySelector('img')?.getAttribute('src')).toBe('cover.jpg');
+    expect((tile() as HTMLButtonElement).disabled).toBe(false);
+    await user.click(tile());
+    expect(onClick).toHaveBeenCalledTimes(1);
+    rerender(<TitleTile title="Tidal" subtitle="Harbour Moss" image="cover.jpg" />);
+    expect(tile().className).toBe('ps-title-tile');
+    expect(picture().querySelector('.ps-title-tile-warning')).toBeNull();
+    expect(screen.getByText('Harbour Moss')).toBeTruthy();
   });
 
   it('forwards its ref, className and other attributes, and is pressed with a click and the keyboard', async () => {
