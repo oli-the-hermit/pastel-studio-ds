@@ -425,3 +425,8 @@ is a breaking change.
   that really moved wakes them (a `pointermove` at the same screen position as the last one is ignored), as do a
   press, a key and the focus. `useIdle` returns a third value for it, `wakeOnMove`, to give to `onPointerMove`. From
   Pastel Media Pro, whose web view sent moves over an embedded video without end, so the controls never hid.
+- `EmptyState` can be a small figure: `icon` (a large icon drawn with a thin line, as muted as the text, or a
+  `Spinner` while the view is read) and `title` (the line that says what is missing), with `children` under them for
+  the reason or the way out (a sentence, a button). Without them it is the one line of text it was.
+- `StatusCount`, for a `StatusBar`: a count said with an icon ("▶ 12"), read out and shown as a tooltip in words
+  (`label`: "12 videos"). Several in a row tell what a folder holds by kind. From Pastel Studio Pro's explorer.

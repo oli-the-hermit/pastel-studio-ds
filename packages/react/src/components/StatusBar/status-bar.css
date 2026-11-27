@@ -2,3 +2,8 @@
 .ps-status-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--ps-space-12); min-height: var(--ps-button-height-sm); color: var(--ps-text-2); font-size: var(--ps-font-size-xs); }
 .ps-status-bar-text { display: flex; gap: var(--ps-space-12); min-width: 0; overflow: hidden; font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
 .ps-status-bar-end { display: flex; flex: none; align-items: center; gap: var(--ps-space-4); }
+
+/* StatusCount: an icon and its number, read as one fact. */
+.ps-status-count { display: inline-flex; flex: none; align-items: center; gap: var(--ps-space-4); }
+.ps-status-count-icon { display: inline-flex; color: var(--ps-text-3); }
+.ps-status-count-icon > svg { width: var(--ps-space-14); height: var(--ps-space-14); }

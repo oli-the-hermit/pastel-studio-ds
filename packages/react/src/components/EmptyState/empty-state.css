@@ -6,3 +6,14 @@
   text-align: center;
 }
 .ps-empty-state--sm { padding: var(--ps-space-20) var(--ps-space-12); font-size: var(--ps-font-size-md); }
+
+/* With a picture and a title: the picture as muted as the text, drawn large with a thin line. */
+.ps-empty-state-icon { display: grid; place-items: center; margin-bottom: var(--ps-space-12); }
+.ps-empty-state-icon > svg { width: var(--ps-space-48); height: var(--ps-space-48); stroke-width: 1.25; }
+.ps-empty-state--sm .ps-empty-state-icon { margin-bottom: var(--ps-space-8); }
+.ps-empty-state--sm .ps-empty-state-icon > svg { width: var(--ps-space-32); height: var(--ps-space-32); stroke-width: 1.5; }
+.ps-empty-state-title { color: var(--ps-text-2); font-size: var(--ps-font-size-lg); font-weight: var(--ps-font-weight-medium); }
+.ps-empty-state--sm .ps-empty-state-title { font-size: var(--ps-font-size-md); }
+.ps-empty-state-text { margin-top: var(--ps-space-4); }
+/* A button under the sentence sits on its own line. */
+.ps-empty-state-text > button { display: flex; margin: var(--ps-space-12) auto 0; }
