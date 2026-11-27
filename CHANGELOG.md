@@ -430,3 +430,11 @@ is a breaking change.
   the reason or the way out (a sentence, a button). Without them it is the one line of text it was.
 - `StatusCount`, for a `StatusBar`: a count said with an icon ("▶ 12"), read out and shown as a tooltip in words
   (`label`: "12 videos"). Several in a row tell what a folder holds by kind. From Pastel Studio Pro's explorer.
+- `TitleTile` takes `images` and `unavailable`. `images` (used when `image` is not given) makes the picture of a title
+  made of others, like a playlist: four or more distinct pictures are a mosaic of the first four, two rows of two;
+  fewer show the first alone. A picture that fails to load is left out, so a mosaic falls back to four others or to
+  one picture and never shows a hole. `unavailable` takes the reason a title can't be played ("Can't find this file"):
+  the picture is dimmed (`--ps-title-tile-dim`) under a warning mark, the reason takes the subtitle's place and so is
+  part of the button's name, and the tile stays a button. `CoverArt` takes `images` with the same rule, `Album` has
+  `covers`, and `AlbumHeader` passes them on, so a playlist without art of its own shows its albums. For Pastel Media
+  Pro's playlists and its files that have gone missing.

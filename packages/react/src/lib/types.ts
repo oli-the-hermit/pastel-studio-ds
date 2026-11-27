@@ -24,6 +24,8 @@ export interface Album {
   kind: 'Album' | 'EP' | 'Single' | 'Playlist' | 'Compilation';
   year?: number;
   cover?: string;
+  /** Covers to show as a mosaic when there is no `cover`: a playlist's first albums. */
+  covers?: string[];
   tracks: Track[];
   description?: string;
   label?: string;

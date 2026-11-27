@@ -29,7 +29,7 @@ function Demo() {
 
 function PlaylistPage() {
   const [tracks, setTracks] = useState(playlist);
-  const list: Album = { id: 'autumn', title: 'Autumn evenings', artist: 'You', kind: 'Playlist', tracks };
+  const list: Album = { id: 'autumn', title: 'Autumn evenings', artist: 'You', kind: 'Playlist', covers: tracks.map((t) => t.cover ?? ''), tracks };
   return <AlbumPage className="docs-demo-wide" album={list} onPlayPause={noop} onPlayTrack={noop} playlist={{ onReorder: (a, b) => setTracks((l) => moveById(l, a, b) ?? l) }} />;
 }
 

@@ -3,7 +3,8 @@
    wide as its shape's narrowest, --ps-title-tile-min; in a TitleGrid it fills its cell.
    Tiles off screen are not drawn (content-visibility), so a library of thousands stays cheap.
    --ps-title-tile-ring-room is the room around the picture where its focus ring is drawn, taken
-   back by a negative margin, so the picture still lines up with what is around it. */
+   back by a negative margin, so the picture still lines up with what is around it.
+   --ps-title-tile-dim is how much of an unavailable title's picture still shows. */
 .ps-title-grid,
 .ps-title-tile { --ps-title-tile-min: 160px; }
 .ps-title-grid--wide,
@@ -13,6 +14,7 @@
   --ps-title-tile-ratio: 1;             /* the picture's width / height */
   --ps-title-tile-radius: var(--ps-radius-lg);
   --ps-title-tile-ring-room: var(--ps-space-6);
+  --ps-title-tile-dim: 0.4;
   display: flex;
   flex: none;
   flex-direction: column;
@@ -52,6 +54,9 @@
 .ps-title-tile-picture > img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ps-title-tile-icon { display: grid; place-items: center; width: 100%; height: 100%; color: var(--ps-text-3); }
 .ps-title-tile-icon > svg { width: 34%; height: 34%; }
+/* Four pictures, two rows of two, with nothing between them: the shape's corners clip them. */
+.ps-title-tile-mosaic { display: grid; grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr)); width: 100%; height: 100%; }
+.ps-title-tile-mosaic > img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* The one that is playing: an accent ring inside the picture's edge, and its name in the accent. */
 .ps-title-tile.is-current .ps-title-tile-picture::after {
@@ -91,6 +96,23 @@
   border-radius: var(--ps-radius-round);
   background: var(--ps-accent);
   color: var(--ps-on-accent);
+}
+
+/* It can't be played: the picture dimmed under a warning mark at its top left, the name quieter.
+   The line under the name says why. */
+.ps-title-tile.is-unavailable .ps-title-tile-picture > :is(img, .ps-title-tile-mosaic, .ps-title-tile-icon) { opacity: var(--ps-title-tile-dim); }
+.ps-title-tile.is-unavailable .ps-title-tile-title { color: var(--ps-text-2); }
+.ps-title-tile-warning {
+  position: absolute;
+  top: var(--ps-space-8);
+  left: var(--ps-space-8);
+  display: grid;
+  place-items: center;
+  width: var(--ps-checkbox-size);
+  height: var(--ps-checkbox-size);
+  border-radius: var(--ps-radius-round);
+  background: var(--ps-warning-container);
+  color: var(--ps-warning);
 }
 
 .ps-title-tile-title,

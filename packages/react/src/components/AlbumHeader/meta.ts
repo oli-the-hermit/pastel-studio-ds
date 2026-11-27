@@ -12,6 +12,7 @@ export const meta: ComponentMeta = {
   ],
   variants: [
     { name: 'Album', description: 'The kind, title, artist, year, number of songs and total length.' },
+    { name: 'Mosaic', description: 'An album with `covers` and no `cover` (a playlist): the art is a mosaic of its first four distinct covers.' },
     { name: 'Narrow', description: 'Under 600px wide the art goes on top, at under half the width.' },
   ],
   keyboard: [

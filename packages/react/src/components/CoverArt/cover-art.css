@@ -26,6 +26,9 @@
 .ps-cover-art--ringed .ps-cover-art-frame { inset: 7%; }
 
 .ps-cover-art-frame > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Four covers, two rows of two, with nothing between them: the frame's corners clip them. */
+.ps-cover-art-mosaic { display: grid; grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr)); width: 100%; height: 100%; }
+.ps-cover-art-mosaic > img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ps-cover-art-placeholder { display: grid; place-items: center; width: 100%; height: 100%; color: var(--ps-text-3); }
 .ps-cover-art-placeholder > svg { width: 34%; height: 34%; }
 .ps-cover-art.is-loading .ps-cover-art-frame { animation: ps-cover-art-pulse var(--ps-dur-pulse) var(--ps-ease-standard) infinite; }

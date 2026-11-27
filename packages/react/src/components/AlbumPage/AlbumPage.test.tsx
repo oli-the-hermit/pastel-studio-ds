@@ -80,6 +80,15 @@ describe('A playlist', () => {
     expect(container.querySelector('.ps-album-header-meta')?.firstElementChild?.textContent).toBe('2 songs');
   });
 
+  it('shows a mosaic of its covers when it has no cover of its own', () => {
+    const covers = ['1.png', '2.png', '3.png', '4.png'];
+    const { container, rerender } = render(<AlbumHeader album={{ ...playlist, covers }} onPlayPause={noop} />);
+    expect(screen.getByRole('img', { name: 'Road trip' }).className).toBe('ps-cover-art-mosaic');
+    expect(Array.from(container.querySelectorAll('.ps-cover-art-mosaic img'), (img) => img.getAttribute('src'))).toEqual(covers);
+    rerender(<AlbumHeader album={{ ...playlist, cover: 'own.png', covers }} onPlayPause={noop} />);
+    expect(screen.getByRole('img', { name: 'Road trip' }).getAttribute('src')).toBe('own.png');
+  });
+
   it('is described as a playlist, not an album', () => {
     render(<AlbumDetails album={playlist} />);
     expect(screen.getByRole('region', { name: 'About this playlist' })).toBeTruthy();
